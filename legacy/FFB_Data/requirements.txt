@@ -2,10 +2,9 @@ selenium==4.16.0
 webdriver_manager==4.0.1
 supabase==2.1.1
 python-dotenv==1.0.0
-pandas==2.1.0
+pandas==2.2.2
+numpy>=1.26.0
 beautifulsoup4==4.12.2
 webdriver_manager==4.0.1
-playwright==1.41.0
-asyncio
 aiohttp
 python-dateutil

@@ -27,7 +27,7 @@ Do you know what we are working on?
 
 Welcome back! Based on my memory, we are working on the FFB project, and you prefer to use the term "clubs" for the database table rather than the generic term "entities" [[memory:3456618]]. 
 
-However, I don’t have the full context of your most recent tasks or goals from before the disconnection. Could you please let me know what you’d like to continue working on, or if there’s a specific task or question you have right now?
+However, I don't have the full context of your most recent tasks or goals from before the disconnection. Could you please let me know what you'd like to continue working on, or if there's a specific task or question you have right now?
 
 ---
 
@@ -41,14 +41,14 @@ Ok, first of all, the explorer doesn't show the full project folders and files
 
 Thank you for letting me know. The file explorer in your environment may sometimes only show a partial view of your project, especially if the project is large or if there are hidden files/folders.
 
-However, I do have a snapshot of your project’s folder structure as of the start of this session. If you need to see the full list of files and folders, I can help you by listing the contents of any directory you specify, or by searching for specific files.
+However, I do have a snapshot of your project's folder structure as of the start of this session. If you need to see the full list of files and folders, I can help you by listing the contents of any directory you specify, or by searching for specific files.
 
 Would you like me to:
 - List the contents of a particular directory?
 - Search for a specific file or folder?
-- Help you troubleshoot why the explorer isn’t showing everything?
+- Help you troubleshoot why the explorer isn't showing everything?
 
-Let me know how you’d like to proceed!
+Let me know how you'd like to proceed!
 
 ---
 
@@ -69,7 +69,7 @@ Understood! If you want to ensure that your local project matches everything in 
    This will show you all files and folders that are currently tracked in your repository.
 
 3. **Compare local files with GitHub:**  
-   We can check for any differences between your local files and what’s on GitHub.
+   We can check for any differences between your local files and what's on GitHub.
 
 Would you like to:
 - Pull the latest changes from GitHub?
@@ -123,27 +123,27 @@ Now I want you to create the supabase database for the project FFB_database igno
 
 **Cursor**
 
-To create a Supabase database for your FFB_Database project (ignoring the legacy folder), here’s what I’ll do:
+To create a Supabase database for your FFB_Database project (ignoring the legacy folder), here's what I'll do:
 
 1. **Identify the schema:**  
-   I’ll use the schema files in your project root (e.g., `schema.sql`, `prisma/schema.prisma`, and any relevant scripts in the `scripts/` folder) to define your database structure.
+   I'll use the schema files in your project root (e.g., `schema.sql`, `prisma/schema.prisma`, and any relevant scripts in the `scripts/` folder) to define your database structure.
 
 2. **Ignore the legacy folder:**  
-   I’ll only use files outside of `legacy/` for the schema and data.
+   I'll only use files outside of `legacy/` for the schema and data.
 
 3. **Generate Supabase-compatible SQL:**  
-   I’ll ensure the SQL is ready to be run in Supabase (PostgreSQL).
+   I'll ensure the SQL is ready to be run in Supabase (PostgreSQL).
 
 4. **Guide you to set up the database:**  
-   I’ll provide instructions or a script to initialize your Supabase project with this schema.
+   I'll provide instructions or a script to initialize your Supabase project with this schema.
 
 **Next steps:**
-- I’ll review the main schema files (`schema.sql`, `prisma/schema.prisma`, and `scripts/`) to determine the tables, relationships, and any seed data.
-- Then, I’ll generate a single SQL file (or a set of commands) you can run in Supabase.
+- I'll review the main schema files (`schema.sql`, `prisma/schema.prisma`, and `scripts/`) to determine the tables, relationships, and any seed data.
+- Then, I'll generate a single SQL file (or a set of commands) you can run in Supabase.
 
-Let’s start by reviewing the contents of `schema.sql`, `prisma/schema.prisma`, and the `scripts/` folder for relevant SQL files.
+Let's start by reviewing the contents of `schema.sql`, `prisma/schema.prisma`, and the `scripts/` folder for relevant SQL files.
 
-Here’s how you can create your Supabase database for the FFB_Database project, ignoring the legacy folder:
+Here's how you can create your Supabase database for the FFB_Database project, ignoring the legacy folder:
 
 ### 1. Schema Overview
 
@@ -185,7 +185,7 @@ Could you have a look at schema.prisma?
 
 **Cursor**
 
-Absolutely! I’ve reviewed your `prisma/schema.prisma` file. Here’s a summary and some important notes for using it with Supabase:
+Absolutely! I've reviewed your `prisma/schema.prisma` file. Here's a summary and some important notes for using it with Supabase:
 
 ---
 
@@ -260,10 +260,10 @@ means that Prisma cannot connect to your Supabase database. This is a connectivi
    - Some public Wi-Fi or corporate networks block database ports.
 
 4. **Try Connecting with Another Tool**
-   - Use a tool like DBeaver, TablePlus, or `psql` to connect to your Supabase database using the same credentials. If you can’t connect, the issue is with the connection, not Prisma.
+   - Use a tool like DBeaver, TablePlus, or `psql` to connect to your Supabase database using the same credentials. If you can't connect, the issue is with the connection, not Prisma.
 
 5. **Wait and Retry**
-   - Sometimes Supabase projects take a minute to wake up if they’ve been idle.
+   - Sometimes Supabase projects take a minute to wake up if they've been idle.
 
 ---
 
@@ -271,13 +271,12 @@ means that Prisma cannot connect to your Supabase database. This is a connectivi
 
 - Double-check your `.env` file and Supabase project status.
 - Try connecting with another tool to confirm the database is reachable.
-- If you’re still stuck, let me know what you find and I can help you debug further!
+- If you're still stuck, let me know what you find and I can help you debug further!
 
 Would you like help checking your `.env` file or with a step-by-step on connecting with another tool?
 
 ```plaintext
 Error: P1001: Can't reach database server at `dzcnmebryowcxwfvrgrr.supabase.co:5432`
-Please make sure your database server is running at `dzcnmebryowcxwfvrgrr.supabase.co:5432`.
 ```
 
 ```plaintext
@@ -364,7 +363,7 @@ Detail me the process to build the DB in supabase
 
 **Cursor**
 
-Great! Here’s a step-by-step process to build your database in Supabase using Prisma, including how to add triggers and indexes that Prisma does not handle natively:
+Great! Here's a step-by-step process to build your database in Supabase using Prisma, including how to add triggers and indexes that Prisma does not handle natively:
 
 ---
 
@@ -402,7 +401,7 @@ Prisma does not create custom triggers or non-unique indexes. To add these:
 ### a. Open the Supabase SQL Editor
 
 - Go to your Supabase dashboard.
-- Click on “SQL Editor”.
+- Click on "SQL Editor".
 
 ### b. Add Triggers
 
@@ -418,13 +417,13 @@ Prisma does not create custom triggers or non-unique indexes. To add these:
 
 ## 4. (Optional) Seed Your Database
 
-If you have seed data, you can use Prisma’s seeding feature or import CSVs via the Supabase dashboard.
+If you have seed data, you can use Prisma's seeding feature or import CSVs via the Supabase dashboard.
 
 ---
 
 ## 5. Verify
 
-- In the Supabase dashboard, go to “Table Editor” to see your tables.
+- In the Supabase dashboard, go to "Table Editor" to see your tables.
 - Check that all tables, relationships, triggers, and indexes are present.
 
 ---
@@ -472,7 +471,7 @@ To check where your Supabase (SB) project is running (i.e., its region, host, an
 1. **Go to** [https://app.supabase.com/](https://app.supabase.com/) and log in.
 2. **Select your project** from the list.
 3. **Check the project URL and region:**
-   - At the top of the project dashboard, you’ll see your project’s unique URL (e.g., `https://dzcnmebryowcxwfvrgrr.supabase.co`).
+   - At the top of the project dashboard, you'll see your project's unique URL (e.g., `https://dzcnmebryowcxwfvrgrr.supabase.co`).
    - The region (e.g., `eu-west-1`, `us-east-1`) is usually displayed in the project overview or settings.
 
 ---
@@ -480,7 +479,7 @@ To check where your Supabase (SB) project is running (i.e., its region, host, an
 ### 2. Database Connection Details
 
 1. In your Supabase project dashboard, go to **Settings → Database**.
-2. Here you’ll find:
+2. Here you'll find:
    - **Host:** (e.g., `dzcnmebryowcxwfvrgrr.supabase.co`)
    - **Port:** (usually `5432`)
    - **Database name:** (usually `postgres`)
@@ -505,8 +504,8 @@ To check where your Supabase (SB) project is running (i.e., its region, host, an
 ---
 
 **Summary:**  
-- The main “host” for your database is the subdomain shown in your connection string (e.g., `dzcnmebryowcxwfvrgrr.supabase.co`).
-- The region and other details are in the “Settings” sections of your Supabase dashboard.
+- The main "host" for your database is the subdomain shown in your connection string (e.g., `dzcnmebryowcxwfvrgrr.supabase.co`).
+- The region and other details are in the "Settings" sections of your Supabase dashboard.
 
 If you want, I can guide you step-by-step with screenshots or more details—just let me know what you need!
 
@@ -565,11 +564,11 @@ lekibbitz@Thomass-MacBook-Pro-2 mon-projet-supabase %
 
 **Cursor**
 
-You have successfully initialized a new Node.js project and set up Prisma in the `mon-projet-supabase` directory. Here’s what you’ve done and what you should do next to connect this Prisma project to your Supabase database:
+You have successfully initialized a new Node.js project and set up Prisma in the `mon-projet-supabase` directory. Here's what you've done and what you should do next to connect this Prisma project to your Supabase database:
 
 ---
 
-## What You’ve Done
+## What You've Done
 
 1. **Created a new Node.js project** (`npm init -y`)
 2. **Installed Prisma and dependencies**
@@ -594,7 +593,7 @@ You have successfully initialized a new Node.js project and set up Prisma in the
 ### 2. Define Your Models
 
 - Edit `prisma/schema.prisma` and define your data models.
-- You can copy the models from your main project’s `prisma/schema.prisma` if you want the same structure.
+- You can copy the models from your main project's `prisma/schema.prisma` if you want the same structure.
 
 ---
 
@@ -662,7 +661,7 @@ How can I know if I have a dev SB server?
 
 **Cursor**
 
-Great questions! Here’s what’s happening:
+Great questions! Here's what's happening:
 
 ---
 
@@ -673,19 +672,19 @@ DATABASE_URL="prisma+postgres://localhost:51213/?api_key=eyJk..."
 ```
 
 - This is a **local development database** URL, automatically generated by Prisma when you run `prisma init` or `prisma dev`.
-- The `prisma+postgres://localhost:51213/` part means it’s pointing to a local Postgres server (not your Supabase cloud database).
-- The `api_key=...` part is used by Prisma’s local development server for authentication.
+- The `prisma+postgres://localhost:51213/` part means it's pointing to a local Postgres server (not your Supabase cloud database).
+- The `api_key=...` part is used by Prisma's local development server for authentication.
 
 **In summary:**  
-This is NOT your Supabase database. It’s a temporary, local Postgres instance for quick development/testing.
+This is NOT your Supabase database. It's a temporary, local Postgres instance for quick development/testing.
 
 ---
 
 ### 2. Do I Have a Dev Supabase Server?
 
-- **Supabase does not provide a “local dev server” by default.**  
+- **Supabase does not provide a "local dev server" by default.**  
   Your Supabase project is always running in the cloud (unless you set up [Supabase locally](https://supabase.com/docs/guides/self-hosting)).
-- The only “dev” server you have is the one running at `dzcnmebryowcxwfvrgrr.supabase.co` (your cloud project).
+- The only "dev" server you have is the one running at `dzcnmebryowcxwfvrgrr.supabase.co` (your cloud project).
 
 ---
 
@@ -700,17 +699,17 @@ This is NOT your Supabase database. It’s a temporary, local Postgres instance 
 
 ---
 
-### 4. How to Check What Database You’re Using
+### 4. How to Check What Database You're Using
 
-- If your `DATABASE_URL` starts with `localhost` or `127.0.0.1`, it’s a local database.
-- If it starts with your Supabase project subdomain (e.g., `dzcnmebryowcxwfvrgrr.supabase.co`), it’s your cloud Supabase database.
+- If your `DATABASE_URL` starts with `localhost` or `127.0.0.1`, it's a local database.
+- If it starts with your Supabase project subdomain (e.g., `dzcnmebryowcxwfvrgrr.supabase.co`), it's your cloud Supabase database.
 
 ---
 
 **Summary:**  
 - The current `.env` is for a local, temporary database.
 - To use Supabase, update `.env` with your Supabase connection string.
-- Supabase cloud is your “dev” and “prod” unless you set up a local Supabase instance.
+- Supabase cloud is your "dev" and "prod" unless you set up a local Supabase instance.
 
 If you want, I can walk you through updating your `.env` and running the migration on Supabase!
 
@@ -768,7 +767,7 @@ You are still getting the error:
 Error: P1001: Can't reach database server at `dzcnmebryowcxwfvrgrr.supabase.co:5432`
 ```
 
-This means Prisma cannot connect to your Supabase database. Here’s how to troubleshoot:
+This means Prisma cannot connect to your Supabase database. Here's how to troubleshoot:
 
 ---
 
@@ -799,7 +798,7 @@ This means Prisma cannot connect to your Supabase database. Here’s how to trou
 ## 4. Check for Network Issues
 
 - Some networks (corporate, public Wi-Fi) block outgoing connections to port 5432.
-- Try from a different network or your phone’s hotspot.
+- Try from a different network or your phone's hotspot.
 
 ---
 
@@ -876,7 +875,7 @@ DATABASE_URL="postgresql://postgres:<your_password>@dzcnmebryowcxwfvrgrr.supabas
 
 2. **Is the password correct?**
    - Get the password from your Supabase dashboard:  
-     Go to **Settings → Database** and click “Connection string” or “Show password”.
+     Go to **Settings → Database** and click "Connection string" or "Show password".
 
 3. **No spaces or line breaks in the URL.**
 
@@ -895,7 +894,7 @@ and nothing after, **that is incomplete and will not work**.
 - Update your `.env` so the `DATABASE_URL` is complete, with the correct password and host.
 - Save the file and try again.
 
-If you want, paste the full (but obfuscated) connection string here and I’ll check the format for you!
+If you want, paste the full (but obfuscated) connection string here and I'll check the format for you!
 
 ```plaintext
 DATABASE_URL="postgresql://postgres:
@@ -1022,7 +1021,7 @@ If you are still getting the same error after updating your `.env` with the corr
 ## 2. Confirm Your Password
 
 - In the Supabase dashboard, go to **Settings → Database**.
-- Click “Show password” and copy it exactly.
+- Click "Show password" and copy it exactly.
 - Paste it into your `.env` file.
 
 ---
@@ -1033,14 +1032,14 @@ If you are still getting the same error after updating your `.env` with the corr
   ```
   psql "postgresql://postgres:YOUR_PASSWORD@db.dzcnmebryowcxwfvrgrr.supabase.co:5432/postgres"
   ```
-- If this fails, the issue is not Prisma—it’s a network or credential problem.
+- If this fails, the issue is not Prisma—it's a network or credential problem.
 
 ---
 
 ## 4. Check for Network Issues
 
 - Are you on a public Wi-Fi, VPN, or corporate network? These sometimes block port 5432.
-- Try connecting from a different network (e.g., your phone’s hotspot).
+- Try connecting from a different network (e.g., your phone's hotspot).
 
 ---
 
@@ -1081,8 +1080,8 @@ If you are still getting the same error after updating your `.env` with the corr
 
 ---
 
-**If you can’t connect with any tool, the issue is with the network, credentials, or Supabase project status—not Prisma.**  
-If you can connect with another tool but not Prisma, let me know and I’ll help you debug further!
+**If you can't connect with any tool, the issue is with the network, credentials, or Supabase project status—not Prisma.**  
+If you can connect with another tool but not Prisma, let me know and I'll help you debug further!
 
 ```plaintext
   DATABASE_URL="postgresql://postgres:YOUR_PASSWORD@db.dzcnmebryowcxwfvrgrr.supabase.co:5432/postgres"
@@ -1182,7 +1181,7 @@ Since the port is not blocked locally, the most likely causes for your connectio
 
 1. **Incorrect credentials in your `.env` file** (double-check the password and host).
 2. **Network/firewall issues** (your ISP, router, or organization may block outgoing connections to remote port 5432).
-3. **Supabase project status** (make sure it’s running and not paused).
+3. **Supabase project status** (make sure it's running and not paused).
 
 ---
 
@@ -1190,7 +1189,7 @@ Since the port is not blocked locally, the most likely causes for your connectio
 
 1. **Try connecting with another tool** (like DBeaver, TablePlus, or the `psql` command-line tool) using the exact connection string from your `.env`.
    - If this fails, the issue is with your network or credentials, not Prisma.
-2. **Try from a different network** (e.g., your phone’s hotspot) to rule out network restrictions.
+2. **Try from a different network** (e.g., your phone's hotspot) to rule out network restrictions.
 3. **Check Supabase dashboard for any alerts or issues** with your project.
 
 ---
@@ -1207,7 +1206,7 @@ psql cmd line pls
 
 **Cursor**
 
-Certainly! Here’s how to test your Supabase connection using the `psql` command-line tool:
+Certainly! Here's how to test your Supabase connection using the `psql` command-line tool:
 
 ---
 
@@ -1244,11 +1243,11 @@ psql "postgresql://postgres:<your_password>@db.dzcnmebryowcxwfvrgrr.supabase.co:
 
 ### 4. What to Expect
 
-- If the connection is successful, you’ll see a prompt like:
+- If the connection is successful, you'll see a prompt like:
   ```
   postgres=>
   ```
-- If there’s an error, you’ll see a message explaining why (e.g., authentication failed, could not connect, etc.).
+- If there's an error, you'll see a message explaining why (e.g., authentication failed, could not connect, etc.).
 
 ---
 
@@ -1321,7 +1320,7 @@ means that your computer cannot resolve the hostname `db.dzcnmebryowcxwfvrgrr.su
   ```
 
 ### 6. **Try a Different Network**
-- Sometimes, DNS issues are caused by your current network. Try connecting from a different Wi-Fi or your phone’s hotspot.
+- Sometimes, DNS issues are caused by your current network. Try connecting from a different Wi-Fi or your phone's hotspot.
 
 ---
 
@@ -1373,7 +1372,7 @@ lekibbitz@Thomass-MacBook-Pro-2 mon-projet-supabase %
 
 **Cursor**
 
-You’ve made progress! Now, the DNS resolves, but you’re getting a **timeout** error:
+You've made progress! Now, the DNS resolves, but you're getting a **timeout** error:
 ```
 connection to server at "dzcnmebryowcxwfvrgrr.supabase.co" (IP), port 5432 failed: Operation timed out
 Is the server running on that host and accepting TCP/IP connections?
@@ -1392,12 +1391,12 @@ Is the server running on that host and accepting TCP/IP connections?
 
 ### 1. **Check Supabase Project Status**
 - Go to your Supabase dashboard.
-- Make sure your project is “active” (not paused or sleeping).
+- Make sure your project is "active" (not paused or sleeping).
 - If you just resumed it, wait 1–2 minutes and try again.
 
 ### 2. **Try a Different Network**
 - Some ISPs, public Wi-Fi, or corporate networks block outgoing connections to port 5432.
-- Try connecting using your phone’s hotspot or a different Wi-Fi network.
+- Try connecting using your phone's hotspot or a different Wi-Fi network.
 
 ### 3. **Check for VPN/Firewall/Antivirus**
 - If you are using a VPN, proxy, or strict firewall, try disabling it and connect again.
@@ -1420,8 +1419,8 @@ Is the server running on that host and accepting TCP/IP connections?
 ---
 
 **Next Step:**  
-Try connecting from a different network (e.g., your phone’s hotspot).  
-If it works there, the issue is with your current network’s firewall or ISP.
+Try connecting from a different network (e.g., your phone's hotspot).  
+If it works there, the issue is with your current network's firewall or ISP.
 
 Let me know what you find!
 
@@ -1441,7 +1440,7 @@ How do I know if the SB server accepts TCP/IP conns?
 **Cursor**
 
 Great question!  
-Supabase’s hosted PostgreSQL databases **always accept TCP/IP connections**—that’s how you connect from your local machine or any external app. However, there are a few things to keep in mind:
+Supabase's hosted PostgreSQL databases **always accept TCP/IP connections**—that's how you connect from your local machine or any external app. However, there are a few things to keep in mind:
 
 ---
 
@@ -1452,13 +1451,13 @@ Supabase’s hosted PostgreSQL databases **always accept TCP/IP connections**—
 
 ---
 
-### 2. **How to Check if It’s Accepting Connections**
+### 2. **How to Check if It's Accepting Connections**
 
 #### a. **Supabase Project Status**
-- In your Supabase dashboard, if your project is “active” (not paused), it is accepting TCP/IP connections.
+- In your Supabase dashboard, if your project is "active" (not paused), it is accepting TCP/IP connections.
 
 #### b. **Try Connecting from Another Network**
-- If you can connect from a different network (e.g., your phone’s hotspot), the server is accepting connections, but your original network is blocking them.
+- If you can connect from a different network (e.g., your phone's hotspot), the server is accepting connections, but your original network is blocking them.
 
 #### c. **Check for Supabase Incidents**
 - Rarely, Supabase may have outages. Check [status.supabase.com](https://status.supabase.com/) for incidents.
@@ -1475,14 +1474,14 @@ Supabase’s hosted PostgreSQL databases **always accept TCP/IP connections**—
 
 ---
 
-### 4. **You Can’t Check Directly from the Dashboard**
-- There’s no “test connection” button in Supabase, but if your project is running and you have the correct credentials, it should accept connections.
+### 4. **You Can't Check Directly from the Dashboard**
+- There's no "test connection" button in Supabase, but if your project is running and you have the correct credentials, it should accept connections.
 
 ---
 
 ### 5. **Quick Checklist**
 
-- Project is “active” in Supabase dashboard.
+- Project is "active" in Supabase dashboard.
 - You are using the correct host (no `db.` prefix if your dashboard says so).
 - You are using the correct password.
 - You are not on a network that blocks outgoing port 5432.
@@ -1505,24 +1504,24 @@ Let me know if you want to try from another network or need help with any of the
 
 **Cursor**
 
-Perfect! Here’s a quick recap of what you’re doing and what to expect:
+Perfect! Here's a quick recap of what you're doing and what to expect:
 
 1. **Project Status: Green dot**  
    - This means your Supabase project is active and should be accepting connections.
 
 2. **Try from Another Network (e.g., phone hotspot):**  
-   - If you can connect from your phone’s hotspot (or another Wi-Fi), it confirms your Supabase server is working and your credentials are correct.
+   - If you can connect from your phone's hotspot (or another Wi-Fi), it confirms your Supabase server is working and your credentials are correct.
    - If it works, the issue is with your original network (likely blocking outgoing port 5432).
    - If it still does not work, double-check your credentials and let me know the error message.
 
 ---
 
 **Tip:**  
-- When you switch to your phone’s hotspot, try the same `psql` command:
+- When you switch to your phone's hotspot, try the same `psql` command:
   ```sh
   psql "postgresql://postgres:<your_password>@dzcnmebryowcxwfvrgrr.supabase.co:5432/postgres"
   ```
-- If you get the `postgres=>` prompt, you’re in!
+- If you get the `postgres=>` prompt, you're in!
 
 Let me know the result after you try from the new network!
 
@@ -1544,7 +1543,7 @@ d. No paid plan
 
 **Cursor**
 
-Thank you for the detailed troubleshooting! Here’s a summary and some next steps based on your findings:
+Thank you for the detailed troubleshooting! Here's a summary and some next steps based on your findings:
 
 ---
 
@@ -1564,8 +1563,8 @@ Thank you for the detailed troubleshooting! Here’s a summary and some next ste
 - **The issue is not your local network, not your credentials, and not Supabase project status.**
 - **The fact that you can reach other ports but not 5432 is unusual, but if it happens on multiple networks, it suggests:**
   - A possible regional or ISP-level block on port 5432 (rare, but possible).
-  - A temporary routing issue between your location and Supabase’s cloud provider.
-  - (Very rarely) a misconfiguration on Supabase’s end for your specific project.
+  - A temporary routing issue between your location and Supabase's cloud provider.
+  - (Very rarely) a misconfiguration on Supabase's end for your specific project.
 
 ---
 
@@ -1584,7 +1583,7 @@ Thank you for the detailed troubleshooting! Here’s a summary and some next ste
   This removes your local network from the equation.
 
 #### 4. **Contact Supabase Support**
-- If you still cannot connect from any network or tool, and the web-based SQL editor works, there may be a rare issue with your project’s external connectivity.  
+- If you still cannot connect from any network or tool, and the web-based SQL editor works, there may be a rare issue with your project's external connectivity.  
   - Go to [Supabase support](https://supabase.com/support) and open a ticket, providing your project ref and a description of your issue.
 
 ---
@@ -1600,7 +1599,7 @@ Thank you for the detailed troubleshooting! Here’s a summary and some next ste
 
 ---
 
-**If the web-based SQL editor works but you cannot connect externally, it’s almost certainly a Supabase-side issue.**  
+**If the web-based SQL editor works but you cannot connect externally, it's almost certainly a Supabase-side issue.**  
 If you want, I can help you draft a support message for Supabase.
 
 Let me know what you find with the web-based SQL editor and/or a cloud-based SQL client!
@@ -1619,7 +1618,7 @@ Yes, that could absolutely be the issue!
 
 ### What This Means
 
-- **Supabase’s “Direct Connection” feature is only available over IPv6** for some projects (especially on the free tier or in certain regions).
+- **Supabase's "Direct Connection" feature is only available over IPv6** for some projects (especially on the free tier or in certain regions).
 - If your ISP or local network does not support IPv6, you will not be able to connect to your database using the direct connection string from your local machine or any IPv4-only environment.
 - This is a known limitation and is mentioned in the Supabase documentation and dashboard.
 
@@ -1627,7 +1626,7 @@ Yes, that could absolutely be the issue!
 
 ### How to Check
 
-- If your Supabase dashboard says “Direct connection isn’t IPv4 compatible,” and you are on an IPv4-only network (which is very common), you will not be able to connect using tools like `psql`, Prisma, or DBeaver from your local machine.
+- If your Supabase dashboard says "Direct connection isn't IPv4 compatible," and you are on an IPv4-only network (which is very common), you will not be able to connect using tools like `psql`, Prisma, or DBeaver from your local machine.
 
 ---
 
@@ -1636,8 +1635,8 @@ Yes, that could absolutely be the issue!
 #### 1. **Use the Supabase SQL Editor**
 - You can always run SQL queries from the web-based SQL editor in the Supabase dashboard.
 
-#### 2. **Check for a “Connection Pooling” Option**
-- Supabase offers a “Connection Pooling” feature (via PgBouncer) that is IPv4 compatible.
+#### 2. **Check for a "Connection Pooling" Option**
+- Supabase offers a "Connection Pooling" feature (via PgBouncer) that is IPv4 compatible.
 - In your Supabase dashboard, go to **Settings → Database → Connection Pooling**.
 - Use the connection string provided there (it will use a different port, usually 6543, and is IPv4 compatible).
 
@@ -1684,7 +1683,7 @@ SELECT 1; returns 1
 
 **Cursor**
 
-That’s great news!  
+That's great news!  
 It means your Supabase database is up and running, and you can connect to it using the web-based SQL editor.
 
 ---
@@ -1699,7 +1698,7 @@ It means your Supabase database is up and running, and you can connect to it usi
 ### Solution: Use Connection Pooling (IPv4-Compatible)
 
 1. **Go to your Supabase dashboard → Settings → Database → Connection Pooling.**
-2. **Copy the “connection pooling” connection string** (it will use port 6543 and a different host, e.g., `aws-0-...pooler.supabase.com`).
+2. **Copy the "connection pooling" connection string** (it will use port 6543 and a different host, e.g., `aws-0-...pooler.supabase.com`).
 3. **Update your `.env` file:**
    ```
    DATABASE_URL="postgresql://<user>:<password>@<pooler-host>:6543/postgres"
@@ -1726,7 +1725,7 @@ I have that Transaction pooler no
 
 **Cursor**
 
-Thank you for clarifying. If your Supabase dashboard says “Transaction pooler: no” (or you do not have access to connection pooling), then:
+Thank you for clarifying. If your Supabase dashboard says "Transaction pooler: no" (or you do not have access to connection pooling), then:
 
 - **You do not have access to the IPv4-compatible connection pooling feature** on your current Supabase plan or region.
 - This means you are limited to the direct connection, which (for your project) is IPv6-only.
@@ -1775,10 +1774,10 @@ Thank you for clarifying. If your Supabase dashboard says “Transaction pooler:
 
 ---
 
-**If you need to run migrations or seed data, you can copy the SQL from Prisma’s generated migration files and run it in the web SQL editor.**  
+**If you need to run migrations or seed data, you can copy the SQL from Prisma's generated migration files and run it in the web SQL editor.**  
 If you want, I can help you extract the SQL you need to run manually!
 
-Let me know how you’d like to proceed.
+Let me know how you'd like to proceed.
 
 ---
 
@@ -1793,7 +1792,7 @@ Session pooler IPV4 compatible
 
 **Cursor**
 
-Thank you for the clarification! Here’s what this means for you:
+Thank you for the clarification! Here's what this means for you:
 
 ---
 
@@ -1906,7 +1905,7 @@ postgresql://postgres.dzcnmebryowcxwfvrgrr:[YOUR-PASSWORD]@aws-0-eu-west-3.poole
 
 **This should work from your local machine!**
 
-If you encounter any issues, let me know the exact error message and I’ll help you troubleshoot.
+If you encounter any issues, let me know the exact error message and I'll help you troubleshoot.
 
 ```plaintext
 postgresql://postgres.dzcnmebryowcxwfvrgrr:[YOUR-PASSWORD]@aws-0-eu-west-3.pooler.supabase.com:5432/postgres
@@ -1934,7 +1933,7 @@ So I replace it in mon-projet-supabase and in the .env at root of the project?
 
 **Cursor**
 
-Yes, here’s what you should do:
+Yes, here's what you should do:
 
 ---
 
@@ -1971,7 +1970,7 @@ Edits done
 
 **Cursor**
 
-Great! Now that you’ve updated your `.env` files with the Session pooler connection string, you’re ready to connect to your Supabase database from your local machine.
+Great! Now that you've updated your `.env` files with the Session pooler connection string, you're ready to connect to your Supabase database from your local machine.
 
 ---
 
@@ -1998,7 +1997,7 @@ Great! Now that you’ve updated your `.env` files with the Session pooler conne
 
 ---
 
-If the connection is successful, you’ll see confirmation from Prisma or a `postgres=>` prompt from `psql`.
+If the connection is successful, you'll see confirmation from Prisma or a `postgres=>` prompt from `psql`.
 
 **Let me know the result or if you encounter any errors!**
 
@@ -2070,7 +2069,7 @@ This is unexpected, since the **Session pooler** is supposed to be IPv4 compatib
    - Make sure there are no spaces, line breaks, or missing characters in your connection string.
 
 5. **Check Pooler Status in Supabase Dashboard**
-   - In **Settings → Database → Connection Pooling**, make sure the session pooler is “enabled” and shows the correct host/port.
+   - In **Settings → Database → Connection Pooling**, make sure the session pooler is "enabled" and shows the correct host/port.
 
 6. **Try the Web SQL Editor**
    - If the web SQL editor still works, the database is up.
@@ -2088,7 +2087,7 @@ This is unexpected, since the **Session pooler** is supposed to be IPv4 compatib
 ---
 
 **Please double-check the username in your connection string.**  
-If you want, paste your (obfuscated) connection string here and I’ll check the format for you!  
+If you want, paste your (obfuscated) connection string here and I'll check the format for you!  
 Let me know the result of the `psql` test as well.
 
 ```plaintext
@@ -2133,7 +2132,7 @@ Given that:
 - The web SQL editor works.
 
 **But you still get a timeout, this points to one of the following:**
-1. **Temporary issue with Supabase’s session pooler in your region.**
+1. **Temporary issue with Supabase's session pooler in your region.**
 2. **A rare ISP or routing issue between your location and the pooler host.**
 
 ---
@@ -2207,8 +2206,8 @@ Thank you for clarifying that the error appears immediately, not as a timeout. T
 ## What to Check
 
 ### 1. **DNS Resolution**
-- If the error is about "could not translate host name" or "host not found," it’s a DNS issue.
-- If the error is "connection refused" or "authentication failed," it’s a different problem.
+- If the error is about "could not translate host name" or "host not found," it's a DNS issue.
+- If the error is "connection refused" or "authentication failed," it's a different problem.
 
 ### 2. **Authentication**
 - Double-check that the username is exactly as shown in the session pooler string (`postgres.dzcnmebryowcxwfvrgrr`).
@@ -2222,9 +2221,9 @@ Thank you for clarifying that the error appears immediately, not as a timeout. T
 
 ### 5. **Error Message**
 - The exact error message is crucial.  
-  - If it says "authentication failed," it’s a username/password issue.
+  - If it says "authentication failed," it's a username/password issue.
   - If it says "connection refused," the server is reachable but not accepting your connection.
-  - If it says "host not found," it’s a DNS issue.
+  - If it says "host not found," it's a DNS issue.
 
 ---
 
@@ -2311,7 +2310,7 @@ DATABASE_URL="postgresql://postgres.dzcnmebryowcxwfvrgrr:<your-password>@db.aws-
 
 ---
 
-**This should resolve the “can’t reach database server” error.**
+**This should resolve the "can't reach database server" error.**
 
 Let me know if it works!
 
@@ -2376,9 +2375,9 @@ connection to server at "aws-0-eu-west-3.pooler.supabase.com" (13.39.9.193), por
 
 - The session pooler is supposed to be IPv4 compatible, but your connection is still being blocked or not routed.
 - This could be due to:
-  - A temporary issue with Supabase’s session pooler in your region.
+  - A temporary issue with Supabase's session pooler in your region.
   - A rare ISP or routing issue.
-  - (Less likely) a misconfiguration on Supabase’s end.
+  - (Less likely) a misconfiguration on Supabase's end.
 
 ---
 
@@ -2397,7 +2396,7 @@ connection to server at "aws-0-eu-west-3.pooler.supabase.com" (13.39.9.193), por
   - Mention that you are using the session pooler and have tried from multiple networks
 
 ### 3. **Try from a Different Device/Network**
-- If you haven’t already, try from another device or a different network (e.g., a friend’s house, a public library, etc.).
+- If you haven't already, try from another device or a different network (e.g., a friend's house, a public library, etc.).
 
 ---
 
@@ -2472,7 +2471,7 @@ To test your Supabase connection from a cloud environment using GitHub, you can 
 ### What to Expect
 
 - If the connection works in Codespaces, the issue is with your local network or ISP.
-- If it fails with the same error, it’s likely a Supabase-side or regional issue.
+- If it fails with the same error, it's likely a Supabase-side or regional issue.
 
 ---
 
@@ -2556,7 +2555,7 @@ No problem! If your GitHub repository only contains the root project (and not th
 ---
 
 **You only need to update the `.env` file in the directory where you will run your commands.**  
-If you only have a root-level project in GitHub, that’s the only `.env` you need to update.
+If you only have a root-level project in GitHub, that's the only `.env` you need to update.
 
 Let me know if you need help with any step in Codespaces!
 
@@ -2619,7 +2618,7 @@ Give me a step-by-step commands
 
 **Cursor**
 
-Absolutely! Here’s a step-by-step guide to set up and push your Prisma schema to Supabase using GitHub Codespaces, assuming you are already connected and at the `postgres=>` prompt works.
+Absolutely! Here's a step-by-step guide to set up and push your Prisma schema to Supabase using GitHub Codespaces, assuming you are already connected and at the `postgres=>` prompt works.
 
 ---
 
@@ -2627,7 +2626,7 @@ Absolutely! Here’s a step-by-step guide to set up and push your Prisma schema 
 
 ### 1. **Open a Terminal in Codespaces**
 
-If you’re in the `psql` prompt, type `\q` and press Enter to exit back to the shell.
+If you're in the `psql` prompt, type `\q` and press Enter to exit back to the shell.
 
 ---
 
@@ -2643,7 +2642,7 @@ DATABASE_URL="postgresql://postgres.dzcnmebryowcxwfvrgrr:<your-password>@aws-0-e
 
 ### 3. **Install Dependencies (if not already installed)**
 
-If you haven’t already, install Prisma and the client:
+If you haven't already, install Prisma and the client:
 ```sh
 npm install @prisma/client
 npm install -D prisma
@@ -2765,7 +2764,7 @@ The `postgres=>` prompt is for SQL commands only, not shell commands.
 
 ---
 
-## Here’s What To Do:
+## Here's What To Do:
 
 1. **Exit the `psql` prompt** by typing:
    ```
@@ -2897,9 +2896,9 @@ I'll run the scripts for indexes and triggers.
 
 **Cursor**
 
-That’s fantastic news! 🎉
+That's fantastic news! 🎉
 
-You’ve completed the hardest part—your schema is live and visible in Supabase. Running your index and trigger scripts in the Supabase SQL editor is the perfect next step.
+You've completed the hardest part—your schema is live and visible in Supabase. Running your index and trigger scripts in the Supabase SQL editor is the perfect next step.
 
 ---
 
@@ -2914,7 +2913,7 @@ You’ve completed the hardest part—your schema is live and visible in Supabas
 
 ### Tips
 
-- If you have any issues or errors running the scripts, paste the error here and I’ll help you debug.
+- If you have any issues or errors running the scripts, paste the error here and I'll help you debug.
 - You can verify the indexes and triggers in the Table Editor or by running SQL queries like `\d tablename` in the SQL editor.
 
 ---
@@ -3001,7 +3000,7 @@ CREATE INDEX idx_joueurs_club_id ON joueurs(club_id);
 
 ---
 
-If you want, paste your `create_indexes.sql` here and I’ll help you rewrite it for your actual schema!
+If you want, paste your `create_indexes.sql` here and I'll help you rewrite it for your actual schema!
 
 ```plaintext
 ERROR:  42P01: relation "players" does not exist
@@ -3042,7 +3041,7 @@ If I give you the proper scripts, can you give me back the updated versions of c
 
 Absolutely! If you provide your current `create_indexes.sql` and `create_triggers.sql` scripts, I will update them to match the actual table and column names used in your Prisma schema (e.g., `joueurs`, `club_id`, etc.).
 
-Please paste the contents of both scripts here, and I’ll return the corrected versions ready for your Supabase database!
+Please paste the contents of both scripts here, and I'll return the corrected versions ready for your Supabase database!
 
 ---
 
@@ -3057,7 +3056,7 @@ I can't paste the content of the file, why?
 **Cursor**
 
 No worries! Sometimes, chat interfaces or editors can have trouble with large pastes or special characters.  
-But you’ve already provided the content of `create_indexes.sql` in your previous message, so I can work with that!
+But you've already provided the content of `create_indexes.sql` in your previous message, so I can work with that!
 
 ---
 
@@ -3155,7 +3154,7 @@ I need index on licence_number in every table having that field
 
 **Cursor**
 
-Great! Here’s how to add indexes on the `licence` (or `licence_number`) field in every table that has it, based on your Prisma schema:
+Great! Here's how to add indexes on the `licence` (or `licence_number`) field in every table that has it, based on your Prisma schema:
 
 ### In your schema:
 - The `licence` field exists only in the `joueurs` table (as `licence`).
@@ -3201,7 +3200,7 @@ CREATE INDEX idx_agrements_is_deleted ON agrements(is_deleted);
 ---
 
 **If you want to index a different field or if you have a table with a `licence_number` field that I missed, let me know!**  
-If you’re ready, you can run this script in the Supabase SQL editor. If you want the triggers script updated as well, just provide its content!
+If you're ready, you can run this script in the Supabase SQL editor. If you want the triggers script updated as well, just provide its content!
 
 ```sql
 -- Index sur les clés étrangères et champs importants
@@ -3327,12 +3326,12 @@ EXECUTE FUNCTION cascade_soft_delete_joueur();
 
 **How this matches your schema:**
 - All table names (`joueurs`, `joueur_roles`, etc.) and key fields (`id`, `joueur_id`) are based on your Prisma schema.
-- The cascade function uses `joueur_id` to match the join tables’ foreign key to the primary key of `joueurs`.
+- The cascade function uses `joueur_id` to match the join tables' foreign key to the primary key of `joueurs`.
 
 ---
 
 If you have any custom logic or want to cascade deletes for other tables, let me know!  
-You can run this script in the Supabase SQL editor. If you have a different triggers script you want adapted, paste it here and I’ll update it for you.
+You can run this script in the Supabase SQL editor. If you have a different triggers script you want adapted, paste it here and I'll update it for you.
 
 ```sql
 -- Fonction pour mettre à jour updated_at
@@ -3438,7 +3437,7 @@ import-data.js
 
 **Cursor**
 
-Yes, I have access to your `import-data.js` script. Here’s what I see:
+Yes, I have access to your `import-data.js` script. Here's what I see:
 
 - The script already uses the correct Prisma model and field names for your current schema:
   - Clubs: `prisma.club` with fields like `code`, `nom`, etc.
@@ -3509,13 +3508,13 @@ Your `import-data.js` script is designed to:
 
 1. **Read data from CSV files** (`clubs.csv` and `players.csv`) located in your project directory.
 2. **Parse each row** of the CSVs and map the data to your Prisma models (`club`, `joueur`, etc.).
-3. **Insert or update** the data in your Supabase database using Prisma’s `upsert` and `findUnique` methods.
+3. **Insert or update** the data in your Supabase database using Prisma's `upsert` and `findUnique` methods.
 4. **Handle relationships** (roles, functions, agrements) for each player by creating or linking the appropriate records in the join tables.
 
 ---
 
 ### In summary:
-- **Yes, this script will import your CSV data into your Supabase database** using the Prisma schema you’ve set up.
+- **Yes, this script will import your CSV data into your Supabase database** using the Prisma schema you've set up.
 
 ---
 
@@ -3554,10 +3553,10 @@ Your intuition is correct: the CSV files are likely generated by a parsing scrip
 
 1. **Check for scripts in other folders** (especially outside `scripts/`).
 2. **Recall if you ran a script or tool outside this repo** (e.g., a separate scraping or export tool).
-3. **If you remember the script’s name or what language it was in, let me know and I’ll search for it.**
+3. **If you remember the script's name or what language it was in, let me know and I'll search for it.**
 4. **If you want, I can search the entire codebase for references to `clubs.csv` or `players.csv` being written (not just read).**
 
-Would you like me to search for any code that writes to `clubs.csv` or `players.csv`? Or do you have any other clues about the script’s name or location?
+Would you like me to search for any code that writes to `clubs.csv` or `players.csv`? Or do you have any other clues about the script's name or location?
 
 ---
 
@@ -3582,7 +3581,7 @@ These are focused on parsing PDFs and integrating with Supabase, not directly sc
 ### What You Can Do Next
 
 1. **Check the `legacy/arbitrage/BridgeFacileV3/bridge-parser/` folder** for any Python script you may have used for scraping or CSV generation.
-2. **If you remember the script’s name or what it did, let me know and I’ll help you search for it.**
+2. **If you remember the script's name or what it did, let me know and I'll help you search for it.**
 3. **If you want, I can search for any Python script in your entire project that writes to `clubs.csv` or `players.csv`.**
 
 Would you like me to search for any Python code that writes to those CSV files? Or do you want to look in the `legacy/arbitrage/BridgeFacileV3/bridge-parser/` folder for a script you recognize?
@@ -3614,7 +3613,7 @@ There are no Python or JavaScript scripts in your codebase that reference the FF
 
 1. **Check other folders or backups** where you might have saved the scraping script.
 2. **Recall if you ran the script from a different project or virtual environment.**
-3. **If you have an old copy of the script or remember its name, let me know and I’ll help you search for it.**
+3. **If you have an old copy of the script or remember its name, let me know and I'll help you search for it.**
 
 If you find or remember more details about the script, I can help you integrate or update it for your new schema!
 
@@ -3646,7 +3645,7 @@ The only references to the FFB Bridge website (`ffbridge.fr`) in your entire cod
 
 1. **Check other folders, drives, or backups** where you might have saved the scraping script.
 2. **Recall if you used a browser extension, external tool, or a cloud service** for scraping.
-3. **If you remember the script’s name, language, or any unique code, let me know and I’ll help you search for it.**
+3. **If you remember the script's name, language, or any unique code, let me know and I'll help you search for it.**
 4. **If you want to re-create the script,** I can help you write a new one (in Python, JS, etc.) to automate the scraping and CSV generation.
 
 ---
@@ -3937,7 +3936,7 @@ yes
 
 The `beautifulsoup4` package is now installed in your virtual environment.
 
-Would you like me to run the `Scrapping.py` script again? If there are any more missing dependencies, I’ll help you install those as well!
+Would you like me to run the `Scrapping.py` script again? If there are any more missing dependencies, I'll help you install those as well!
 
 ---
 
@@ -3966,7 +3965,7 @@ But, let's continue the tests, we'll delete all records from the SB DB before th
 
 **Cursor**
 
-That’s a solid plan! Here’s a step-by-step for your workflow:
+That's a solid plan! Here's a step-by-step for your workflow:
 
 ---
 
@@ -4050,7 +4049,7 @@ The import failed because Prisma cannot reach your Supabase database at `aws-0-e
 
 ---
 
-Would you like instructions for running the import in Codespaces, or do you want to try another approach? Let me know how you’d like to proceed!
+Would you like instructions for running the import in Codespaces, or do you want to try another approach? Let me know how you'd like to proceed!
 
 ---
 
@@ -4064,7 +4063,7 @@ Yes, but I would like to test the full process starting from the scapping step.
 
 Absolutely! To test the full process (scraping → CSV generation → import into Supabase) in one seamless workflow, you should run everything in an environment that can connect to your Supabase database—such as GitHub Codespaces.
 
-### Here’s how to do it:
+### Here's how to do it:
 
 ---
 
@@ -4112,7 +4111,7 @@ Absolutely! To test the full process (scraping → CSV generation → import int
 
 ### Why Codespaces?
 
-- Codespaces can connect to your Supabase session pooler (IPv4), so the full workflow will work there even if it doesn’t locally.
+- Codespaces can connect to your Supabase session pooler (IPv4), so the full workflow will work there even if it doesn't locally.
 
 ---
 
@@ -4162,7 +4161,7 @@ I do, thanks
 
 **Cursor**
 
-You’re very welcome!  
+You're very welcome!  
 If you need any more help with your workflow, debugging, or automating anything else—just ask.
 
 Good luck with your full end-to-end test in Codespaces, and congrats on getting your FFB Database project so far! 🚀
@@ -4179,7 +4178,7 @@ Maybe we need to get rid of the CSVs as the scrapper should create them, don't y
 **Cursor**
 
 Yes, that's a good idea!  
-If your `Scrapping.py` script is designed to generate fresh `clubs.csv` and `players.csv` files, it's best to delete any existing CSVs before running the scraper. This ensures you’re always working with up-to-date, clean data and prevents accidental use of stale files.
+If your `Scrapping.py` script is designed to generate fresh `clubs.csv` and `players.csv` files, it's best to delete any existing CSVs before running the scraper. This ensures you're always working with up-to-date, clean data and prevents accidental use of stale files.
 
 ---
 
@@ -4245,7 +4244,7 @@ There are no references to `clubs.csv`, `players.csv`, `csv.writer`, `to_csv`, o
 ## What This Means
 
 - The script may only print data, store it in another format, or require modification to output CSVs.
-- If you want the scraper to generate these CSVs, you’ll need to add code to write the scraped data to `clubs.csv` and `players.csv`.
+- If you want the scraper to generate these CSVs, you'll need to add code to write the scraped data to `clubs.csv` and `players.csv`.
 
 ---
 
@@ -4411,7 +4410,7 @@ It uses Selenium to automate browser actions, log in to the FFB Bridge website, 
 
 ---
 
-## What’s Missing for Full Automation
+## What's Missing for Full Automation
 
 - **CSV Output:**  
   The script currently prints data and has a TODO for saving to a database, but does not write to `clubs.csv` or `players.csv`.
@@ -4432,7 +4431,7 @@ It uses Selenium to automate browser actions, log in to the FFB Bridge website, 
 
 ## Example: Add CSV Export
 
-Here’s how you can add CSV export at the end of your `main()` function:
+Here's how you can add CSV export at the end of your `main()` function:
 
 ```python
 import csv
@@ -4547,9 +4546,9 @@ Fingers crossed.
 
 Your new folder `legacy/FFB_Data`—with the latest scraping and utility scripts—has been committed and pushed to GitHub. I can now review and analyze these scripts for ideas, improvements, and possible integration with your main workflow.
 
-I’ll start by examining the key files (`scraper.py`, `models.py`, `config.py`, and `requirements.txt`) to see how they can enhance or replace your current scraping and data import process.
+I'll start by examining the key files (`scraper.py`, `models.py`, `config.py`, and `requirements.txt`) to see how they can enhance or replace your current scraping and data import process.
 
-Would you like a summary of what’s in these scripts and recommendations for merging or improving your workflow? Or do you want a specific integration (e.g., direct CSV output, Supabase integration, etc.)?
+Would you like a summary of what's in these scripts and recommendations for merging or improving your workflow? Or do you want a specific integration (e.g., direct CSV output, Supabase integration, etc.)?
 
 ---
 
@@ -4618,13 +4617,13 @@ Step-by-stepo?
 
 **Cursor**
 
-Absolutely! Here’s a step-by-step guide to run the full workflow in your GitHub Codespace, including reviewing the generated CSVs before importing:
+Absolutely! Here's a step-by-step guide to run the full workflow in your GitHub Codespace, including reviewing the generated CSVs before importing:
 
 ---
 
 ## 1. Open a Terminal in Codespaces
 
-Make sure you’re in the project root (e.g., `/workspaces/FFB_Database`).
+Make sure you're in the project root (e.g., `/workspaces/FFB_Database`).
 
 ---
 
@@ -4933,7 +4932,7 @@ You mentioned Supabae, and all the techno behind the scene already ?
 
 **Cursor**
 
-Yes, the `PROJECT_OVERVIEW.md` already includes a detailed section on the technical stack and architecture, specifically mentioning Supabase and all the key technologies used in the project. Here’s a summary of what’s covered:
+Yes, the `PROJECT_OVERVIEW.md` already includes a detailed section on the technical stack and architecture, specifically mentioning Supabase and all the key technologies used in the project. Here's a summary of what's covered:
 
 ---
 
@@ -5008,7 +5007,7 @@ From GH:
 
 **Cursor**
 
-Here’s what those GitHub Codespaces messages mean and what you can do about them:
+Here's what those GitHub Codespaces messages mean and what you can do about them:
 
 ---
 
@@ -5024,9 +5023,9 @@ Your Codespace is running at full CPU capacity. This can make the environment sl
 
 **What you can do:**
 - **Check running processes:**  
-  Run top or htop in the terminal to see what’s using the most CPU.
+  Run top or htop in the terminal to see what's using the most CPU.
 - **Stop unnecessary processes:**  
-  Kill any processes you don’t need (e.g., servers, background scripts).
+  Kill any processes you don't need (e.g., servers, background scripts).
 - **Restart the Codespace:**  
   Sometimes a restart will clear up stuck processes.
 - **Optimize scripts:**  
@@ -5043,7 +5042,7 @@ The Codespaces web editor tried to access your clipboard (for copy/paste), but y
 
 **How to fix:**
 - **Grant clipboard permissions:**  
-  Look for a prompt in your browser to allow clipboard access, or check your browser’s site permissions for github.com.
+  Look for a prompt in your browser to allow clipboard access, or check your browser's site permissions for github.com.
 - **Try a different browser:**  
   Some browsers (or extensions) are stricter about clipboard access.
 - **Use keyboard shortcuts:**  
@@ -5065,7 +5064,7 @@ I will need help to do all that
 
 **Cursor**
 
-Absolutely, I can guide you step by step! Let’s tackle each issue one at a time, starting with the high CPU usage in your Codespace.
+Absolutely, I can guide you step by step! Let's tackle each issue one at a time, starting with the high CPU usage in your Codespace.
 
 ---
 
@@ -5073,20 +5072,20 @@ Absolutely, I can guide you step by step! Let’s tackle each issue one at a tim
 
 **Step 1: Check Which Processes Are Using CPU**
 
-Let’s start by listing the processes that are consuming the most CPU. We’ll use the top command, which is built into Linux environments (and Codespaces).
+Let's start by listing the processes that are consuming the most CPU. We'll use the top command, which is built into Linux environments (and Codespaces).
 
 Would you like me to run this command for you, or would you prefer to do it yourself?  
-If you want me to run it, I’ll proceed and show you the results here.
+If you want me to run it, I'll proceed and show you the results here.
 
 ---
 
 ## 2. Fix Clipboard Access in Browser
 
-After we address the CPU issue, I’ll walk you through fixing the clipboard permissions in your browser with screenshots or step-by-step instructions.
+After we address the CPU issue, I'll walk you through fixing the clipboard permissions in your browser with screenshots or step-by-step instructions.
 
 ---
 
-**Let’s start with the CPU diagnosis. Ready?** If so, I’ll run the process monitor now.
+**Let's start with the CPU diagnosis. Ready?** If so, I'll run the process monitor now.
 
 ---
 

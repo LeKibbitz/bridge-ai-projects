@@ -5,12 +5,14 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from webdriver_manager.chrome import ChromeDriverManager
 from config import FFB_USERNAME, FFB_PASSWORD, LOGIN_URL, METIER_URL
-from models import Entite, Licensee, ClubMember
+from models import Entite, Licensee
 import time
 from datetime import datetime
 import json
 import pandas as pd
 import csv
+from selenium.webdriver.chrome.service import Service
+import os
 
 class FFBScraper:
     def __init__(self):
@@ -23,10 +25,9 @@ class FFBScraper:
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
         
-        driver = webdriver.Chrome(
-            ChromeDriverManager().install(),
-            options=options
-        )
+        driver_path = "/Users/lekibbitz/Desktop/chromedriver-mac-arm64/chromedriver"
+        service = Service(driver_path)
+        driver = webdriver.Chrome(service=service, options=options)
         return driver
     
     def login(self):
