@@ -9,6 +9,8 @@ from models import Entite, Licensee, ClubMember
 import time
 from datetime import datetime
 import json
+import pandas as pd
+import csv
 
 class FFBScraper:
     def __init__(self):
@@ -109,19 +111,25 @@ def main():
     scraper = FFBScraper()
     try:
         scraper.login()
-        
-        # Scrape all entities
         print("Scraping entities...")
         entites = scraper.scrape_entites()
-        
-        # Scrape members for each entity
+        # Convert Entite objects to dicts for DataFrame
+        clubs_data = [e.dict() for e in entites]
+        clubs_df = pd.DataFrame(clubs_data)
+        clubs_df.to_csv('clubs.csv', index=False)
+        print(f"Saved {len(clubs_df)} clubs to clubs.csv")
         print("Scraping members...")
+        all_members = []
         for entite in entites:
             members = scraper.scrape_licensees(entite.id)
             print(f"Found {len(members)} members for club {entite.nom}")
-            
-            # TODO: Save to database
-            
+            for member in members:
+                member['club_id'] = entite.id
+                all_members.append(member)
+        # Convert members to DataFrame and save
+        players_df = pd.DataFrame(all_members)
+        players_df.to_csv('players.csv', index=False)
+        print(f"Saved {len(players_df)} players to players.csv")
     except Exception as e:
         print(f"Error: {str(e)}")
     finally:
