@@ -56,6 +56,36 @@ graph TD
 
 ---
 
+## ChromeDriver Troubleshooting for Mac ARM
+
+If you encounter issues with ChromeDriver (e.g., "killed", "cannot connect to service", or permission errors), follow these steps:
+
+1. **Check your installed Chrome version:**
+   ```sh
+   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --version
+   ```
+2. **Download the matching ChromeDriver (mac-arm64) from:**
+   [Chrome for Testing Downloads](https://googlechromelabs.github.io/chrome-for-testing/)
+3. **Unzip and move the binary:**
+   ```sh
+   mv /path/to/chromedriver-mac-arm64/chromedriver ~/chromedriver_arm64
+   chmod +x ~/chromedriver_arm64
+   ```
+4. **Test the binary:**
+   ```sh
+   ~/chromedriver_arm64 --version
+   ```
+   You should see output like `ChromeDriver 138.0.7204.101 ...`.
+5. **Update your script to use this path:**
+   ```python
+   driver_path = "/Users/lekibbitz/chromedriver_arm64"
+   service = Service(driver_path)
+   driver = webdriver.Chrome(service=service, options=options)
+   ```
+6. **Run your script as usual.**
+
+---
+
 ## Commit & Push Workflow
 
 - **After every major step (scraper update, CSV generation, import, schema change, etc.), run:**
