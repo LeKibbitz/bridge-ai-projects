@@ -47,7 +47,7 @@ async function importClubs() {
   const clubs = [];
   
   return new Promise((resolve, reject) => {
-    fs.createReadStream('../clubs.csv')
+    fs.createReadStream('./clubs.csv')
       .pipe(csv())
       .on('data', (row) => {
         // Mapper les colonnes CSV vers notre modèle Prisma
@@ -86,7 +86,7 @@ async function importPlayers() {
   const players = [];
   
   return new Promise((resolve, reject) => {
-    fs.createReadStream('../players.csv')
+    fs.createReadStream('./players.csv')
       .pipe(csv())
       .on('data', (row) => {
         // Mapper les colonnes CSV vers notre modèle Prisma
