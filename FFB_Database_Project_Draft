@@ -1,0 +1,151 @@
+
+
+
+Login page: 
+@https://www.ffbridge.fr/auth/login 
+Sometimes YYou'll be already logged in.
+Here a popup should appear, "accepter"
+Click button "SE CONNECTER"
+Next page opens in a new tab, URL:
+@https://www.ffbridge.fr/user/dashboard 
+Under "Mon espace métier"
+Click "ACCÉDER
+SAME TAB, NEW URL:
+@https://metier.ffbridge.fr/#/home 
+A vertical bloc on the left hand side conains various sections.
+We will first focus on: "Entités" & "Licenciés" 
+First click on "Entités". Same tab, new URL:
+@https://metier.ffbridge.fr/#/entites/tableau-de-bord 
+(If at the beginning you were already logged in, you can go there right away).
+There is a dropdown list un der "Consultations de mes entités"
+<select ng-model="searchOrganizationCtrl.currentOrganization" ng-change="searchOrganizationCtrl.goToOtganization(searchOrganizationCtrl.currentOrganization)" ng-options="(orga.organization_code + ' - ' + orga.label) for orga in ::searchOrganizationCtrl.organizationRightsList track by orga.id" class="ng-pristine ng-valid ng-empty ng-touched" style=""><option value="" disabled="" selected="selected">
+                        Choisir une entité
+                    </option><option label="0021000 - Zone I AL-BO-CP-FL-LO" value="2">0021000 - Zone I AL-BO-CP-FL-LO</option><option label="0009000 - Ligue 09 AL-BO-LO" value="18">0009000 - Ligue 09 AL-BO-LO</option><option label="4200000 - Comité de Lorraine" value="38">4200000 - Comité de Lorraine</option><option label="4200002 - Club de Bridge de Briey-Jarny" value="845">4200002 - Club de Bridge de Briey-Jarny</option><option label="4200003 - Bridge Club Spinalien" value="846">4200003 - Bridge Club Spinalien</option><option label="4200004 - Bridge du Pays Haut" value="847">4200004 - Bridge du Pays Haut</option><option label="4200006 - Bridge club Rollon Gadelle" value="849">4200006 - Bridge club Rollon Gadelle</option><option label="4200007 - Bridge Club Nancy - Jarville" value="850">4200007 - Bridge Club Nancy - Jarville</option><option label="4200008 - Néocastrien Bridge Club" value="851">4200008 - Néocastrien Bridge Club</option><option label="4200009 - Bridge Club Saint-Avold" value="852">4200009 - Bridge Club Saint-Avold</option><option label="4200010 - Bridge Club Sarreguemines" value="853">4200010 - Bridge Club Sarreguemines</option><option label="4200011 - Bridge Club Thionville" value="854">4200011 - Bridge Club Thionville</option><option label="4200012 - Bridge Club Toul" value="855">4200012 - Bridge Club Toul</option><option label="4200014 - Bridge Club de Verdun" value="857">4200014 - Bridge Club de Verdun</option><option label="4200015 - Cercle de Bridge de Commercy" value="858">4200015 - Cercle de Bridge de Commercy</option><option label="4200018 - Bridge Club de la Déodatie" value="861">4200018 - Bridge Club de la Déodatie</option><option label="4200019 - Cercle de Bridge 88" value="862">4200019 - Cercle de Bridge 88</option><option label="4200022 - Arlon Bridge Club" value="865">4200022 - Arlon Bridge Club</option><option label="4200024 - Cercle de Bridge de Metz C.S.A.G." value="867">4200024 - Cercle de Bridge de Metz C.S.A.G.</option><option label="4200025 - Association Bridge Nancy Ville" value="868">4200025 - Association Bridge Nancy Ville</option><option label="4200026 - Etoile Bridge Club" value="869">4200026 - Etoile Bridge Club</option><option label="4200028 - Bridge Club de la C.A. Forbach" value="871">4200028 - Bridge Club de la C.A. Forbach</option><option label="4200029 - Bridge Club Freyming-Merlebach" value="872">4200029 - Bridge Club Freyming-Merlebach</option><option label="4200031 - Bridge Club des Ducs" value="874">4200031 - Bridge Club des Ducs</option><option label="4200032 - Bridge Club Lunéville" value="875">4200032 - Bridge Club Lunéville</option><option label="4200033 - Bridge Club du Val de Meuse" value="876">4200033 - Bridge Club du Val de Meuse</option><option label="4200034 - Bridge Club du Pays de Remiremont" value="877">4200034 - Bridge Club du Pays de Remiremont</option><option label="4288888 - Club Jeunesse de la Lorraine" value="4629">4288888 - Club Jeunesse de la Lorraine</option><option label="4200035 - Cercle Amical de Bridge Nancy" value="4720">4200035 - Cercle Amical de Bridge Nancy</option><option label="4299001 - E-Groupe de Lorraine" value="4779">4299001 - E-Groupe de Lorraine</option></select>
+
+We will ignore the first 3 items and focus on all beginning with "42"
+Select the first one beginning by"42" (the 4th entry, the 3rd one is irrelevant".
+
+Same Tab, new URL:
+@https://metier.ffbridge.fr/#/entites/845/informations 
+
+You'll need to scrap everything on this page except: 
+- Buton "Modifier les informations"
+- Section "Subordination"
+- Section "Adresse(s) email de notification des factures"
+- Section "Photo de l'entité"
+- Section "Courrier"
+- Section "Facturation"
+
+We'ra done with this page.
+
+Now, go to "Acteurs" in the top menu.
+Same tabe, new URL:
+@https://metier.ffbridge.fr/#/entites/845/acteurs/actifs 
+<tab-heading>Acteurs </tab-heading>
+Scrap everything in there and, we're done here.
+
+Click on the tab "Rôles".
+Same tab, new URL:
+@https://metier.ffbridge.fr/#/entites/845/roles
+
+With do the same for:
+
+@https://metier.ffbridge.fr/#/entites/845/tournois/tournois/organisation/ (There maybe nothing to scrap there)
+@https://metier.ffbridge.fr/#/entites/845/cours (There maybe nothing to scrap there)
+@https://metier.ffbridge.fr/#/entites/845/facturation/parametres
+
+Here there is a vertical menu on the left.
+Only 2 sections to scrap:
+
+1. "Barèmes"
+ 
+Here, we scrap title and texte under:
+- "AFFILIATION DU CLUB"
+- "COTISATIONS SYMPATHISANTS"
+- "PRIX DES LICENCES"
+That's it here (Not the buttons, not the section "GESTION DES. LICENCES"
+
+2. "Encaissements"
+
+Same tab, new URL:
+@https://metier.ffbridge.fr/#/entites/845/facturation/encaissement 
+
+Scrap everything (Except "Actions at the end of the line) under 
+- Option button "Licenciés", containing all members as of today (With their licence renewed or not. This list evolves and may need some regulary checks to seek for new members)
+
+-Option button "Licenciés", thos who have renewed their licence for this season (2025-2026)
+
+That's it here
+
+Now, we have should have in the Supabase DB table "Clubs" & "Joueurs".
+
+Now we go back on the first left menu and go to "Licenciés".
+Same tab, new URL: 
+@https://metier.ffbridge.fr/#/licencie/recherche 
+
+A field is there where you'll enter a licence number of a player we collected before and press enter or click the button ext to it on the right.
+New URL:
+@https://metier.ffbridge.fr/#/licencies/282579/profil 
+Here, we scrap everything except the following:
+- <div class="block-container-shorcut" ng-if="readMembersCtrl.isSelfLicenseePage">
+                                <div class="xlarge-6 large-12 medium-6 small-6 columns short-link-display-block">
+                                    <div class="shorcut-link">
+                                                                               <a ui-sref="read-members.results" href="#/licencies/282579/resultats">
+                                            <span class="font-icon fas fa-trophy"></span> Mes résultats
+                                        </a>
+
+                                        <a ui-sref="read-members.ranking" href="#/licencies/282579/classement">
+                                            <span class="font-icon fas fa-file-alt"></span> Mon classement
+                                        </a>
+                                        <a ui-sref="read-members.history" href="#/licencies/282579/historique">
+                                            <span class="font-icon far fa-clock"></span> Mon historique
+                                        </a>
+                                        <a ui-sref="read-members.services.personalNotification" href="#/licencies/282579/compte/mes-notifications">
+                                            <span class="font-icon fas fa-bell"></span> Mes messages
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="xlarge-6 large-12 medium-6 small-6 columns short-link-display-block">
+                                    <div class="shorcut-link">
+                                        <a ui-sref="read-members.current-scores" href="#/licencies/282579/points">
+                                            <span class="font-icon fas fa-chart-line"></span> Mes points
+                                        </a>
+
+                                        <a ui-sref="read-members.agenda" href="#/licencies/282579/agenda">
+                                            <span class="font-icon far fa-calendar-alt"></span> Mon agenda
+                                        </a>
+
+                                        <a ui-sref="read-members.services.personalSettings" href="#/licencies/282579/compte/informations-personnelles">
+                                            <span class="font-icon fas fa-cog"></span> Mon compte
+                                        </a>
+
+                                        <print-button-icon print-url="persons/282579/ecard/print/1" print-filename="" print-label="Carte Licence" print-font="fa-id-card" post-params="[[]]"><a ng-disabled="(printButtonIconCtrl.disabledCondition) ? printButtonIconCtrl.disabledCondition : false" class="print-btn" ng-class="{'ml15 mt15': printButtonIconCtrl.margin}">
+    <span class="font-icon fas fa-id-card"></span>Carte Licence
+</a></print-button-icon>
+                                        <print-button-icon print-url="persons/282579/ecard/print/0" print-filename="" print-label="mini carte" print-font="fa-id-card" post-params="[[]]"><a ng-disabled="(printButtonIconCtrl.disabledCondition) ? printButtonIconCtrl.disabledCondition : false" class="print-btn" ng-class="{'ml15 mt15': printButtonIconCtrl.margin}">
+    <span class="font-icon fas fa-id-card"></span>mini carte
+</a></print-button-icon>
+                                    </div>
+                                </div>
+                            </div>
+- <div class="block-picture entity-picture" ng-style="memberInfoCtrl.imageUploadedStyles" style="background-image: url(&quot;http://cdn.ffbridge.fr/api/defaultpersonpicture-55adfc029ce91_big.jpg&quot;);">
+                                    <div class="wrapper-btn-edit">
+                                        <!----><div tooltip="Supprimer la photo" tooltip-placement="bottom" class="btn-action btn-action--delete ng-hide" ng-show="memberInfoCtrl.hasProfilePicture" ng-click="memberInfoCtrl.openDeletePhotoModal()" ng-if="readMembersCtrl.isSelfLicenseePage || readMembersCtrl.isClubAdmin || readMembersCtrl.isCommitteeAdmin || readMembersCtrl.isFFBAdmin">
+                                            <span class="fas fa-trash-alt"></span>
+                                        </div><!---->
+                                        <!----><div xpopover="Afin de garantir une image de qualité :
+                                            - Taille min : 520 x 320
+                                            - Poids max : 2 mo
+                                            - Format : jpeg, jpg" popover-trigger="mouseenter" popover-placement="bottom" class="btn-action btn-action--add ng-pristine ng-untouched ng-valid ng-not-empty" ng-model="memberInfoCtrl.licenseeInfos.picture" ngf-select="" ngf-change="memberInfoCtrl.preUpload(memberInfoCtrl.licenseeInfos.picture)" ng-if="readMembersCtrl.isSelfLicenseePage || readMembersCtrl.isClubAdmin || readMembersCtrl.isCommitteeAdmin || readMembersCtrl.isFFBAdmin">
+                                            <span class="fas fa-camera-retro"></span>
+                                        </div><!---->
+                                    </div>
+                                </div>
+Now go to:
+@https://metier.ffbridge.fr/#/licencies/282579/compte/informations-personnelles 
+Scrap everythin but the buttons
+
+Go to:
+@https://metier.ffbridge.fr/#/licencies/282579/compte/email 
+Scrap everything bu the button

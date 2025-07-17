@@ -1,21 +1,30 @@
 -- Index sur les clés étrangères et champs importants
-CREATE INDEX idx_players_club_code ON players(club_code);
-CREATE INDEX idx_players_is_deleted ON players(is_deleted);
-CREATE INDEX idx_players_last_paid_season ON players(last_paid_season);
-CREATE INDEX idx_players_member_type ON players(member_type);
 
-CREATE INDEX idx_player_roles_licence_number ON player_roles(licence_number);
-CREATE INDEX idx_player_roles_role_id ON player_roles(role_id);
-CREATE INDEX idx_player_roles_is_deleted ON player_roles(is_deleted);
+-- Table joueurs
+CREATE INDEX idx_joueurs_club_id ON joueurs(club_id);
+CREATE INDEX idx_joueurs_is_deleted ON joueurs(is_deleted);
+CREATE INDEX idx_joueurs_licence ON joueurs(licence);
 
-CREATE INDEX idx_player_functions_licence_number ON player_functions(licence_number);
-CREATE INDEX idx_player_functions_function_id ON player_functions(function_id);
-CREATE INDEX idx_player_functions_is_deleted ON player_functions(is_deleted);
+-- Table joueur_roles
+CREATE INDEX idx_joueur_roles_joueur_id ON joueur_roles(joueur_id);
+CREATE INDEX idx_joueur_roles_role_id ON joueur_roles(role_id);
+CREATE INDEX idx_joueur_roles_is_deleted ON joueur_roles(is_deleted);
 
-CREATE INDEX idx_player_agrements_licence_number ON player_agrements(licence_number);
-CREATE INDEX idx_player_agrements_agrement_id ON player_agrements(agrement_id);
-CREATE INDEX idx_player_agrements_is_deleted ON player_agrements(is_deleted);
+-- Table joueur_functions
+CREATE INDEX idx_joueur_functions_joueur_id ON joueur_functions(joueur_id);
+CREATE INDEX idx_joueur_functions_function_id ON joueur_functions(function_id);
+CREATE INDEX idx_joueur_functions_is_deleted ON joueur_functions(is_deleted);
 
+-- Table joueur_agrements
+CREATE INDEX idx_joueur_agrements_joueur_id ON joueur_agrements(joueur_id);
+CREATE INDEX idx_joueur_agrements_agrement_id ON joueur_agrements(agrement_id);
+CREATE INDEX idx_joueur_agrements_is_deleted ON joueur_agrements(is_deleted);
+
+-- Table roles
 CREATE INDEX idx_roles_is_deleted ON roles(is_deleted);
+
+-- Table functions
 CREATE INDEX idx_functions_is_deleted ON functions(is_deleted);
-CREATE INDEX idx_agrements_is_deleted ON agrements(is_deleted); 
+
+-- Table agrements
+CREATE INDEX idx_agrements_is_deleted ON agrements(is_deleted);
