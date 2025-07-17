@@ -56,6 +56,38 @@ graph TD
 
 ---
 
+## Workflow Options
+
+### Option A: Local Scraping + Codespaces Import (Recommended)
+This approach avoids browser/driver issues in Codespaces by separating scraping and importing:
+
+1. **Scrape locally** (where you have full control over Chrome/ChromeDriver):
+   ```sh
+   python legacy/FFB_Data/scraper.py
+   ```
+
+2. **Commit and push CSVs** to GitHub:
+   ```sh
+   git add clubs.csv players.csv
+   git commit -m "Update clubs and players data"
+   git push
+   ```
+
+3. **Import from Codespaces** (where Supabase connection is configured):
+   ```sh
+   node scripts/import-data.js
+   ```
+
+**Benefits:**
+- Avoids ChromeDriver issues in Codespaces
+- Keeps scraping and importing decoupled
+- Works reliably on local machines with Chrome installed
+
+### Option B: Full Codespaces Workflow
+Use Codespaces for both scraping and importing (requires Playwright instead of Selenium).
+
+---
+
 ## ChromeDriver Troubleshooting for Mac ARM
 
 If you encounter issues with ChromeDriver (e.g., "killed", "cannot connect to service", or permission errors), follow these steps:
@@ -147,6 +179,7 @@ FFB_Database/
 - Add CSV export to scraper.py for clubs and players matching current DB schema
 - Test full workflow: update Scrapping.py, import-data.js, and CSVs for Codespaces run
 - Troubleshoot and document Selenium/ChromeDriver issues for Mac ARM
+- Update requirements.txt and scraper.py for local Selenium workflow
 
 ---
 
