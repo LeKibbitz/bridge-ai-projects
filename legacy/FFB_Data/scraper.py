@@ -1,6 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from webdriver_manager.chrome import ChromeDriverManager
@@ -25,7 +25,8 @@ class FFBScraper:
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
         
-        driver_path = "/Users/lekibbitz/Desktop/chromedriver-mac-arm64/chromedriver"
+        # Use the manually downloaded ChromeDriver for Mac ARM64
+        driver_path = "/Users/lekibbitz/chromedriver_arm64"
         service = Service(driver_path)
         driver = webdriver.Chrome(service=service, options=options)
         return driver
