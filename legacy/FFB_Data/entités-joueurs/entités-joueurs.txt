@@ -1,0 +1,249 @@
+FFB-Data 
+Tu es un roi du scraping, de python et tu maîtrise parfaitement, Docker, Supabase, React, JS, les scripts SQL et du pilotage de Google Chrome (obligatoire, moins bien avec d’autres navigateurs).
+ Ta mission est de scrapper des informations sur le site de la Fédération Française de Bridge (FFB) aux sujet des joueurs de LA RÉGION GRAND EST (ALSACE, BOURGOGNE, FLANDRES ET LORRAINE)
+Mais nous ne nous s occuperons que de la Lorraine.
+
+URL de la page de connection : https://www.ffbridge.fr/auth/login ET mes identifiants : 3144342/7SaX=0324 
+Page suisvante
+https://www.ffbridge.fr/user/dashboard 
+LOGIN INPUT FIELD
+<input _ngcontent-lancelot-frontend-c2358468281="" type="email" tuitextfieldlegacy="" data-test-id="input" _nghost-lancelot-frontend-c1724629924="" inputmode="email" autocomplete="email" placeholder="" tabindex="0" id="tui_21752435592303" aria-invalid="false" class="">
+
+LOGIN PASWORD
+<input _ngcontent-lancelot-frontend-c2358468281="" tuiappearance="" tuiinputpassword="" class="_empty ng-pristine ng-invalid ng-untouched" data-test-id="password" data-appearance="textfield" id="tui_31752435592305" type="password" data-focus="false">  BOUTON “Se Connecter” <div _ngcontent-lancelot-frontend-c4082911130="" class="tui-form__buttons tui-form__buttons_align_end ng-star-inserted"><!----><button _ngcontent-lancelot-frontend-c4082911130="" tuiskeleton="" tuiappearance="" tuiicons="" tuibutton="" type="submit" class="tui-form__button ng-star-inserted" data-test-id="login-form-submit-button" disabled="" aria-disabled="false" data-appearance="primary" data-size="l"> Se connecter <tui-loader aria-live="polite" role="status" class="t-loader" _nghost-lancelot-frontend-c2193216502="" data-size="m"><fieldset _ngcontent-lancelot-frontend-c2193216502="" class="t-content"></fieldset><!----></tui-loader></button><!----></div>
+
+Page suivant accessible en cliquant sur ce bouton :
+
+
+Après ce bout de code : 
+<a _ngcontent-lancelot-frontend-c3331722861="" tuiisland="" class="tui-island overflow-hidden cursor-pointer tui-island_size_m tui-island_text-align_left ng-star-inserted" href="https://metier.ffbridge.fr/#/autolog/eyJhbGciOiJSUzI1NiJ9.eyJyb2xlcyI6eyIwIjoiUk9MRV9XT1JLQVJFQV9VU0VSIiwiMTIiOiJST0xFX1VTRVIifSwidXNlcm5hbWUiOiIzMTQ0MzQyIiwicGluIjoiMDAwMCIsIm1lZGlhIjoxLCJkZWZhdWx0X2xhbmRpbmdwYWdlIjoibGljZW5zZWUiLCJlbWFpbCI6InRob21hcy5qb2FubmVzQGdtYWlsLmNvbSIsInBob25lIjoiMzM2NTg1MTU4MzQiLCJ0b2tlbl9zZWN1cml6ZXIiOm51bGwsInNpZ25faW5fc2Vjb25kX2ZhY3RvciI6dHJ1ZSwiZWR1bGliX3NwYWNlX2F1dGhvcml6ZWQiOnRydWUsImlzX2FkbWluX3VzZXIiOnRydWUsImlzX3ZhbGlkX2xpY2Vuc2UiOnRydWUsImlhdCI6MTc1MjQzNjQzNCwiZXhwIjoxNzUyNTIyODM0LCJpc19mcm9tX2V4dGVybmFsX2FwaSI6ZmFsc2UsImd0bWNsaWVudGlkIjoiMCJ9.iwNjpDaW8dl1Z46rreLvGYtLnHXORBOBxN29VU1RSf5AZbuWmsqEnTWuO2Ev2bRw2ULTopBzqRpgJkrC5avn1Ib--Bd6oK4UqAEK5vZDf9acgZ6zOYtCQ8BdNslbT_LzFYze3DCu0rY6HGa4Xcf8OBvjoYGJXe_0HJ25WSJ4gi6ObNGiW1CQVyg4r1zGHDmh4v8yvAXaNs6uAsSBoe925boqqMT7DT4iA-4yHz1dJ-agVAAnkQg8GXpIoPn2LPW8WRq4rhSwrM1SBr59xPO3HUxhDYjIV5ANVknWBclQB5XJK9HmfCWqAh0JyiO94JXL9MmHWarZsCy4ZHuLEEpqHMbGSxsvMvx_H7q7zujUSuzPmYb6yEfdwJAx7Jn7sdA6Kg4nXA8meJHCqyabtsLmQ1KKxp0iqkfRYgosVOKJOj_h5jvfPRO1wAOGvFcN3zR7ZAtYyoz9f_0CaFG3Lz1GH0EKxJrqQIrgALAPSXkPg4GDSGkT-0s76arqZZCyLBCGvucH3QSfLF9F0yySXjdTDCS2gS0N2LQKH2y7LcLIGwZLk-hXZ3bP9bTpoxB_Wv_EHUj1cBNW-1wRWVLzKnbRdnD4VRjP68ReXygbmNJuvmi4oGAHqdOYcc8ICrkqAFmgmOivkyUa9F2Dg5uQYK2w3841dW5A1CFrpD0eSrjkkLk" target="_blank"><div _ngcontent-lancelot-frontend-c3331722861="" class="flex flex-column full-height"><div _ngcontent-lancelot-frontend-c3331722861="" class="tui-island__content"><figure _ngcontent-lancelot-frontend-c3331722861="" class="tui-island__figure"><tui-icon _ngcontent-lancelot-frontend-c3331722861="" icon="@tui.external-link" class="color-accent-1" style="--t-icon: url(assets/taiga-ui/icons/external-link.svg);"></tui-icon></figure><div _ngcontent-lancelot-frontend-c3331722861=""><h3 _ngcontent-lancelot-frontend-c3331722861="" class="tui-island__title"> Mon espace métier </h3></div></div><div _ngcontent-lancelot-frontend-c3331722861="" class="flex-auto"><p _ngcontent-lancelot-frontend-c3331722861="" class="tui-island__paragraph"> Retrouvez votre espace métier et toutes ses fonctionnalités en cliquant sur le lien ci-dessous. </p></div>
+
+Il faut cliquer sur ce bouton
+
+<button _ngcontent-lancelot-frontend-c3331722861="" tuiappearance="" tuiicons="" tuibutton="" type="button" appearance="flat" size="m" class="tui-island__footer-button" data-appearance="flat" data-size="m"> Accéder </button></div></a>
+<button _ngcontent-lancelot-frontend-c3331722861="" tuiappearance="" tuiicons="" tuibutton="" type="button" appearance="flat" size="m" class="tui-island__footer-button" data-appearance="flat" data-size="m"> Accéder </button>
+
+Un nouvel onglet s’ouvre sur lequel il va falloir basculer. URL : https://metier.ffbridge.fr/#/home
+
+Voici le code source de la page :
+
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="robots" content="noindex, nofollow">
+
+<script type="text/javascript">
+var ua = window.navigator.userAgent;
+var msie = ua.indexOf("MSIE ");
+
+if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) {
+alert("Vous ne pouvez pas accéder à l'espace métier depuis ce navigateur. Veuillez utiliser un navigateur approuvé pour accéder à l'espace métier.");
+document.location="https://licencie.ffbridge.fr";
+}
+</script>
+
+
+<!-- Google Tag Manager -->
+<script>
+(function(w, d, s, l, i) {
+w[l] = w[l] || [];
+w[l].push({
+'gtm.start' : new Date().getTime(),
+event : 'gtm.js'
+});
+var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
+j.async = true;
+j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+f.parentNode.insertBefore(j, f);
+})(window, document, 'script', 'dataLayer', 'GTM-MT5353N');
+</script>
+<!-- End Google Tag Manager -->
+
+
+<title>FFB - Espace métier</title>
+<link href="css/lib.css?v=2642025715" rel="stylesheet" type="text/css">
+<link href="css/app.css?v=2642025715" rel="stylesheet" type="text/css">
+<link href="css/print.css?v=2642025715" rel="stylesheet" type="text/css" media="print">
+</head>
+
+<body ng-app="ffbeasipro">
+
+
+<!-- Google Tag Manager (noscript) -->
+<noscript>
+<iframe
+src="https://www.googletagmanager.com/ns.html?id=GTM-MT5353N"
+height="0"
+width="0"
+style="display: none; visibility: hidden"
+></iframe>
+</noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+
+<div class="printed-header show-for-print">
+<img src="assets/images/logo-print-logo.jpg">
+</div>
+
+<div id="main-container" ui-view></div>
+
+<script type="text/javascript">
+window.TextEncoder = window.TextDecoder = null;
+</script>
+<script src="js/lib.js?v=2642025715"></script>
+<script src="js/templates.js?v=2642025715"></script>
+<script src="js/app.js?v=2642025715"></script>
+
+<script>
+function injectGTM(userid, clientid) {
+const dataLayer = window.dataLayer = window.dataLayer || [];
+try {
+dataLayer.push({
+'ffb_userid': userid,
+'gtm_clientid': clientid
+});
+} catch(e) {}
+}
+</script>
+
+<script>
+(function(w,t,c,p,s,e){p=new Promise(function(r){w[c]={client:function(){if(!s){
+s=document.createElement(t);s.src='https://js.cobrowse.io/CobrowseIO.js';s.async=1;
+e=document.getElementsByTagName(t)[0];e.parentNode.insertBefore(s,e);s.onload=function()
+{r(w[c]);};}return p;}};});})(window,'script','CobrowseIO');
+CobrowseIO.license = "1K1J5UV2zGJjwg";
+CobrowseIO.client().then( () => {
+CobrowseIO.start({register:false});
+});
+window.CobrowseIO = CobrowseIO;
+</script>
+</body>
+
+</html>
+
+En haut à gauche il y a un menu burger qui est dépllié ou pas.
+<div class="burger-menu" ng-click="menuCtrl.toggleMenu()" click-outside="menuCtrl.clickOutside()">
+            <img src="assets/images/burger-menu.svg">
+            <div class="wording-menu hide-for-large-up">MENU</div>
+        </div>
+ Il faut le déplier et cliquer sur cet item (Entités):
+<li ng-repeat="category in menuCtrl.menuConfig" class="entities">
+            <!-- Direct link -->
+
+            <!----><a class="parent-item active" ng-if="category.uisref
+                    &amp;&amp; category.hasBasicRoles()
+                    &amp;&amp; category.isShowed()
+                    &amp;&amp; !category.hasEnvRestricted()" ng-click="menuCtrl.clickParent(category)" ng-class="{active: menuCtrl.isParentItemActive(category.label)}" style="">
+                    <span class="font-icon fas fa-building"></span>
+                    <span class="first-level-link">Entités</span>
+            </a><!---->
+
+            <!--  Category with children -->
+            <!---->
+            <!---->
+
+            <!--  External link with href -->
+            <!---->
+        </li>
+
+Nouvelle URL dans la même page : https://metier.ffbridge.fr/#/entites/tableau-de-bord
+
+Au milieu de cette page sous “Consultation de mes entités” Il y a cette liste déroulante :
+<li ng-repeat="category in menuCtrl.menuConfig" class="entities">
+            <!-- Direct link -->
+
+            <!----><a class="parent-item active" ng-if="category.uisref
+                    &amp;&amp; category.hasBasicRoles()
+                    &amp;&amp; category.isShowed()
+                    &amp;&amp; !category.hasEnvRestricted()" ng-click="menuCtrl.clickParent(category)" ng-class="{active: menuCtrl.isParentItemActive(category.label)}" style="">
+                    <span class="font-icon fas fa-building"></span>
+                    <span class="first-level-link">Entités</span>
+            </a><!---->
+
+            <!--  Category with children -->
+            <!---->
+            <!---->
+
+            <!--  External link with href -->
+            <!---->
+        </li> dans ce bloc : 
+
+Une liste apparaît avec la liste des  de Lorraine (Les trois premières occurrences sont à ignorer, seules celles commençant par “42” nous intéressent.
+
+1ère étape :  Parsing des entité (Clubs), première table dans la BDD.
+
+Même page, nouvelle URL : https://metier.ffbridge.fr/#/entites/845/informations (845 étant variable)
+
+Il faut cliquer sur chacune d’elles est scrapper toutes les informations, même si pas renseignées de ce bloc dans chacun des menus (INFORMATIONS PRINCIPALES, ACTEURS, RÔLES, … JUSQU’A TABLEAU DE BORD):
+IL FAUDRA RÉFLÈCHIR À LA STRUCTURE DES DONNÉES ET AUX RELATIONS ENTRE LES DIVERSES TABLES (Notamment le numéro d’entité que l’on retrouvera un peu partout)
+
+2 étape : 
+Parsing des membres du club
+Licenciés/Gestion des membres Retour dans le menu burger, section licenciés pour récupérer les premières informations les concernant.
+2 URLs à consulter car nous sommes en début de saison :
+https://metier.ffbridge.fr/#/entites/850/membres/consultation (membres ayant déjà payé leur cotisation pour 2025-2026)
+https://metier.ffbridge.fr/#/entites/850/membres/renouvellement (Et ceux qui ne l’ont as encore fait)
+On parse les en-têtes évidemment. Mais pas les cases à cocher ni le pdf en fin de ligne.
+
+3ème étape ; Parsing des infos détaillées de chaque joueur grâce à leur n° de licence (Certains ont une petite icône devant pour indiquer aux organisateurs et arbitre que cette personne à des difficultés physiques ou des problèmes de santé, et que nous devons en tenir compte dans l’organisation des diverses rencontres, ,information à stocker dans la fiche du joueur mais à ignorer pour notre future recherche.
+
+
+Licenciés/Rechercher un licencié :
+https://metier.ffbridge.fr/#/licencie/recherche
+
+Saisir son N° de licence dans ce bloc : 
+
+<input id="autocomplete_search_licensee_value" name="" tabindex="" ng-class="{'angucomplete-input-not-empty': notEmpty}" ng-model="searchStr" ng-disabled="disableInput" type="text" placeholder="Nom, prénom ou numéro de licence" maxlength="524288" ng-focus="onFocusHandler()" class="form-control form-control-large search-members-input ng-touched" ng-blur="hideResults($event)" autocapitalize="off" autocorrect="off" autocomplete="off" ng-change="inputChangeHandler(searchStr)" style="">
+
+Il apparaîtra seul dans la liste proposée.
+On clique dessus.
+
+Même page nouvelle URL : https://metier.ffbridge.fr/#/licencies/282579/profil
+https://metier.ffbridge.fr/#/licencies/282579/profil 
+On scrap tout ce qui est dans :
+
+Profil 
+https://metier.ffbridge.fr/#/licencies/29280/compte/informations-personnelles
+
+sauf ce qui est dans le bloc :
+<div class="xlarge-12 large-12 medium-12 small-12 columns short-link-display-block">
+                                    <div class="shorcut-link">
+                                        <!---->
+                                        <a ui-sref="read-members.results" href="#/licencies/29280/resultats">
+                                            <span class="font-icon fas fa-trophy"></span> Résultats
+                                        </a>
+                                        <a ui-sref="read-members.ranking" href="#/licencies/29280/classement">
+                                            <span class="font-icon fas fa-file-alt"></span> Classement
+                                        </a>
+                                        <a ui-sref="read-members.current-scores" href="#/licencies/29280/points">
+                                            <span class="font-icon fas fa-chart-line"></span> Points
+                                        </a>
+                                        <a ui-sref="read-members.history" href="#/licencies/29280/historique">
+                                            <span class="font-icon far fa-clock"></span> Historique
+                                        </a>
+                                        <!----><print-button-icon ng-if="memberInfoCtrl.licenseeInfos.is_alive" print-url="persons/29280/ecard/print/0" print-filename="" print-label="Carte" print-font="fa-id-card" post-params="[[]]"><a ng-disabled="(printButtonIconCtrl.disabledCondition) ? printButtonIconCtrl.disabledCondition : false" class="print-btn" ng-class="{'ml15 mt15': printButtonIconCtrl.margin}">
+    <span class="font-icon fas fa-id-card"></span>Carte
+</a></print-button-icon><!---->
+                                    </div>
+                                </div>
+Ni çà : <div class="block-picture entity-picture" ng-style="memberInfoCtrl.imageUploadedStyles" style="background-image: url(&quot;http://cdn.ffbridge.fr/api/malepierrelavigne-5ac24a09f2eca_big.jpg&quot;);">
+                                    <div class="wrapper-btn-edit">
+                                        <!----><div tooltip="Supprimer la photo" tooltip-placement="bottom" class="btn-action btn-action--delete" ng-show="memberInfoCtrl.hasProfilePicture" ng-click="memberInfoCtrl.openDeletePhotoModal()" ng-if="readMembersCtrl.isSelfLicenseePage || readMembersCtrl.isClubAdmin || readMembersCtrl.isCommitteeAdmin || readMembersCtrl.isFFBAdmin">
+                                            <span class="fas fa-trash-alt"></span>
+                                        </div><!---->
+                                        <!----><div xpopover="Afin de garantir une image de qualité :
+                                            - Taille min : 520 x 320
+                                            - Poids max : 2 mo
+                                            - Format : jpeg, jpg" popover-trigger="mouseenter" popover-placement="bottom" class="btn-action btn-action--add ng-pristine ng-untouched ng-valid ng-not-empty" ng-model="memberInfoCtrl.licenseeInfos.picture" ngf-select="" ngf-change="memberInfoCtrl.preUpload(memberInfoCtrl.licenseeInfos.picture)" ng-if="readMembersCtrl.isSelfLicenseePage || readMembersCtrl.isClubAdmin || readMembersCtrl.isCommitteeAdmin || readMembersCtrl.isFFBAdmin">
+                                            <span class="fas fa-camera-retro"></span>
+                                        </div><!---->
+                                    </div>
+                                </div> 
+Compte
+https://metier.ffbridge.fr/#/licencies/29280/compte/email
+
+Rubriques Informations personnelles et email. 
