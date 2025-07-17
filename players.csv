@@ -1,0 +1,5 @@
+licence_number,member_type,last_name,first_name,birthdate,gender,club_code,club_name,last_paid_season,alert,roles,functions,agrements
+00382656,Sympathisant,Durand,Paul,1985-04-12,H,4200007,TT Club 07,2023-2024,,Joueur,,
+04208163,Membre,Martin,Lucie,2002-09-23,F,4200007,TT Club 07,2023-2024,,Joueuse;Capitaine,,
+03144342,Membre,Thomas,Lekibbitz,1978-01-15,H,4200007,TT Club 07,2023-2024,,Joueur;Capitaine;Responsable Matériel,Trésorier;Secrétaire,Arbitre;Organisateur;Responsable Jeunes
+09629778,Membre,Petit,Jean,2010-06-30,H,4200002,TT Club 02,2023-2024,,Joueur,, 

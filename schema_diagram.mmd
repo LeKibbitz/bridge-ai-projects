@@ -1,0 +1,61 @@
+erDiagram
+  clubs ||--o{ joueurs : "club_id"
+  joueurs ||--o{ joueur_roles : "joueur_id"
+  joueurs ||--o{ joueur_agrements : "joueur_id"
+  roles ||--o{ joueur_roles : "role_id"
+  agrements ||--o{ joueur_agrements : "agrement_id"
+
+  clubs {
+    int id PK
+    string nom
+    string code UK
+    string adresse
+    string telephone
+    string email
+    string site_web
+    timestamp created_at
+    timestamp updated_at
+  }
+
+  joueurs {
+    int id PK
+    string nom
+    string prenom
+    string licence UK
+    string email
+    string telephone
+    date date_naissance
+    int club_id FK
+    timestamp created_at
+    timestamp updated_at
+  }
+
+  roles {
+    int id PK
+    string nom UK
+    string description
+    timestamp created_at
+    timestamp updated_at
+  }
+
+  agrements {
+    int id PK
+    string nom UK
+    string description
+    timestamp created_at
+    timestamp updated_at
+  }
+
+  joueur_roles {
+    int id PK
+    int joueur_id FK
+    int role_id FK
+    timestamp created_at
+  }
+
+  joueur_agrements {
+    int id PK
+    int joueur_id FK
+    int agrement_id FK
+    timestamp created_at
+  } 
