@@ -2,7 +2,7 @@
 
 ## Goal
 
-The FFB Database project aims to automate the extraction, transformation, and loading (ETL) of club and player data from the Fédération Française de Bridge (FFB) website into a modern, queryable Supabase/PostgreSQL database. This enables advanced analytics, reporting, and integration with other systems.
+The FFB Database project automates the extraction, transformation, and loading (ETL) of club and player data from the Fédération Française de Bridge (FFB) website into a modern, queryable Supabase/PostgreSQL database. This enables advanced analytics, reporting, and integration with other systems.
 
 ---
 
@@ -39,6 +39,7 @@ graph TD
 ### 1. Scraping
 - Run `scraper.py` (in `legacy/FFB_Data/`) to extract club and player data from the FFB website.
 - Outputs: `clubs.csv`, `players.csv` (in project root)
+- **Note:** Selenium/ChromeDriver setup on Mac ARM can be tricky. If you get an error about `THIRD_PARTY_NOTICES.chromedriver`, ensure your script finds the real `chromedriver` binary, not a documentation file. See the `_setup_driver` method for robust handling.
 
 ### 2. Review/QA
 - Open and check the CSVs for completeness and correctness.
@@ -98,6 +99,7 @@ FFB_Database/
    - `npm install`
 4. **Run the scraper:**
    - `python legacy/FFB_Data/scraper.py`
+   - _If you get a ChromeDriver error, check the driver path logic in `_setup_driver`._
 5. **Review CSVs:**
    - `head -20 clubs.csv`
    - `head -20 players.csv`
@@ -114,6 +116,7 @@ FFB_Database/
 - Add legacy/FFB_Data with latest scraping and utility scripts for review and integration
 - Add CSV export to scraper.py for clubs and players matching current DB schema
 - Test full workflow: update Scrapping.py, import-data.js, and CSVs for Codespaces run
+- Troubleshoot and document Selenium/ChromeDriver issues for Mac ARM
 
 ---
 
