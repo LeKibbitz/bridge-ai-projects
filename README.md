@@ -114,3 +114,13 @@ For historical and reference purposes, the following files document the original
 - [scripts/ffb_schema.sql](scripts/ffb_schema.sql): Original FFB SQL schema (not used in production)
 
 > **Note:** The main schema for your Supabase/PostgreSQL database is defined in [schema.sql](schema.sql) at the root. Always keep this file up to date with your live database structure.
+
+## 🚦 Scraper Progress & Status (July 2025)
+
+- Scrapes all Lorraine clubs/entities (skipping Comité de Lorraine and first 3 dropdown entries)
+- For each club: visits info page, robustly saves clubs.csv after each entity
+- For each club: scrapes all members (current and renewed), handles 'Sympathisant' (licence ending with 's')
+- Outputs tab-delimited CSVs for both clubs and players
+- Saves players.csv after each club to minimize data loss
+- Known issue: error when navigating to member section (under investigation)
+- Script is robust for large-scale scraping, but under active development for further detail and error handling
