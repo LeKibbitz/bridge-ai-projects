@@ -32,36 +32,29 @@ class FFBScraper:
         return driver
     
     def login(self):
-        # Start from the main FFB website
-        print("Starting from main FFB website...")
-        self.driver.get("https://www.ffbridge.fr/")
-        
-        # Wait for the site to load (it's slow)
-        print("Waiting for site to load...")
-        time.sleep(5)
-        
-        # Check if we got redirected to login
+        # Go directly to the login page
+        print("Navigating directly to login page...")
+        self.driver.get(LOGIN_URL)
+        time.sleep(2)
         current_url = self.driver.current_url
-        print(f"Current URL after loading: {current_url}")
-        
+        print(f"Current URL after navigating to login: {current_url}")
         if "auth/login" in current_url:
-            print("Redirected to login page, proceeding with login...")
-            # We're on the login page, proceed with login
+            print("On login page, proceeding with login...")
             self._perform_login()
         else:
-            print("Not redirected to login, checking if we can access metier...")
-            # Try to go to metier URL
+            print("Not on login page, checking if we can access metier...")
             self.driver.get("https://metier.ffbridge.fr/#/home")
             time.sleep(3)
             print(f"Metier URL: {self.driver.current_url}")
-            
-            # Check if we got redirected to login from metier
             if "auth/login" in self.driver.current_url:
                 print("Metier redirected to login, proceeding with login...")
                 self._perform_login()
             else:
                 print("Successfully accessed metier without login!")
-                return
+        # Always ensure we are in the metier environment before proceeding
+        if not ("metier.ffbridge.fr" in self.driver.current_url):
+            print("Not in metier environment after login attempts. Aborting scrape_entites.")
+            return []
     
     def _perform_login(self):
         # Wait a moment for page to load
@@ -179,6 +172,11 @@ class FFBScraper:
     def scrape_entites(self):
         # We should now be in the licencie environment after clicking "Accéder"
         print("Scraping entities from licencie environment...")
+        
+        # Defensive: If not in metier environment, return empty list
+        if not ("metier.ffbridge.fr" in self.driver.current_url):
+            print("Not in metier environment. Returning empty list.")
+            return []
         
         # First, let's explore what's available in the current environment
         print("Exploring current licencie environment...")
@@ -465,7 +463,11 @@ class FFBScraper:
                 }
                 entites.append(Entite(**entite_data))
         
-        return entites
+        # At the end of scrape_entites, always return a list
+        if 'entites' in locals():
+            return entites
+        else:
+            return []
     
     def scrape_licensees(self, club_id):
         # Scrape both current and renewal members
@@ -517,7 +519,10 @@ def main():
         scraper.login()
         print("Scraping entities...")
         entites = scraper.scrape_entites()
-        
+        print(f"DEBUG: entites type: {type(entites)}, value: {entites}")
+        if not isinstance(entites, list):
+            print(f"ERROR: entites is not a list! It is: {type(entites)} with value: {entites}")
+            entites = []
         if entites:
             # Convert entity dicts to DataFrame
             clubs_df = pd.DataFrame(entites)
