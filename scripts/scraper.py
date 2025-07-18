@@ -35,7 +35,10 @@ class FFBScraper:
         # Go directly to the login page
         print("Navigating directly to login page...")
         self.driver.get(LOGIN_URL)
-        time.sleep(2)
+        print("Waiting for login page URL to be loaded...")
+        self.wait.until(EC.url_contains("auth/login"))
+        print("Waiting for email input to be present...")
+        self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[type='email']")))
         current_url = self.driver.current_url
         print(f"Current URL after navigating to login: {current_url}")
         if "auth/login" in current_url:
@@ -84,9 +87,36 @@ class FFBScraper:
         
         # Submit form
         print("Looking for submit button...")
-        submit_button = self.driver.find_element(By.XPATH, "//button[contains(text(), 'Se connecter')]")
-        print("Submit button found, clicking...")
-        submit_button.click()
+        submit_button = None
+        # Try several selectors for robustness
+        try:
+            # Try exact match, all caps
+            submit_button = self.driver.find_element(By.XPATH, "//button[translate(normalize-space(text()), 'abcdefghijklmnopqrstuvwxyzéèêëàâäîïôöùûüç', 'ABCDEFGHIJKLMNOPQRSTUVWXYZÉÈÊËÀÂÄÎÏÔÖÙÛÜÇ') = 'SE CONNECTER']")
+            print("Submit button found (all caps), clicking...")
+        except Exception as e:
+            print(f"Submit button not found with all-caps selector: {e}")
+            # Try contains (case-insensitive)
+            try:
+                submit_button = self.driver.find_element(By.XPATH, "//button[contains(translate(normalize-space(text()), 'abcdefghijklmnopqrstuvwxyzéèêëàâäîïôöùûüç', 'ABCDEFGHIJKLMNOPQRSTUVWXYZÉÈÊËÀÂÄÎÏÔÖÙÛÜÇ'), 'SE CONNECTER')]")
+                print("Submit button found (contains, case-insensitive), clicking...")
+            except Exception as e2:
+                print(f"Submit button not found with contains selector: {e2}")
+                # Print all button texts for debugging
+                buttons = self.driver.find_elements(By.TAG_NAME, "button")
+                print("All button texts on page:")
+                for i, btn in enumerate(buttons):
+                    print(f"  {i}: '{btn.text}'")
+                # Fallback: click the first submit-type button
+                for btn in buttons:
+                    if btn.get_attribute('type') == 'submit':
+                        submit_button = btn
+                        print("Fallback: clicking first submit-type button.")
+                        break
+        if submit_button:
+            submit_button.click()
+        else:
+            print("ERROR: Could not find a submit button to click! Aborting login.")
+            return
         
         # Wait a moment and check what happened
         print("Waiting a moment after submit...")
