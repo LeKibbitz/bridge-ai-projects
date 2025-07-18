@@ -11,9 +11,20 @@ from datetime import datetime
 import json
 import pandas as pd
 import csv
+import io
 from selenium.webdriver.chrome.service import Service
 import os
 import traceback
+
+# === SCRAPER REFACTOR PLAN IMPLEMENTATION ===
+# See README.md for detailed plan and rationale
+#
+# - Batch-first scraping: clubs/entities, then members
+# - Section-by-section deep scraping (TODOs for each tab/section)
+# - Dynamic DataFrame handling: add columns as new fields are found
+# - Robust progress/error handling and data safety
+#
+# ============================================
 
 class FFBScraper:
     def __init__(self):
@@ -190,8 +201,20 @@ class FFBScraper:
             traceback.print_exc()
             return
     
+    def get_output_dir(self):
+        # Always use the correct path relative to the script location
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        output_dir = os.path.join(base_dir, '..', 'FFB_Scraped_Data')
+        output_dir = os.path.abspath(output_dir)
+        os.makedirs(output_dir, exist_ok=True)
+        return output_dir
+
     def scrape_entites(self):
-        import pandas as pd
+        """
+        Batch-first scraping of all clubs/entities.
+        Dynamically adds columns as new fields are found.
+        Saves clubs.csv only after all entities are processed.
+        """
         print("Navigating to Entités dashboard...")
         self.driver.get("https://metier.ffbridge.fr/#/entites/tableau-de-bord")
         time.sleep(3)
@@ -199,7 +222,6 @@ class FFBScraper:
         dropdown = self.driver.find_element(By.CSS_SELECTOR, "select[ng-model='searchOrganizationCtrl.currentOrganization']")
         options = dropdown.find_elements(By.TAG_NAME, "option")
         print(f"Found {len(options)} options in the entités dropdown.")
-        # Extract all club info first to avoid stale element reference
         clubs_to_process = []
         for i, option in enumerate(options):
             code_label = option.text.strip()
@@ -216,67 +238,198 @@ class FFBScraper:
             clubs_to_process.append({'id': club_id, 'code': club_code, 'nom': club_name, 'region': 'Lorraine'})
         print(f"Total clubs to process: {len(clubs_to_process)}")
         clubs = []
-        output_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'FFB_Scraped_Data')
+        output_dir = self.get_output_dir()
         clubs_file = os.path.join(output_dir, 'clubs.csv')
-        for club in clubs_to_process:
-            print(f"Processing club option: {club['code']} - {club['nom']}")
+        all_columns = set(['id', 'code', 'nom', 'region'])
+        for idx, club in enumerate(clubs_to_process, 1):
+            print(f"[Batch] ({idx}/{len(clubs_to_process)}) Processing club: {club['code']} - {club['nom']}")
             info_url = f"https://metier.ffbridge.fr/#/entites/{club['id']}/informations"
-            print(f"Visiting club info page: {info_url}")
             self.driver.get(info_url)
             time.sleep(2)
-            # TODO: Scrape all data except excluded sections
-            clubs.append(club)
-            # Save after each club
-            clubs_df = pd.DataFrame(clubs)
-            clubs_df.to_csv(clubs_file, index=False, sep='\t')
-            print(f"[Progress] Saved {len(clubs_df)} clubs to {clubs_file} after {club['nom']}")
-        print(f"Total clubs found: {len(clubs)}")
+            club_data = dict(club)
+            # --- Scrape all visible fields in the main info section ---
+            info_fields = self.driver.find_elements(By.CSS_SELECTOR, ".block-content .row")
+            for field in info_fields:
+                try:
+                    label = field.find_element(By.CSS_SELECTOR, ".label").text.strip()
+                    value = field.find_element(By.CSS_SELECTOR, ".value").text.strip()
+                    if label and value:
+                        col_name = label.replace(' ', '_').replace(':', '').lower()
+                        club_data[col_name] = value
+                        all_columns.add(col_name)
+                except Exception:
+                    continue
+            # --- Section-by-section deep scraping (TODOs for each tab) ---
+            # TODO: Scrape 'Acteurs' tab
+            # TODO: Scrape 'Rôles' tab
+            # TODO: Scrape other relevant tabs/sections
+            clubs.append(club_data)
+        # --- Dynamic DataFrame handling ---
+        clubs_df = pd.DataFrame(clubs)
+        for col in all_columns:
+            if col not in clubs_df.columns:
+                clubs_df[col] = ''
+        # Reorder columns without passing as 'columns' parameter
+        ordered_columns = [str(col) for col in all_columns if col in clubs_df.columns]
+        clubs_df = clubs_df.loc[:, ordered_columns]
+        clubs_df.to_csv(clubs_file, index=False, sep='\t')
+        print(f"[Batch] Saved {len(clubs_df)} clubs to {clubs_file}")
         return clubs
     
     def scrape_licensees(self, club_id, club_name, players_file):
-        members = []
-        # Scrape current members
-        self.driver.get(f"{METIER_URL}#/entites/{club_id}/membres/consultation")
-        members.extend(self._scrape_members_list(club_id, club_name))
-        # Scrape renewal members
-        self.driver.get(f"{METIER_URL}#/entites/{club_id}/membres/renouvellement")
-        members.extend(self._scrape_members_list(club_id, club_name))
-        # Save after each club
-        if members:
-            import pandas as pd
-            players_df = pd.DataFrame(members)
-            players_df.to_csv(players_file, index=False, sep='\t')
-            print(f"[Progress] Saved {len(players_df)} players to {players_file} after club {club_name}")
-        return members
+        """
+        Dual-URL scraping for all members and their statuses.
+        1. Scrape full member list from /facturation/encaissement
+        2. Scrape renewed/consultation list from /membres/consultation
+        3. Merge on license number, updating member_type/status
+        4. Save merged DataFrame
+        """
+        all_columns = set(["nom", "prenom", "numero_licence", "statut", "club_id", "club_nom", "member_type"])
+        # Step 1: Scrape full member list
+        url_full = f"{METIER_URL}#/entites/{club_id}/facturation/encaissement"
+        print(f"[Full List] Navigating to: {url_full}")
+        self.driver.get(url_full)
+        full_list = self._scrape_members_list_encaissement(club_id, club_name, all_columns)
+        # Step 2: Scrape consultation/renewed list
+        url_consult = f"{METIER_URL}#/entites/{club_id}/membres/consultation"
+        print(f"[Consultation List] Navigating to: {url_consult}")
+        self.driver.get(url_consult)
+        consult_list = self._scrape_members_list_consultation(club_id, club_name, all_columns)
+        # Step 3: Merge and update statuses
+        full_df = pd.DataFrame(full_list)
+        consult_df = pd.DataFrame(consult_list)
+        if not full_df.empty and not consult_df.empty:
+            merged_df = full_df.merge(consult_df[["numero_licence", "member_type"]], on="numero_licence", how="left", suffixes=("", "_consult"))
+            # Fix: ensure both columns are Series before combine_first
+            if "member_type_consult" in merged_df.columns and "member_type" in merged_df.columns:
+                merged_df["member_type"] = pd.Series(merged_df["member_type_consult"]).combine_first(pd.Series(merged_df["member_type"]))
+            elif "member_type_consult" in merged_df.columns:
+                merged_df["member_type"] = merged_df["member_type_consult"]
+            merged_df.drop(columns=["member_type_consult"], inplace=True, errors='ignore')
+        else:
+            merged_df = full_df if not full_df.empty else consult_df
+        # Step 4: Save merged DataFrame
+        for col in all_columns:
+            if col not in merged_df.columns:
+                merged_df[col] = ''
+        ordered_columns = [str(col) for col in all_columns if col in merged_df.columns]
+        merged_df = merged_df.loc[:, ordered_columns]
+        merged_df.to_csv(players_file, index=False, sep='\t')
+        print(f"[Dual-URL] Saved {len(merged_df)} players to {players_file} for club {club_name}")
+        return merged_df.to_dict('records')
 
-    def _scrape_members_list(self, club_id, club_name):
+    def _scrape_members_list_encaissement(self, club_id, club_name, all_columns):
         members = []
         try:
-            members_table = self.wait.until(
-                EC.presence_of_element_located((By.CLASS_NAME, "members-table"))
-            )
-            rows = members_table.find_elements(By.TAG_NAME, "tr")
-            for row in rows[1:]:  # Skip header
-                cells = row.find_elements(By.TAG_NAME, "td")
-                if len(cells) > 0:
-                    licence = cells[2].text.strip()
-                    member_type = 'Membre'
-                    if licence.endswith('s'):
-                        licence = licence[:-1]
-                        member_type = 'Sympathisant'
-                    member_data = {
-                        "nom": cells[0].text,
-                        "prenom": cells[1].text,
-                        "numero_licence": licence,
-                        "statut": cells[3].text,
-                        "club_id": club_id,
-                        "club_nom": club_name,
-                        "member_type": member_type
-                    }
-                    members.append(member_data)
+            # Click the 'Tous les membres' OPGButton to ensure full list is displayed
+            button_clicked = False
+            wait = WebDriverWait(self.driver, 3)  # Reduced timeout
+            try:
+                tous_button = wait.until(
+                    EC.element_to_be_clickable((By.XPATH, "//div[contains(@class, 'option-group')]//button[contains(., 'Tous les membres')]"))
+                )
+                tous_button.click()
+                print(f"Bouton 'Tous les membres' cliqué pour club {club_name} (ID: {club_id})")
+                time.sleep(1)
+                button_clicked = True
+            except Exception as e:
+                print(f"Impossible de cliquer sur 'Tous les membres' : {e}")
+                # Fallback: try 'Licenciés' with a shorter wait
+                try:
+                    short_wait = WebDriverWait(self.driver, 2)
+                    licencies_button = short_wait.until(
+                        EC.element_to_be_clickable((By.XPATH, "//div[contains(@class, 'option-group')]//button[contains(., 'Licenciés')]"))
+                    )
+                    licencies_button.click()
+                    print(f"Bouton 'Licenciés' cliqué pour club {club_name} (ID: {club_id})")
+                    time.sleep(1)
+                    button_clicked = True
+                except Exception as e2:
+                    print(f"Impossible de cliquer sur 'Licenciés' non plus : {e2}")
+            if not button_clicked:
+                print(f"Aucun bouton OPGButton cliquable trouvé pour club {club_name} (ID: {club_id})")
+            
+            # Check for 'no members' message first
+            try:
+                no_members_msg = self.driver.find_element(By.XPATH, "//*[contains(text(), 'Aucun membre') or contains(text(), 'Aucun résultat') or contains(text(), 'Aucune donnée')]")
+                if no_members_msg:
+                    print(f"Aucun membre trouvé pour club {club_name} (ID: {club_id})")
+                    return []
+            except Exception:
+                pass  # No such message, proceed
+            
+            # Scrape all pages using CSV approach
+            while True:
+                try:
+                    # Wait for members table with timeout
+                    table_wait = WebDriverWait(self.driver, 3)
+                    table = table_wait.until(EC.presence_of_element_located((By.CLASS_NAME, "members-table")))
+                    
+                    rows = table.find_elements(By.TAG_NAME, 'tr')
+                    if len(rows) <= 1:  # Only header or empty
+                        print(f"Table vide pour club {club_name} (ID: {club_id})")
+                        break
+                        
+                    csv_lines = []
+                    for row in rows:
+                        cells = row.find_elements(By.TAG_NAME, 'td')
+                        csv_line = '\t'.join([cell.text.strip() for cell in cells])
+                        csv_lines.append(csv_line)
+                    csv_text = '\n'.join(csv_lines)
+                    
+                    # Parse the CSV data
+                    csv_reader = csv.reader(io.StringIO(csv_text), delimiter='\t')
+                    
+                    # Skip header row
+                    headers = next(csv_reader)
+                    print(f"DEBUG - CSV Headers for {club_name}: {headers}")
+                    
+                    # Process data rows
+                    for row in csv_reader:
+                        if len(row) >= 6:  # Ensure we have enough columns
+                            member_data = {
+                                'numero_licence': row[0],
+                                'nom_complet': row[1], 
+                                'type_licence': row[2],
+                                'date_encaissement': row[3],
+                                'montant': row[4],
+                                'actions': row[5],
+                                'club_id': club_id,
+                                'club_nom': club_name
+                            }
+                            # Determine member status based on payment
+                            if member_data['montant'] == '0,00€':
+                                member_data['member_type'] = 'Non payé'
+                            elif member_data['actions'] == 'Compte FFB':
+                                member_data['member_type'] = 'Payé'
+                            else:
+                                member_data['member_type'] = 'En attente'
+                            
+                            all_columns.update(member_data.keys())
+                            members.append(member_data)
+                    
+                except Exception as e:
+                    print(f"Error parsing CSV data for club {club_name}: {e}")
+                    print(f"Current URL: {self.driver.current_url}")
+                    break  # Exit pagination loop on error
+                
+                # Pagination: look for next page button (enabled)
+                try:
+                    next_button = self.driver.find_element(By.CSS_SELECTOR, ".pagination-next:not([disabled])")
+                    next_button.click()
+                    print(f"Navigated to next page for club {club_name}")
+                    time.sleep(1)
+                except Exception:
+                    break  # No more pages
         except Exception as e:
-            print(f"Error scraping members list for club {club_name}: {e}")
+            print(f"Error scraping encaissement layout for club {club_name}: {e}")
         return members
+
+    def _scrape_members_list_consultation(self, club_id, club_name, all_columns):
+        # TODO: Implement scraping logic for /membres/consultation layout
+        # For now, return an empty list as a placeholder
+        print(f"Scraping consultation layout for club {club_name} (ID: {club_id})")
+        return []
     
     def close(self):
         self.driver.quit()
@@ -284,27 +437,23 @@ class FFBScraper:
 def main():
     scraper = FFBScraper()
     try:
-        # Create the output directory if it doesn't exist
-        import os
-        output_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'FFB_Scraped_Data')
-        os.makedirs(output_dir, exist_ok=True)
+        output_dir = scraper.get_output_dir()
         players_file = os.path.join(output_dir, 'players.csv')
-        
+        all_columns = set(["nom", "prenom", "numero_licence", "statut", "club_id", "club_nom", "member_type"])
         scraper.login()
-        print("Scraping entities...")
-        entites = scraper.scrape_entites()
-        print(f"DEBUG: entites type: {type(entites)}, value: {entites}")
-        if not isinstance(entites, list):
-            print(f"ERROR: entites is not a list! It is: {type(entites)} with value: {entites}")
-            entites = []
-        if entites:
-            # Convert entity dicts to DataFrame
+        clubs_file = os.path.join(output_dir, 'clubs.csv')
+        # Optimization: load clubs from CSV if it exists
+        if os.path.exists(clubs_file):
+            print(f"Loading clubs from {clubs_file}")
+            clubs_df = pd.read_csv(clubs_file, sep='\t')
+            entites = clubs_df.to_dict('records')
+        else:
+            print("Clubs CSV not found, scraping entities...")
+            entites = scraper.scrape_entites()
             clubs_df = pd.DataFrame(entites)
-            clubs_file = os.path.join(output_dir, 'clubs.csv')
             clubs_df.to_csv(clubs_file, index=False, sep='\t')
-            print(f"Saved {len(clubs_df)} clubs to {clubs_file}")
-            
-            print("Scraping members...")
+        if entites:
+            print(f"Loaded {len(entites)} clubs. Starting member scraping...")
             all_members = []
             for entite in entites:
                 try:
@@ -314,21 +463,24 @@ def main():
                 except Exception as e:
                     print(f"Error scraping members for club {entite['nom']}: {e}")
                     continue
-            
             # Final save (redundant, but ensures all data is written)
             if all_members:
                 players_df = pd.DataFrame(all_members)
+                for col in all_columns:
+                    if col not in players_df.columns:
+                        players_df[col] = ''
+                ordered_columns = [str(col) for col in all_columns if col in players_df.columns]
+                players_df = players_df.loc[:, ordered_columns]
                 players_df.to_csv(players_file, index=False, sep='\t')
                 print(f"[Final] Saved {len(players_df)} players to {players_file}")
             else:
                 print("No members found")
         else:
             print("No entities found")
-            # Create empty CSV files
-            empty_clubs_df = pd.DataFrame(columns=['id', 'nom', 'region'])
+            empty_clubs_df = pd.DataFrame([{"id": "", "nom": "", "region": ""}])
             clubs_file = os.path.join(output_dir, 'clubs.csv')
             empty_clubs_df.to_csv(clubs_file, index=False, sep='\t')
-            empty_players_df = pd.DataFrame(columns=['nom', 'prenom', 'numero_licence', 'statut', 'club_id', 'club_nom', 'member_type'])
+            empty_players_df = pd.DataFrame([{col: "" for col in all_columns}])
             players_file = os.path.join(output_dir, 'players.csv')
             empty_players_df.to_csv(players_file, index=False, sep='\t')
             print(f"Created empty CSV files in {output_dir}")
