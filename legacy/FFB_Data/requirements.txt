@@ -1,10 +1,1 @@
-selenium==4.16.0
-webdriver_manager==4.0.1
-supabase==2.1.1
-python-dotenv==1.0.0
-pandas==2.2.2
-numpy>=1.26.0
-beautifulsoup4==4.12.2
-webdriver_manager==4.0.1
-aiohttp
-python-dateutil
+<button _ngcontent-lancelot-frontend-c3331722861="" tuiappearance="" tuiicons="" tuibutton="" type="button" appearance="flat" size="m" class="tui-island__footer-button" data-appearance="flat" data-size="m"> Accéder </button>
