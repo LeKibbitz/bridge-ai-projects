@@ -191,40 +191,45 @@ class FFBScraper:
             return
     
     def scrape_entites(self):
+        import pandas as pd
         print("Navigating to Entités dashboard...")
         self.driver.get("https://metier.ffbridge.fr/#/entites/tableau-de-bord")
         time.sleep(3)
         print("Looking for the entités dropdown...")
-        # Find the dropdown for 'Consultations de mes entités'
         dropdown = self.driver.find_element(By.CSS_SELECTOR, "select[ng-model='searchOrganizationCtrl.currentOrganization']")
         options = dropdown.find_elements(By.TAG_NAME, "option")
         print(f"Found {len(options)} options in the entités dropdown.")
-        clubs = []
+        # Extract all club info first to avoid stale element reference
+        clubs_to_process = []
         for i, option in enumerate(options):
             code_label = option.text.strip()
-            # Ignore first 3 items, only process those starting with '42'
             if i < 3 or not code_label.startswith("42"):
                 continue
-            print(f"Processing club option: {code_label}")
-            # Extract club code and label
+            if code_label.startswith("4200000"):
+                print(f"Skipping Comité de Lorraine: {code_label}")
+                continue
             if ' - ' in code_label:
                 club_code, club_name = code_label.split(' - ', 1)
             else:
                 club_code, club_name = code_label, ''
             club_id = option.get_attribute('value')
-            # Visit the club info page
-            info_url = f"https://metier.ffbridge.fr/#/entites/{club_id}/informations"
+            clubs_to_process.append({'id': club_id, 'code': club_code, 'nom': club_name, 'region': 'Lorraine'})
+        print(f"Total clubs to process: {len(clubs_to_process)}")
+        clubs = []
+        output_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'FFB_Scraped_Data')
+        clubs_file = os.path.join(output_dir, 'clubs.csv')
+        for club in clubs_to_process:
+            print(f"Processing club option: {club['code']} - {club['nom']}")
+            info_url = f"https://metier.ffbridge.fr/#/entites/{club['id']}/informations"
             print(f"Visiting club info page: {info_url}")
             self.driver.get(info_url)
             time.sleep(2)
-            # Scrape all data except excluded sections (to be implemented in detail)
-            # For now, just collect the club code, name, and id
-            clubs.append({
-                'id': club_id,
-                'code': club_code,
-                'nom': club_name,
-                'region': 'Lorraine'
-            })
+            # TODO: Scrape all data except excluded sections
+            clubs.append(club)
+            # Save after each club
+            clubs_df = pd.DataFrame(clubs)
+            clubs_df.to_csv(clubs_file, index=False, sep='\t')
+            print(f"[Progress] Saved {len(clubs_df)} clubs to {clubs_file} after {club['nom']}")
         print(f"Total clubs found: {len(clubs)}")
         return clubs
     
