@@ -4,8 +4,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from webdriver_manager.chrome import ChromeDriverManager
-from config import FFB_USERNAME, FFB_PASSWORD, LOGIN_URL, METIER_URL
-from models import Entite, Licensee
+from scripts.config import FFB_USERNAME, FFB_PASSWORD, LOGIN_URL, METIER_URL
+from scripts.models import Entite, Licensee
 import time
 from datetime import datetime
 import json

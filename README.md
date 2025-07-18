@@ -105,3 +105,12 @@ Si l'import échoue :
 - Les fichiers `.env`, `.gitignore` et `.cursorignore` sont ignorés par Git
 - Le client Prisma est généré automatiquement après modification du schéma
 - Les scripts d'import gèrent automatiquement les relations entre les tables
+
+## 📚 FFB-Specific Data Model & Schema Reference
+
+For historical and reference purposes, the following files document the original FFB data model and SQL schema used for scraping and legacy import:
+
+- [docs/FFB_data_schema.md](docs/FFB_data_schema.md): Detailed documentation of the FFB data model (clubs, players, roles, etc.)
+- [scripts/ffb_schema.sql](scripts/ffb_schema.sql): Original FFB SQL schema (not used in production)
+
+> **Note:** The main schema for your Supabase/PostgreSQL database is defined in [schema.sql](schema.sql) at the root. Always keep this file up to date with your live database structure.
