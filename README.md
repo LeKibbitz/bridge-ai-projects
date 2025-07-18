@@ -151,3 +151,14 @@ For historical and reference purposes, the following files document the original
   - Print errors and continue processing to maximize data collection.
 
 > The script is being refactored to follow this plan for maximum efficiency, robustness, and scalability.
+
+## 🛡️ Robust Scraper Checkpointing & Recovery (2025)
+
+- The scraper saves the CSV after each major section (e.g., "Informations principales") is scraped for all entities.
+- On error for an entity, the error and entity ID are logged, the entity is skipped, and scraping continues.
+- On crash or interruption, the scraper saves progress before exiting.
+- On restart, the scraper resumes from the last successfully scraped entity (using the URL ID or a progress log).
+- Timing and debug prints are provided for each major block per entity.
+- The CSV always contains the full entity IDs as scraped (with all digits/leading zeros) and all relevant fields.
+- An error log file is maintained for skipped entities or sections.
+- This hybrid checkpointing approach ensures minimal data loss, easy recovery, and robust, maintainable scraping.
