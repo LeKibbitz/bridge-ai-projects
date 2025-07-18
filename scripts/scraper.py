@@ -94,80 +94,57 @@ class FFBScraper:
         print(f"Current URL after submit: {self.driver.current_url}")
         print(f"Page title after submit: {self.driver.title}")
         
-        # Check if there are any error messages
-        try:
-            error_elements = self.driver.find_elements(By.CLASS_NAME, "error")
-            if error_elements:
-                print("Error messages found:")
-                for error in error_elements:
-                    print(f"  - {error.text}")
-        except:
-            pass
-        
-        # Wait for redirect to dashboard (login now redirects to user dashboard)
+        # Wait for redirect to dashboard
         print("Waiting for redirect to dashboard...")
         self.wait.until(EC.url_contains("ffbridge.fr/user/dashboard"))
         print("Successfully logged in!")
         
-        # Now click the "Accéder" button to access the Métier environment
-        print("Looking for 'Accéder' button to access Métier environment...")
-        try:
-            # Wait for the page to fully load
-            time.sleep(3)
-            
-            # Find all "Accéder" buttons first
-            acceder_buttons = self.driver.find_elements(By.XPATH, "//button[contains(text(), 'Accéder')]")
-            print(f"Found {len(acceder_buttons)} 'Accéder' buttons")
-            
-            # Look for the one under "Mon espace métier"
-            target_button = None
-            for i, button in enumerate(acceder_buttons):
-                print(f"Checking button {i+1}...")
-                try:
-                    # Get the parent container to check for "Mon espace métier" text
-                    parent = button.find_element(By.XPATH, "./..")
-                    parent_text = parent.text.lower()
-                    print(f"Button {i+1} parent text: {parent_text[:100]}...")
-                    
-                    if "mon espace métier" in parent_text or "espace métier" in parent_text:
-                        target_button = button
-                        print("Found 'Accéder' button under 'Mon espace métier'")
-                        break
-                except Exception as e:
-                    print(f"Error checking button {i+1}: {e}")
-                    continue
-            
-            if target_button:
-                print("Clicking the correct 'Accéder' button...")
-                target_button.click()
+        # Now click the correct 'ACCÉDER' button to access the Métier environment
+        print("Looking for 'ACCÉDER' button to access Métier environment...")
+        time.sleep(3)
+        acceder_buttons = self.driver.find_elements(By.XPATH, "//button[contains(text(), 'Accéder')]")
+        print(f"Found {len(acceder_buttons)} 'Accéder' buttons")
+        target_button = None
+        for i, button in enumerate(acceder_buttons):
+            try:
+                parent = button.find_element(By.XPATH, "./..")
+                parent_text = parent.text.lower()
+                print(f"Button {i+1} parent text: {parent_text[:100]}...")
+                if "mon espace métier" in parent_text or "espace métier" in parent_text:
+                    target_button = button
+                    print("Found 'Accéder' button under 'Mon espace métier'")
+                    break
+            except Exception as e:
+                print(f"Error checking button {i+1}: {e}")
+                continue
+        if target_button:
+            print("Clicking the correct 'Accéder' button...")
+            target_button.click()
+        else:
+            print("Could not find 'Accéder' button under 'Mon espace métier', clicking the first one if available...")
+            if acceder_buttons:
+                acceder_buttons[0].click()
             else:
-                print("Could not find 'Accéder' button under 'Mon espace métier', clicking the first one...")
-                if acceder_buttons:
-                    acceder_buttons[0].click()
-                else:
-                    print("No 'Accéder' buttons found!")
-                    return
-            
-            # Wait for the new tab to open
-            print("Waiting for new tab to open...")
-            time.sleep(3)
-            
-            # Switch to the new tab (metier environment)
-            print("Switching to new tab...")
+                print("No 'Accéder' buttons found! Aborting login.")
+                return
+        # Wait for the new tab to open
+        print("Waiting for new tab to open...")
+        time.sleep(3)
+        print(f"Window handles: {self.driver.window_handles}")
+        if len(self.driver.window_handles) > 1:
+            print("Switching to new tab (Métier environment)...")
             self.driver.switch_to.window(self.driver.window_handles[-1])
-            
-            # Wait for the metier page to load
-            print("Waiting for metier page to load...")
-            time.sleep(5)
-            
-            print(f"Current URL in new tab: {self.driver.current_url}")
-            print(f"Page title in new tab: {self.driver.title}")
-            
-        except TimeoutException:
-            print("Could not find 'Accéder' button, trying direct navigation...")
-            # Fallback: try direct navigation
-            self.driver.get("https://metier.ffbridge.fr/#/home")
-            print("Navigated to metier URL directly")
+        else:
+            print("Only one window handle, staying on current tab.")
+        # Wait for the metier page to load
+        print("Waiting for metier page to load...")
+        time.sleep(5)
+        print(f"Current URL in new tab: {self.driver.current_url}")
+        print(f"Page title in new tab: {self.driver.title}")
+        # Fail early if not in the Métier environment
+        if not ("metier.ffbridge.fr" in self.driver.current_url):
+            print("ERROR: Not in Métier environment after login and navigation! Aborting.")
+            return []
     
     def scrape_entites(self):
         # We should now be in the licencie environment after clicking "Accéder"
