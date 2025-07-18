@@ -124,3 +124,30 @@ For historical and reference purposes, the following files document the original
 - Saves players.csv after each club to minimize data loss
 - Known issue: error when navigating to member section (under investigation)
 - Script is robust for large-scale scraping, but under active development for further detail and error handling
+
+## 🚦 Scraper Refactor Plan (July 2025)
+
+- **Batch-first scraping:**
+  - Scrape all clubs/entities from the dropdown, collecting all info from the /informations page and FFB entity ID.
+  - Build the clubs DataFrame with all fields encountered, dynamically adding columns as new fields are found (missing values filled with '').
+  - Save the full clubs.csv only after all entities are processed.
+  - Print progress (e.g., "Comité de Lorraine - Collecte des Clubs - Traités n/total").
+- **Member scraping:**
+  - For each club, build the URL for the members list and scrape all members, always including the FFB licensee ID.
+  - Build the players DataFrame, dynamically adding columns as new fields are found (missing values filled with '').
+  - Save the full players.csv only after all members are processed.
+- **Section-by-section deep scraping:**
+  - For each section/tab, iterate through the relevant DataFrame, build the URL, and scrape all new fields, updating the DataFrame and saving after each section.
+  - Print progress for each section and entity/member.
+- **Dynamic DataFrame handling:**
+  - As new fields are scraped, add them to the DataFrame if they don’t exist, filling missing values for previous rows with ''.
+  - Final CSVs always have all columns seen so far, matching the evolving DB schema.
+- **Navigation optimization:**
+  - Batch scraping and direct URL building minimize navigation time.
+- **Scalability:**
+  - Approach is robust for all committees and the full FFB dataset (1050 clubs, 100,000+ members).
+- **Error handling & data safety:**
+  - Save CSVs after each major batch/section to avoid data loss.
+  - Print errors and continue processing to maximize data collection.
+
+> The script is being refactored to follow this plan for maximum efficiency, robustness, and scalability.
