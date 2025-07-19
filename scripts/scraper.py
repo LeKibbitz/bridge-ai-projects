@@ -323,26 +323,26 @@ class FFBScraper:
         try:
             # Click the 'Tous les membres' OPGButton to ensure full list is displayed
             button_clicked = False
-            wait = WebDriverWait(self.driver, 3)  # Reduced timeout
+            wait = WebDriverWait(self.driver, 2)  # Further reduced timeout
             try:
                 tous_button = wait.until(
                     EC.element_to_be_clickable((By.XPATH, "//div[contains(@class, 'option-group')]//button[contains(., 'Tous les membres')]"))
                 )
                 tous_button.click()
                 print(f"Bouton 'Tous les membres' cliqué pour club {club_name} (ID: {club_id})")
-                time.sleep(1)
+                time.sleep(0.5)
                 button_clicked = True
             except Exception as e:
                 print(f"Impossible de cliquer sur 'Tous les membres' : {e}")
                 # Fallback: try 'Licenciés' with a shorter wait
                 try:
-                    short_wait = WebDriverWait(self.driver, 2)
+                    short_wait = WebDriverWait(self.driver, 1)
                     licencies_button = short_wait.until(
                         EC.element_to_be_clickable((By.XPATH, "//div[contains(@class, 'option-group')]//button[contains(., 'Licenciés')]"))
                     )
                     licencies_button.click()
                     print(f"Bouton 'Licenciés' cliqué pour club {club_name} (ID: {club_id})")
-                    time.sleep(1)
+                    time.sleep(0.5)
                     button_clicked = True
                 except Exception as e2:
                     print(f"Impossible de cliquer sur 'Licenciés' non plus : {e2}")
@@ -358,69 +358,59 @@ class FFBScraper:
             except Exception:
                 pass  # No such message, proceed
             
-            # Scrape all pages using CSV approach
-            while True:
-                try:
-                    # Wait for members table with timeout
-                    table_wait = WebDriverWait(self.driver, 3)
-                    table = table_wait.until(EC.presence_of_element_located((By.CLASS_NAME, "members-table")))
-                    
-                    rows = table.find_elements(By.TAG_NAME, 'tr')
-                    if len(rows) <= 1:  # Only header or empty
-                        print(f"Table vide pour club {club_name} (ID: {club_id})")
-                        break
-                        
-                    csv_lines = []
-                    for row in rows:
-                        cells = row.find_elements(By.TAG_NAME, 'td')
-                        csv_line = '\t'.join([cell.text.strip() for cell in cells])
-                        csv_lines.append(csv_line)
-                    csv_text = '\n'.join(csv_lines)
-                    
-                    # Parse the CSV data
-                    csv_reader = csv.reader(io.StringIO(csv_text), delimiter='\t')
-                    
-                    # Skip header row
-                    headers = next(csv_reader)
-                    print(f"DEBUG - CSV Headers for {club_name}: {headers}")
-                    
-                    # Process data rows
-                    for row in csv_reader:
-                        if len(row) >= 6:  # Ensure we have enough columns
-                            member_data = {
-                                'numero_licence': row[0],
-                                'nom_complet': row[1], 
-                                'type_licence': row[2],
-                                'date_encaissement': row[3],
-                                'montant': row[4],
-                                'actions': row[5],
-                                'club_id': club_id,
-                                'club_nom': club_name
-                            }
-                            # Determine member status based on payment
-                            if member_data['montant'] == '0,00€':
-                                member_data['member_type'] = 'Non payé'
-                            elif member_data['actions'] == 'Compte FFB':
-                                member_data['member_type'] = 'Payé'
-                            else:
-                                member_data['member_type'] = 'En attente'
-                            
-                            all_columns.update(member_data.keys())
-                            members.append(member_data)
-                    
-                except Exception as e:
-                    print(f"Error parsing CSV data for club {club_name}: {e}")
-                    print(f"Current URL: {self.driver.current_url}")
-                    break  # Exit pagination loop on error
+            # Scrape current page only (removed while True loop to prevent hanging)
+            try:
+                # Wait for members table with timeout
+                table_wait = WebDriverWait(self.driver, 2)
+                table = table_wait.until(EC.presence_of_element_located((By.CLASS_NAME, "members-table")))
                 
-                # Pagination: look for next page button (enabled)
-                try:
-                    next_button = self.driver.find_element(By.CSS_SELECTOR, ".pagination-next:not([disabled])")
-                    next_button.click()
-                    print(f"Navigated to next page for club {club_name}")
-                    time.sleep(1)
-                except Exception:
-                    break  # No more pages
+                rows = table.find_elements(By.TAG_NAME, 'tr')
+                if len(rows) <= 1:  # Only header or empty
+                    print(f"Table vide pour club {club_name} (ID: {club_id})")
+                    return []
+                    
+                csv_lines = []
+                for row in rows:
+                    cells = row.find_elements(By.TAG_NAME, 'td')
+                    csv_line = '\t'.join([cell.text.strip() for cell in cells])
+                    csv_lines.append(csv_line)
+                csv_text = '\n'.join(csv_lines)
+                
+                # Parse the CSV data
+                csv_reader = csv.reader(io.StringIO(csv_text), delimiter='\t')
+                
+                # Skip header row
+                headers = next(csv_reader)
+                print(f"DEBUG - CSV Headers for {club_name}: {headers}")
+                
+                # Process data rows
+                for row in csv_reader:
+                    if len(row) >= 6:  # Ensure we have enough columns
+                        member_data = {
+                            'numero_licence': row[0],
+                            'nom_complet': row[1], 
+                            'type_licence': row[2],
+                            'date_encaissement': row[3],
+                            'montant': row[4],
+                            'actions': row[5],
+                            'club_id': club_id,
+                            'club_nom': club_name
+                        }
+                        # Determine member status based on payment
+                        if member_data['montant'] == '0,00€':
+                            member_data['member_type'] = 'Non payé'
+                        elif member_data['actions'] == 'Compte FFB':
+                            member_data['member_type'] = 'Payé'
+                        else:
+                            member_data['member_type'] = 'En attente'
+                        
+                        all_columns.update(member_data.keys())
+                        members.append(member_data)
+                
+            except Exception as e:
+                print(f"Error parsing CSV data for club {club_name}: {e}")
+                print(f"Current URL: {self.driver.current_url}")
+                
         except Exception as e:
             print(f"Error scraping encaissement layout for club {club_name}: {e}")
         return members
