@@ -163,6 +163,75 @@ For historical and reference purposes, the following files document the original
 - An error log file is maintained for skipped entities or sections.
 - This hybrid checkpointing approach ensures minimal data loss, easy recovery, and robust, maintainable scraping.
 
+## FFB_Database Scraping – Champs et Structure par Entité
+
+Pour tous ces cas, le fil d’Ariane (BreadCrumb) est une source d’information mais n’est pas à scraper.
+
+- [ ] **FFB (ID: 1)**
+    * BreadCumb : Entités > FFB > Informations principales
+    * Tab INFORMATIONS PRINCIPALES
+        * Section Identification
+            * Nom de l’entité
+            * Numéro d’entité
+            * Type
+            * Check boxes (All 4, with checked/not checked)
+        * Subordination
+            * Entité de subordination
+            * Entité de regroupement
+        * Coordonnées
+            * E-mail
+            * Site internet
+            * Téléphone principal
+            * Téléphone secondaire
+            * E-mail des Compétitions
+        * Adresse(s) email de notification des factures
+            * E-mail principal
+            * E-mail secondaire
+            * Commentaires
+        * Infos complémentaires
+            * 3 check boxes with their check status
+            * Nombre de tables
+            * Organisme de tutelle
+            * Horaires d’ouverture
+            * Dates de fermeture
+            * Saisonnier
+            * Les plus du club
+        * Photo de l’entité 
+            * Texte, image et Recommendations à droite de l’image
+        * Adresse
+            * Jeu
+                * Tous les champs
+                * Lien Google map (voir sur la carte)
+            * Courrier (bandeau comprimé), développé, on y trouve
+                * Un optionGroupButton, seule la première option fonctionne (peut-être que les autres aussi si, il y a quelque chose derrière)
+                * 6 Text Boxes
+            * Facturation
+                * Idem que courrier
+    * Tab ACTEURS
+        * Onglet Actifs (toute la liste, peut être sur plusieurs pages, mais, ça m’étonnerait)
+    * Tab TABLEAU DE BORD
+        * Onglet Licences et Tournois
+            * Des stats sous forme de tableaux avec chacun leur titre
+            * Ce Tab n’existe qu’au niveau des clubs, mais on le prend si présent
+
+- [ ] **Zone (ID: 2)**
+    * BreadCumb : Entités > Dropdown list > Informations principales (qui se décompose ainsi)
+        * 7 digits : Numéro de l’entité - Type d’entité (Zone) - Code de l’entité (I, II, III…) Nom de l’entité > Informations principales
+    * Tab INFORMATIONS PRINCIPALES
+        * Identification : Idem FFB
+        * Subordination : ⊖ Entité de regroupement
+        * Coordonnées : Titre présent mais pas de bloc texte (parce que pas de data ? On prend quand même pour la structure)
+        * Adresses(s) mails de notifications de factures : Comme coordonnées de la Zone
+        * ⊖⊖⊖⊖⊖ Plus rien après, fin de la page
+    * Tab ACTEURS : Idem FFB
+    * Tab TOURNOIS
+        * ⊕ Un bandeau vertical sur la gauche avec 3 choix (Organisation, Livret, Calendrier)
+            * Les deux premiers sont cliquables mais, pas de données derrière
+            * Le troisième : Option indisponible pour cette entité
+    * ⊖ Tab TABLEAU DE BORD
+
+---
+
 # 📝 Project Progress & Robust Scraping Architecture (2025)
 
 - **Dual-URL member scraping and status merging**: The scraper now collects member data from both the full list (encaissement) and the renewed/consultation list, merging statuses for completeness.
