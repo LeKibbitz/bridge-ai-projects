@@ -162,3 +162,15 @@ For historical and reference purposes, the following files document the original
 - The CSV always contains the full entity IDs as scraped (with all digits/leading zeros) and all relevant fields.
 - An error log file is maintained for skipped entities or sections.
 - This hybrid checkpointing approach ensures minimal data loss, easy recovery, and robust, maintainable scraping.
+
+# 📝 Project Progress & Robust Scraping Architecture (2025)
+
+- **Dual-URL member scraping and status merging**: The scraper now collects member data from both the full list (encaissement) and the renewed/consultation list, merging statuses for completeness.
+- **CSV-based parsing**: Member tables are parsed as tab-delimited CSV for reliability and speed, with robust header detection and status inference.
+- **Robust error handling**: The scraper gracefully handles missing OPGButtons, absent or empty tables, and navigation errors, logging issues and skipping problematic entities without hanging.
+- **Modular scraping functions**: Each entity type (FFB, Zone, etc.) will have its own modular scraping function, with a clear, commented skeleton for each section (informations principales, acteurs, tableau de bord, etc.).
+- **Clear separation of logic**: The codebase is structured so that each section/tab of the FFB site is scraped by a dedicated function, making it easy to adapt to new entity types or changes in the site structure.
+- **Checkpointing and recovery**: The scraper saves progress after each major section, can resume from the last successful entity, and maintains error logs for skipped entities or sections.
+- **API key hygiene**: Guidance is provided for handling public API key leaks, including revoking, deleting, and purging secrets from git history, and ensuring sensitive files are not tracked.
+
+---
