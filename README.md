@@ -163,14 +163,14 @@ For historical and reference purposes, the following files document the original
 - An error log file is maintained for skipped entities or sections.
 - This hybrid checkpointing approach ensures minimal data loss, easy recovery, and robust, maintainable scraping.
 
-## FFB_Database Scraping – Champs et Structure par Entité
+# FFB_Database Scraping - Details on what, where the data are.
 
-Pour tous ces cas, le fil d’Ariane (BreadCrumb) est une source d’information mais n’est pas à scraper.
+For all of these, the BreadCrumb is a source of information but not to be scraped
 
-- [ ] **FFB (ID: 1)**
-    * BreadCumb : Entités > FFB > Informations principales
-    * Tab INFORMATIONS PRINCIPALES
-        * Section Identification
+FFB (ID: 1)
+BreadCumb : Entités > FFB > Informations principales
+	Tab INFORMATIONS PRINCIPALES
+        * Identification
             * Nom de l’entité
             * Numéro d’entité
             * Type
@@ -207,28 +207,159 @@ Pour tous ces cas, le fil d’Ariane (BreadCrumb) est une source d’information
                 * 6 Text Boxes
             * Facturation
                 * Idem que courrier
-    * Tab ACTEURS
-        * Onglet Actifs (toute la liste, peut être sur plusieurs pages, mais, ça m’étonnerait)
-    * Tab TABLEAU DE BORD
+	Tab ACTEURS
+        * Onglet Actifs (Le titre “Liste des acteurs actifs”, toute la liste, peut être sur plusieurs pages, mais, ça m’étonnerait)
+            * Onglet Historique (Le titre “Liste des acteurs inactifs”, la liste (ATTENTION : Plusieurs pages, navigations en bas de la liste)
+	Tab TOURNOIS : Inaccessible
+	Tab TABLEAU DE BORD
         * Onglet Licences et Tournois
-            * Des stats sous forme de tableaux avec chacun leur titre
-            * Ce Tab n’existe qu’au niveau des clubs, mais on le prend si présent
+            Des stats sous forme de tableaux avec chacun leur titre
+            Là, faut être clever, on ne retrouve ce Tab qu’au niveau des clubs, je ne sais pas, mais ça peut servir, on prends.
 
-- [ ] **Zone (ID: 2)**
-    * BreadCumb : Entités > Dropdown list > Informations principales (qui se décompose ainsi)
-        * 7 digits : Numéro de l’entité - Type d’entité (Zone) - Code de l’entité (I, II, III…) Nom de l’entité > Informations principales
-    * Tab INFORMATIONS PRINCIPALES
+Zone (ID: 2)
+BreadCrumb : Entités > Dropdown list > Informations principales (qui se décompose ainsi)
+				7 digits : Numéro de l’entité - Type d’entité (Zone) - Code de l’entité (I, II, III…) 				Nom de l’entité > Informations principales
+	Tab INFORMATIONS PRINCIPALES
         * Identification : Idem FFB
-        * Subordination : ⊖ Entité de regroupement
-        * Coordonnées : Titre présent mais pas de bloc texte (parce que pas de data ? On prend quand même pour la structure)
-        * Adresses(s) mails de notifications de factures : Comme coordonnées de la Zone
+        * Subordination , ⊖ Entité de regroupement
+        * Coordonnées : Titre présent mais pas de bloc texte (parce que pas de data ? Dans la table, ce n’est pas grave, mais pour ton contrôleur… Je pense qu’on prend quand même. Il sera toujours plus facile de commenter ou supprimer plus tard dans le contrôleur.
+        * Adresses(s) mails de notifications de factures : Comme coordonnées de la Zone 
         * ⊖⊖⊖⊖⊖ Plus rien après, fin de la page
-    * Tab ACTEURS : Idem FFB
-    * Tab TOURNOIS
+	Tab ACTEURS : Idem FFB
+	Tab TOURNOIS
         * ⊕ Un bandeau vertical sur la gauche avec 3 choix (Organisation, Livret, Calendrier)
-            * Les deux premiers sont cliquables mais, pas de données derrière
-            * Le troisième : Option indisponible pour cette entité
-    * ⊖ Tab TABLEAU DE BORD
+            Les deux premiers sont cliquables mais, pas de données derrière
+            Le troisième : Option indisponible pour cette entité
+	⊖ Tab TABLEAU DE BORD
+    * ⊖⊖⊖⊖⊖ FIN DE LA PAGE
+
+Ligue (ID: 18)
+BreadCrumb : Idem Zone sauf Code de l’entité (01, 02, 03...) 
+	Tab INFORMATIONS PRINCIPALES
+        * Identification : Idem FFB
+        * Subordination : Idem Zone
+	⊖ Entité de regroupement (Bizarre qu’il n’y ait pas Zone I AL-BO-CP-FL-LO)
+        * Coordonnées
+            * E-mail Compétions renseigné. Rien d’autre/ Cela confirme peut-être que s’il n’y a pas de données derrière, les blocs texte ne s’affichent pas.
+        * Adresse(s) email de notification des factures : Titre mais pas de bloc texte (même raison que pour Coordonnées ?)
+	Tab ACTEURS : idem Zone
+	Tab Tournois : Idem Zone
+
+Comité (ID: 38)
+BreadCrumb : Idem Ligue sauf Code de l’entité (de… Lorraine, d’Anjou, de Bourgogne…) 
+	Tab INFORMATIONS PRINCIPALES
+        * Identification : Idem FFB
+        * Subordination : Idem Zone
+            * ⊕ Entité de regroupement : Ligue 09 AL-BO-LO
+            * ⊕ Entité de regroupement : Zone 09 AL-BOCP-FL-LO
+        * Coordonnées : Idem FFB
+        * Adresse(s) email de notification des factures
+            * E-mail principal + Bloc de texterenseigné
+            * E-mail secondaire + Bloc de texte mais vide
+            * ⊕ Commentaires + Bloc de texte rensseigné
+            Ça vient peut-être contredire ce que je pensais, à moins que les champs de la BDD FFB aient dans un cas des NULL value et dans l’autre “”
+        * Infos complémentaires
+            * 3 check boxes et leur valeur
+            * 6 blocs de texte vides
+        * Photo de l’identité
+            * Texte
+            * Bloc photo mais vide
+            * Consigne à côté, en bas à droite de l’image
+        * Adresse
+            * Jeu : On scrap les 6 blocs de texte
+            * Courrier : On scrap les 6 blocs de texte
+            * Facturation : On scrap les 6 blocs de texte
+	Tab ACTEURS : idem Zone
+	Tab RÔLES
+        * On ne scrap que la liste avec les en-têtes, sans la colonne Actions
+	Tab TOURNOIS
+	Un bandeau vertical sur la gauche
+        * Organisation : on ne peut s’inscrire ni voir qui est inscrit, on passe
+        * Livret : Sans intérêt, c’est gérer en amont par les organisateurs
+        * Calendrier : On scrap le tableau et la légende
+	Tab FACTURATION
+	Un bandeau vertical sur la gauche avec plusieurs options
+        * Barèmes
+            * AFFILIATION DU CLUB
+                * Part FFB : 75€
+                * Part comité : 10€
+                * Total 85€
+            * PRIX DES LICENCES
+                * On scrap la liste avec ses en-têtes, sauf la colonne Action
+        * Montants FFB : Bloc texte TOTAL
+            * SOMME DUE AU COMITÉ 
+                * On scrap la liste avec ses en-têtes, sauf la colonne Action
+        * Encaissemens : On passe
+        * Factures FFB : On passe
+        * Parcours Bridge : On passe
+        * As de Trèfle : On Passe
+        * 5 séance Découverte : On scrap Titre + Liste (même vide)
+	Tab TABLEAU DE BORD
+        * Licences et Tournois : On scrap Titres et Tableaux
+
+	Tab CLUBS ACTIFS INACTIFS
+        * On scrap Titre + Liste (même vide), Dernière colonne : RadioButton Actif / Inactif
+
+	Tab ENSEIGNANTS : Non maintenu et double emploi, on passe
+
+	Tab ARBITRES : Non maintenu et double emploi, on passe
+
+
+Club (ID: 850)
+	BreadCrumb : Entités > Dropdown list > Informations principales (qui se décompose ainsi)
+	⊖			7 digits : Numéro de l’entité - Nom de l’entité > Informations principales
+
+	Tab INFORMATIONS PRINCIPALES
+        * Identification : Idem FFB.
+        * Subordination :
+            * Subordination : Idem Comité, 1 seul bloc de texte vide
+        * Coordonnées : Idem Comité ⊖E-mail Compétitions
+        * Adresse(s) email de notification des factures : Idem Comité 
+        * Infos complémentaires : Idem Comité 
+            * ⊕ Votre club participe aux opérations “5 séances Découverte” + RadioButton
+            * 3 check boxes et leur valeur
+            * 6 blocs de texte vides
+        * Photo de l’identité
+            * Texte
+            * Bloc photo renseigné
+            * Consigne à côté, en bas à droite de l’image
+        * ⊕ Écoles de bridge + Logo
+            * Texte
+        * Liste des enseignants actifs avec un agrément valide
+En-tête + Liste
+        * Adresse : Idem Comité
+
+	Tab ACTEURS : idem Comité
+	Tab RÔLES
+        * On ne scrap que la liste avec les en-têtes, sans la colonne Actions
+	Tab TOURNOIS
+	Un bandeau vertical sur la gauche
+        * Organisation : on ne peut s’inscrire ni voir qui est inscrit, on passe
+        * Livret : Sans intérêt, c’est gérer en amont par les organisateurs
+        * Calendrier : On scrap le tableau et la légende
+	Tab COURS : On scrap le tableau sans la dernière colonne
+
+	Tab FACTURATION
+	Un bandeau vertical sur la gauche avec plusieurs options
+        * Barèmes
+            * AFFILIATION DU CLUB
+                * Part FFB : 57,50€
+                * Part comité : 10€
+                * Total 67,505€
+            * PRIX DES LICENCES
+                * On scrap la liste avec ses en-têtes, sauf la colonne Action
+        * ⊕⊕⊕ Montants Comité/FFB :
+            * Titre + Tableau + Warning sous le tableau
+            * ⊕ TRANSFERTS DE LICENCES : En-têtes + Liste
+            * SOMME DUE AU COMITÉ 
+                * On scrap la liste avec ses en-têtes, sauf la colonne Action
+        * Encaissemens : On passe
+        * Factures FFB : On passe
+        * Parcours Bridge : On passe
+        * As de Trèfle : On Passe
+        * 5 séance Découverte : On scrap Titre + Liste (même vide) si présente
+
+					THIS IS THE END !
 
 ---
 
