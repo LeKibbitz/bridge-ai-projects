@@ -45,14 +45,14 @@ class FFBScraper:
     
     def login(self):
         # Start from the main FFB website
-        print("Starting from main FFB website...")
-        self.driver.get("https://www.ffbridge.fr/")
+        print("Starting from FFB Login Page...")
+        self.driver.get("https://www.ffbridge.fr/auth/login")
         print("Waiting for site to load...")
         time.sleep(5)
         current_url = self.driver.current_url
         print(f"Current URL after loading: {current_url}")
         if "auth/login" in current_url:
-            print("Redirected to login page, proceeding with login...")
+            print("Proceeding with login...")
             self._perform_login()
         else:
             print("Not redirected to login, checking if we can access metier...")
@@ -235,17 +235,17 @@ class FFBScraper:
             else:
                 club_code, club_name = code_label, ''
             club_id = option.get_attribute('value')
-            clubs_to_process.append({'id': club_id, 'code': club_code, 'nom': club_name, 'region': 'Lorraine'})
+            clubs_to_process.append({'FFB Id': club_id, 'N°': club_code, 'Nom': club_name, 'Comité': 'Lorraine'})
         print(f"Total clubs to process: {len(clubs_to_process)}")
         clubs = []
         output_dir = self.get_output_dir()
         clubs_file = os.path.join(output_dir, 'clubs.csv')
-        all_columns = set(['id', 'code', 'nom', 'region'])
+        all_columns = set(['FFB Id', 'N°', 'Nom', 'Comité'])
         for idx, club in enumerate(clubs_to_process, 1):
             print(f"[Batch] ({idx}/{len(clubs_to_process)}) Processing club: {club['code']} - {club['nom']}")
             info_url = f"https://metier.ffbridge.fr/#/entites/{club['id']}/informations"
             self.driver.get(info_url)
-            time.sleep(2)
+            time.sleep(0.5)
             club_data = dict(club)
             # --- Scrape all visible fields in the main info section ---
             info_fields = self.driver.find_elements(By.CSS_SELECTOR, ".block-content .row")
@@ -284,7 +284,7 @@ class FFBScraper:
         3. Merge on license number, updating member_type/status
         4. Save merged DataFrame
         """
-        all_columns = set(["nom", "prenom", "numero_licence", "statut", "club_id", "club_nom", "member_type"])
+        all_columns = set(["numero_licence", "nom", "prenom", "club_nom", "club_id", "member_type", "statut"])
         # Step 1: Scrape full member list
         url_full = f"{METIER_URL}#/entites/{club_id}/facturation/encaissement"
         print(f"[Full List] Navigating to: {url_full}")
@@ -428,10 +428,10 @@ def main():
     scraper = FFBScraper()
     try:
         output_dir = scraper.get_output_dir()
-        players_file = os.path.join(output_dir, 'players.csv')
-        all_columns = set(["nom", "prenom", "numero_licence", "statut", "club_id", "club_nom", "member_type"])
-        scraper.login()
         clubs_file = os.path.join(output_dir, 'clubs.csv')
+        players_file = os.path.join(output_dir, 'players.csv')
+        all_columns = set([ "numero_licence", "nom", "prenom", "club_nom", "club_id", "member_type", "statut"])
+        scraper.login()
         # Optimization: load clubs from CSV if it exists
         if os.path.exists(clubs_file):
             print(f"Loading clubs from {clubs_file}")
