@@ -421,62 +421,1209 @@ class FFBScraper:
         print(f"Scraping consultation layout for club {club_name} (ID: {club_id})")
         return []
     
-    def close(self):
-        self.driver.quit()
+    def scrape_ffb_entity(self, entity_id=1):
+        """
+        Scrape all required data for the FFB entity (ID: 1) as per the detailed spec.
+        Returns a dictionary with all extracted data.
+        """
+        data = {}
+        # 1. Go to the main informations page
+        self.driver.get(f"https://metier.ffbridge.fr/#/entites/{entity_id}/informations")
+        time.sleep(1)
+        # --- Tab INFORMATIONS PRINCIPALES ---
+        data.update(self.scrape_informations_principales())
+        # --- Tab ACTEURS (Onglet Actifs) ---
+        data['acteurs'] = self.scrape_acteurs_actifs()
+        # --- Tab TABLEAU DE BORD (Onglet Licences et Tournois) ---
+        data['stats'] = self.scrape_tableau_de_bord_stats()
+        return data
+
+    def scrape_informations_principales(self):
+        """
+        Scrape the 'Informations principales' tab for the FFB entity.
+        Returns a dictionary with all required fields.
+        """
+        info = {}
+        # Section Identification
+        # - Nom de l’entité
+        # - Numéro d’entité
+        # - Type
+        # - 4 checkboxes (with checked/not checked)
+        # Section Subordination
+        # - Entité de subordination
+        # - Entité de regroupement
+        # Section Coordonnées
+        # - E-mail
+        # - Site internet
+        # - Téléphone principal
+        # - Téléphone secondaire
+        # - Commentaires
+        # - Infos complémentaires (3 checkboxes with their status)
+        # - Nombre de tables
+        # - Horaires d’ouverture
+        # - Saisonnier
+        # - Organisme de tutelle
+        # - Dates de fermeture
+        # - Les plus du club
+        # Section Photo de l’entité
+        # - Texte, image, recommandations à droite de l’image
+        # Section Adresse
+        # - Jeu: all fields + Google map link
+        # - Courrier: OPGButton (first option), 6 text boxes
+        # - Facturation: same as Courrier
+        # (Add code to extract each field here)
+        return info
+
+    def scrape_acteurs_actifs(self):
+        """
+        Scrape the 'Acteurs' tab, 'Actifs' sub-tab for the FFB entity.
+        Returns a list of dictionaries, one per actor.
+        """
+        acteurs = []
+        # Extract all rows from the Actifs list (handle pagination if needed)
+        # (Add code to extract each actor here)
+        return acteurs
+
+    def scrape_tableau_de_bord_stats(self):
+        """
+        Scrape the 'Tableau de bord' tab, 'Licences et Tournois' sub-tab for the FFB entity.
+        Returns a dictionary of stats tables, keyed by their title.
+        """
+        stats = {}
+        # For each table in the section, extract the title and the table data
+        # (Add code to extract each table here)
+        return stats
+
+    def scrape_zone_entity(self, entity_id=2):
+        """
+        Scrape all required data for a Zone entity as per the detailed spec.
+        Returns a dictionary with all extracted data.
+        """
+        print(f"Scraping Zone entity (ID: {entity_id})...")
+        data = {'entity_type': 'Zone', 'entity_id': entity_id}
+        
+        # 1. Go to the main informations page
+        self.driver.get(f"https://metier.ffbridge.fr/#/entites/{entity_id}/informations")
+        time.sleep(2)
+        
+        # --- Tab INFORMATIONS PRINCIPALES ---
+        data.update(self.scrape_zone_informations_principales())
+        
+        # --- Tab ACTEURS ---
+        data['acteurs'] = self.scrape_acteurs_tab()
+        
+        # --- Tab TOURNOIS ---
+        data['tournois'] = self.scrape_zone_tournois_tab()
+        
+        return data
+
+    def scrape_zone_informations_principales(self):
+        """
+        Scrape the 'Informations principales' tab for Zone entities.
+        Returns a dictionary with all required fields.
+        """
+        info = {}
+        
+        # Section Identification (same as FFB)
+        info.update(self.scrape_identification_section())
+        
+        # Section Subordination (only Entité de regroupement)
+        try:
+            reg_element = self.driver.find_element(By.XPATH, "//label[contains(text(), 'Entité de regroupement')]/following-sibling::div")
+            info['entite_regroupement'] = reg_element.text.strip()
+        except:
+            info['entite_regroupement'] = ''
+        
+        # Section Coordonnées (title present but no text block)
+        info['coordonnees_titre_present'] = True
+        info['coordonnees_bloc_texte'] = False
+        
+        # Section Adresse(s) mails de notifications de factures (same as Coordonnées)
+        info['notification_factures_titre_present'] = True
+        info['notification_factures_bloc_texte'] = False
+        
+        return info
+
+    def scrape_zone_tournois_tab(self):
+        """
+        Scrape the 'Tournois' tab for Zone entities.
+        Returns a dictionary with available options.
+        """
+        tournois = {}
+        
+        try:
+            # Click on Tournois tab
+            tournois_tab = self.driver.find_element(By.XPATH, "//a[contains(text(), 'Tournois')]")
+            tournois_tab.click()
+            time.sleep(2)
+            
+            # Check for vertical banner with 3 choices
+            try:
+                organisation_btn = self.driver.find_element(By.XPATH, "//button[contains(text(), 'Organisation')]")
+                tournois['organisation_clickable'] = True
+            except:
+                tournois['organisation_clickable'] = False
+                
+            try:
+                livret_btn = self.driver.find_element(By.XPATH, "//button[contains(text(), 'Livret')]")
+                tournois['livret_clickable'] = True
+            except:
+                tournois['livret_clickable'] = False
+                
+            try:
+                calendrier_btn = self.driver.find_element(By.XPATH, "//button[contains(text(), 'Calendrier')]")
+                tournois['calendrier_disponible'] = False  # Option indisponible
+            except:
+                tournois['calendrier_disponible'] = False
+                
+        except Exception as e:
+            print(f"Error scraping Zone tournois tab: {e}")
+            
+        return tournois
+
+    def scrape_ligue_entity(self, entity_id=18):
+        """
+        Scrape all required data for a Ligue entity as per the detailed spec.
+        Returns a dictionary with all extracted data.
+        """
+        print(f"Scraping Ligue entity (ID: {entity_id})...")
+        data = {'entity_type': 'Ligue', 'entity_id': entity_id}
+        
+        # 1. Go to the main informations page
+        self.driver.get(f"https://metier.ffbridge.fr/#/entites/{entity_id}/informations")
+        time.sleep(2)
+        
+        # --- Tab INFORMATIONS PRINCIPALES ---
+        data.update(self.scrape_ligue_informations_principales())
+        
+        # --- Tab ACTEURS ---
+        data['acteurs'] = self.scrape_acteurs_tab()
+        
+        # --- Tab TOURNOIS ---
+        data['tournois'] = self.scrape_zone_tournois_tab()  # Same as Zone
+        
+        return data
+
+    def scrape_ligue_informations_principales(self):
+        """
+        Scrape the 'Informations principales' tab for Ligue entities.
+        Returns a dictionary with all required fields.
+        """
+        info = {}
+        
+        # Section Identification (same as FFB)
+        info.update(self.scrape_identification_section())
+        
+        # Section Subordination (same as Zone)
+        try:
+            reg_element = self.driver.find_element(By.XPATH, "//label[contains(text(), 'Entité de regroupement')]/following-sibling::div")
+            info['entite_regroupement'] = reg_element.text.strip()
+        except:
+            info['entite_regroupement'] = ''
+        
+        # Section Coordonnées (only E-mail Compétitions)
+        try:
+            email_comp_element = self.driver.find_element(By.XPATH, "//label[contains(text(), 'E-mail Compétitions')]/following-sibling::div")
+            info['email_competitions'] = email_comp_element.text.strip()
+        except:
+            info['email_competitions'] = ''
+        
+        # Section Adresse(s) email de notification des factures (title but no text block)
+        info['notification_factures_titre_present'] = True
+        info['notification_factures_bloc_texte'] = False
+        
+        return info
+
+    def scrape_comite_entity(self, entity_id=38):
+        """
+        Scrape all required data for a Comité entity as per the detailed spec.
+        Returns a dictionary with all extracted data.
+        """
+        print(f"Scraping Comité entity (ID: {entity_id})...")
+        data = {'entity_type': 'Comité', 'entity_id': entity_id}
+        
+        # 1. Go to the main informations page
+        self.driver.get(f"https://metier.ffbridge.fr/#/entites/{entity_id}/informations")
+        time.sleep(2)
+        
+        # --- Tab INFORMATIONS PRINCIPALES ---
+        data.update(self.scrape_comite_informations_principales())
+        
+        # --- Tab ACTEURS ---
+        data['acteurs'] = self.scrape_acteurs_tab()
+        
+        # --- Tab RÔLES ---
+        data['roles'] = self.scrape_roles_tab()
+        
+        # --- Tab TOURNOIS ---
+        data['tournois'] = self.scrape_comite_tournois_tab()
+        
+        # --- Tab FACTURATION ---
+        data['facturation'] = self.scrape_comite_facturation_tab()
+        
+        # --- Tab TABLEAU DE BORD ---
+        data['tableau_de_bord'] = self.scrape_tableau_de_bord_tab()
+        
+        # --- Tab CLUBS ACTIFS INACTIFS ---
+        data['clubs_actifs_inactifs'] = self.scrape_clubs_actifs_inactifs_tab()
+        
+        return data
+
+    def scrape_comite_informations_principales(self):
+        """
+        Scrape the 'Informations principales' tab for Comité entities.
+        Returns a dictionary with all required fields.
+        """
+        info = {}
+        
+        # Section Identification (same as FFB)
+        info.update(self.scrape_identification_section())
+        
+        # Section Subordination (same as Zone, but with multiple Entités de regroupement)
+        try:
+            reg_elements = self.driver.find_elements(By.XPATH, "//label[contains(text(), 'Entité de regroupement')]/following-sibling::div")
+            info['entites_regroupement'] = [elem.text.strip() for elem in reg_elements]
+        except:
+            info['entites_regroupement'] = []
+        
+        # Section Coordonnées (same as FFB)
+        info.update(self.scrape_coordonnees_section())
+        
+        # Section Adresse(s) email de notification des factures
+        info.update(self.scrape_notification_factures_section())
+        
+        # Section Infos complémentaires (3 checkboxes + 6 empty text blocks)
+        info.update(self.scrape_comite_infos_complementaires())
+        
+        # Section Photo de l'entité
+        info.update(self.scrape_comite_photo_entite())
+        
+        # Section Adresse (same as FFB)
+        info.update(self.scrape_adresse_section())
+        
+        return info
+
+    def scrape_comite_infos_complementaires(self):
+        """Scrape the Infos complémentaires section for Comité"""
+        section = {}
+        
+        # 3 checkboxes
+        for i in range(1, 4):
+            try:
+                checkbox = self.driver.find_element(By.XPATH, f"//div[contains(@class, 'infos-complementaires')]//input[@type='checkbox'][{i}]")
+                section[f'info_checkbox_{i}'] = checkbox.is_selected()
+            except:
+                section[f'info_checkbox_{i}'] = False
+        
+        # 6 empty text blocks
+        for i in range(1, 7):
+            section[f'info_texte_{i}'] = ''
+            
+        return section
+
+    def scrape_comite_photo_entite(self):
+        """Scrape the Photo de l'entité section for Comité"""
+        section = {}
+        
+        try:
+            # Texte
+            texte_element = self.driver.find_element(By.XPATH, "//div[contains(@class, 'photo-entite')]//div[contains(@class, 'texte')]")
+            section['photo_texte'] = texte_element.text.strip()
+        except:
+            section['photo_texte'] = ''
+        
+        # Bloc photo but empty
+        section['photo_url'] = ''
+        
+        try:
+            # Consigne à côté, en bas à droite de l'image
+            consigne_element = self.driver.find_element(By.XPATH, "//div[contains(@class, 'photo-entite')]//div[contains(@class, 'consigne')]")
+            section['photo_consigne'] = consigne_element.text.strip()
+        except:
+            section['photo_consigne'] = ''
+            
+        return section
+
+    def scrape_roles_tab(self):
+        """Scrape the RÔLES tab (list with headers, without Actions column)"""
+        roles = []
+        
+        try:
+            # Click on RÔLES tab
+            roles_tab = self.driver.find_element(By.XPATH, "//a[contains(text(), 'Rôles')]")
+            roles_tab.click()
+            time.sleep(2)
+            
+            # Find the table
+            table = self.driver.find_element(By.XPATH, "//table[contains(@class, 'roles-table')]")
+            rows = table.find_elements(By.TAG_NAME, 'tr')
+            
+            # Get headers (excluding Actions column)
+            headers = []
+            header_cells = rows[0].find_elements(By.TAG_NAME, 'th')
+            for cell in header_cells:
+                if 'Actions' not in cell.text:
+                    headers.append(cell.text.strip())
+            
+            # Get data rows (excluding Actions column)
+            for row in rows[1:]:
+                cells = row.find_elements(By.TAG_NAME, 'td')
+                role_data = {}
+                cell_index = 0
+                for i, cell in enumerate(cells):
+                    if i < len(headers):  # Skip Actions column
+                        role_data[headers[i]] = cell.text.strip()
+                        cell_index += 1
+                roles.append(role_data)
+                
+        except Exception as e:
+            print(f"Error scraping Rôles tab: {e}")
+            
+        return roles
+
+    def scrape_comite_tournois_tab(self):
+        """Scrape the TOURNOIS tab for Comité (vertical banner with Calendrier)"""
+        tournois = {}
+        
+        try:
+            # Click on Tournois tab
+            tournois_tab = self.driver.find_element(By.XPATH, "//a[contains(text(), 'Tournois')]")
+            tournois_tab.click()
+            time.sleep(2)
+            
+            # Check Organisation (on ne peut s'inscrire ni voir qui est inscrit, on passe)
+            tournois['organisation_accessible'] = False
+            
+            # Check Livret (Sans intérêt, c'est gérer en amont par les organisateurs)
+            tournois['livret_interet'] = False
+            
+            # Check Calendrier (On scrap le tableau et la légende)
+            try:
+                calendrier_btn = self.driver.find_element(By.XPATH, "//button[contains(text(), 'Calendrier')]")
+                calendrier_btn.click()
+                time.sleep(2)
+                
+                # Scrape table and legend
+                tournois['calendrier'] = self.scrape_calendrier_table()
+                
+            except Exception as e:
+                print(f"Error scraping Calendrier: {e}")
+                tournois['calendrier'] = {}
+                
+        except Exception as e:
+            print(f"Error scraping Comité tournois tab: {e}")
+            
+        return tournois
+
+    def scrape_calendrier_table(self):
+        """Scrape the Calendrier table and legend"""
+        calendrier = {}
+        
+        try:
+            # Find the table
+            table = self.driver.find_element(By.XPATH, "//table[contains(@class, 'calendrier-table')]")
+            rows = table.find_elements(By.TAG_NAME, 'tr')
+            
+            # Extract table data
+            table_data = []
+            for row in rows:
+                cells = row.find_elements(By.TAG_NAME, 'td')
+                if cells:
+                    row_data = [cell.text.strip() for cell in cells]
+                    table_data.append(row_data)
+            
+            calendrier['tableau'] = table_data
+            
+            # Find legend
+            try:
+                legend_element = self.driver.find_element(By.XPATH, "//div[contains(@class, 'calendrier-legend')]")
+                calendrier['legende'] = legend_element.text.strip()
+            except:
+                calendrier['legende'] = ''
+                
+        except Exception as e:
+            print(f"Error scraping calendrier table: {e}")
+            
+        return calendrier
+
+    def scrape_comite_facturation_tab(self):
+        """Scrape the FACTURATION tab for Comité (vertical banner with multiple options)"""
+        facturation = {}
+        
+        try:
+            # Click on Facturation tab
+            facturation_tab = self.driver.find_element(By.XPATH, "//a[contains(text(), 'Facturation')]")
+            facturation_tab.click()
+            time.sleep(2)
+            
+            # Barèmes
+            facturation['baremes'] = self.scrape_baremes_section()
+            
+            # Montants FFB
+            facturation['montants_ffb'] = self.scrape_montants_ffb_section()
+            
+            # 5 séance Découverte
+            facturation['seance_decouverte'] = self.scrape_seance_decouverte_section()
+            
+        except Exception as e:
+            print(f"Error scraping Comité facturation tab: {e}")
+            
+        return facturation
+
+    def scrape_baremes_section(self):
+        """Scrape the Barèmes section"""
+        baremes = {}
+        
+        try:
+            # AFFILIATION DU CLUB
+            try:
+                part_ffb_element = self.driver.find_element(By.XPATH, "//td[contains(text(), 'Part FFB')]/following-sibling::td")
+                baremes['part_ffb'] = part_ffb_element.text.strip()
+            except:
+                baremes['part_ffb'] = ''
+                
+            try:
+                part_comite_element = self.driver.find_element(By.XPATH, "//td[contains(text(), 'Part comité')]/following-sibling::td")
+                baremes['part_comite'] = part_comite_element.text.strip()
+            except:
+                baremes['part_comite'] = ''
+                
+            try:
+                total_element = self.driver.find_element(By.XPATH, "//td[contains(text(), 'Total')]/following-sibling::td")
+                baremes['total'] = total_element.text.strip()
+            except:
+                baremes['total'] = ''
+            
+            # PRIX DES LICENCES (list with headers, without Action column)
+            baremes['prix_licences'] = self.scrape_prix_licences_table()
+            
+        except Exception as e:
+            print(f"Error scraping Barèmes section: {e}")
+            
+        return baremes
+
+    def scrape_prix_licences_table(self):
+        """Scrape the PRIX DES LICENCES table"""
+        prix_licences = []
+        
+        try:
+            # Find the table
+            table = self.driver.find_element(By.XPATH, "//table[contains(@class, 'prix-licences-table')]")
+            rows = table.find_elements(By.TAG_NAME, 'tr')
+            
+            # Get headers (excluding Action column)
+            headers = []
+            header_cells = rows[0].find_elements(By.TAG_NAME, 'th')
+            for cell in header_cells:
+                if 'Action' not in cell.text:
+                    headers.append(cell.text.strip())
+            
+            # Get data rows (excluding Action column)
+            for row in rows[1:]:
+                cells = row.find_elements(By.TAG_NAME, 'td')
+                row_data = {}
+                cell_index = 0
+                for i, cell in enumerate(cells):
+                    if i < len(headers):  # Skip Action column
+                        row_data[headers[i]] = cell.text.strip()
+                        cell_index += 1
+                prix_licences.append(row_data)
+                
+        except Exception as e:
+            print(f"Error scraping prix licences table: {e}")
+            
+        return prix_licences
+
+    def scrape_montants_ffb_section(self):
+        """Scrape the Montants FFB section"""
+        montants = {}
+        
+        try:
+            # Bloc texte TOTAL
+            try:
+                total_element = self.driver.find_element(By.XPATH, "//div[contains(@class, 'montants-ffb')]//div[contains(@class, 'total')]")
+                montants['total'] = total_element.text.strip()
+            except:
+                montants['total'] = ''
+            
+            # SOMME DUE AU COMITÉ (list with headers, without Action column)
+            montants['somme_due_comite'] = self.scrape_somme_due_comite_table()
+            
+        except Exception as e:
+            print(f"Error scraping Montants FFB section: {e}")
+            
+        return montants
+
+    def scrape_somme_due_comite_table(self):
+        """Scrape the SOMME DUE AU COMITÉ table"""
+        somme_due = []
+        
+        try:
+            # Find the table
+            table = self.driver.find_element(By.XPATH, "//table[contains(@class, 'somme-due-table')]")
+            rows = table.find_elements(By.TAG_NAME, 'tr')
+            
+            # Get headers (excluding Action column)
+            headers = []
+            header_cells = rows[0].find_elements(By.TAG_NAME, 'th')
+            for cell in header_cells:
+                if 'Action' not in cell.text:
+                    headers.append(cell.text.strip())
+            
+            # Get data rows (excluding Action column)
+            for row in rows[1:]:
+                cells = row.find_elements(By.TAG_NAME, 'td')
+                row_data = {}
+                cell_index = 0
+                for i, cell in enumerate(cells):
+                    if i < len(headers):  # Skip Action column
+                        row_data[headers[i]] = cell.text.strip()
+                        cell_index += 1
+                somme_due.append(row_data)
+                
+        except Exception as e:
+            print(f"Error scraping somme due comité table: {e}")
+            
+        return somme_due
+
+    def scrape_seance_decouverte_section(self):
+        """Scrape the 5 séance Découverte section"""
+        seance = {}
+        
+        try:
+            # Titre + Liste (même vide)
+            try:
+                titre_element = self.driver.find_element(By.XPATH, "//h4[contains(text(), '5 séance Découverte')]")
+                seance['titre'] = titre_element.text.strip()
+            except:
+                seance['titre'] = ''
+            
+            # Find the list/table
+            try:
+                table = self.driver.find_element(By.XPATH, "//table[contains(@class, 'seance-decouverte-table')]")
+                rows = table.find_elements(By.TAG_NAME, 'tr')
+                
+                liste = []
+                for row in rows[1:]:  # Skip header
+                    cells = row.find_elements(By.TAG_NAME, 'td')
+                    if cells:
+                        row_data = [cell.text.strip() for cell in cells]
+                        liste.append(row_data)
+                
+                seance['liste'] = liste
+            except:
+                seance['liste'] = []
+                
+        except Exception as e:
+            print(f"Error scraping séance découverte section: {e}")
+            
+        return seance
+
+    def scrape_clubs_actifs_inactifs_tab(self):
+        """Scrape the CLUBS ACTIFS INACTIFS tab"""
+        clubs = {}
+        
+        try:
+            # Click on CLUBS ACTIFS INACTIFS tab
+            clubs_tab = self.driver.find_element(By.XPATH, "//a[contains(text(), 'Clubs actifs inactifs')]")
+            clubs_tab.click()
+            time.sleep(2)
+            
+            # Titre + Liste (même vide), Dernière colonne : RadioButton Actif / Inactif
+            try:
+                titre_element = self.driver.find_element(By.XPATH, "//h3[contains(text(), 'Clubs')]")
+                clubs['titre'] = titre_element.text.strip()
+            except:
+                clubs['titre'] = ''
+            
+            # Find the table
+            try:
+                table = self.driver.find_element(By.XPATH, "//table[contains(@class, 'clubs-table')]")
+                rows = table.find_elements(By.TAG_NAME, 'tr')
+                
+                clubs_list = []
+                for row in rows[1:]:  # Skip header
+                    cells = row.find_elements(By.TAG_NAME, 'td')
+                    if cells:
+                        club_data = {}
+                        for i, cell in enumerate(cells[:-1]):  # Exclude last column (RadioButton)
+                            club_data[f'col_{i+1}'] = cell.text.strip()
+                        
+                        # Check RadioButton status in last column
+                        try:
+                            radio_actif = cells[-1].find_element(By.XPATH, ".//input[@type='radio' and @value='actif']")
+                            club_data['statut'] = 'Actif' if radio_actif.is_selected() else 'Inactif'
+                        except:
+                            club_data['statut'] = 'Inconnu'
+                        
+                        clubs_list.append(club_data)
+                
+                clubs['liste'] = clubs_list
+            except:
+                clubs['liste'] = []
+                
+        except Exception as e:
+            print(f"Error scraping clubs actifs inactifs tab: {e}")
+            
+        return clubs
+
+    def scrape_club_entity(self, entity_id=850):
+        """
+        Scrape all required data for a Club entity as per the detailed spec.
+        Returns a dictionary with all extracted data.
+        """
+        print(f"Scraping Club entity (ID: {entity_id})...")
+        data = {'entity_type': 'Club', 'entity_id': entity_id}
+        
+        # 1. Go to the main informations page
+        self.driver.get(f"https://metier.ffbridge.fr/#/entites/{entity_id}/informations")
+        time.sleep(2)
+        
+        # --- Tab INFORMATIONS PRINCIPALES ---
+        data.update(self.scrape_club_informations_principales())
+        
+        # --- Tab ACTEURS ---
+        data['acteurs'] = self.scrape_acteurs_tab()
+        
+        # --- Tab RÔLES ---
+        data['roles'] = self.scrape_roles_tab()
+        
+        # --- Tab TOURNOIS ---
+        data['tournois'] = self.scrape_comite_tournois_tab()  # Same as Comité
+        
+        # --- Tab COURS ---
+        data['cours'] = self.scrape_cours_tab()
+        
+        # --- Tab FACTURATION ---
+        data['facturation'] = self.scrape_club_facturation_tab()
+        
+        return data
+
+    def scrape_club_informations_principales(self):
+        """
+        Scrape the 'Informations principales' tab for Club entities.
+        Returns a dictionary with all required fields.
+        """
+        info = {}
+        
+        # Section Identification (same as FFB)
+        info.update(self.scrape_identification_section())
+        
+        # Section Subordination (1 seul bloc de texte vide)
+        info['subordination'] = ''
+        
+        # Section Coordonnées (same as Comité, without E-mail Compétitions)
+        coordonnees = self.scrape_coordonnees_section()
+        if 'email_competitions' in coordonnees:
+            del coordonnees['email_competitions']
+        info.update(coordonnees)
+        
+        # Section Adresse(s) email de notification des factures (same as Comité)
+        info.update(self.scrape_notification_factures_section())
+        
+        # Section Infos complémentaires (same as Comité + "5 séances Découverte")
+        info.update(self.scrape_club_infos_complementaires())
+        
+        # Section Photo de l'entité (same as Comité but with photo)
+        info.update(self.scrape_club_photo_entite())
+        
+        # Section Écoles de bridge + Logo
+        info.update(self.scrape_ecoles_bridge_section())
+        
+        # Section Liste des enseignants actifs
+        info.update(self.scrape_enseignants_actifs_section())
+        
+        # Section Adresse (same as Comité)
+        info.update(self.scrape_adresse_section())
+        
+        return info
+
+    def scrape_club_infos_complementaires(self):
+        """Scrape the Infos complémentaires section for Club"""
+        section = {}
+        
+        # "Votre club participe aux opérations '5 séances Découverte'" + RadioButton
+        try:
+            radio_element = self.driver.find_element(By.XPATH, "//input[@type='radio' and contains(@name, 'seances-decouverte')]")
+            section['participe_seances_decouverte'] = radio_element.is_selected()
+        except:
+            section['participe_seances_decouverte'] = False
+        
+        # 3 checkboxes
+        for i in range(1, 4):
+            try:
+                checkbox = self.driver.find_element(By.XPATH, f"//div[contains(@class, 'infos-complementaires')]//input[@type='checkbox'][{i}]")
+                section[f'info_checkbox_{i}'] = checkbox.is_selected()
+            except:
+                section[f'info_checkbox_{i}'] = False
+        
+        # 6 empty text blocks
+        for i in range(1, 7):
+            section[f'info_texte_{i}'] = ''
+            
+        return section
+
+    def scrape_club_photo_entite(self):
+        """Scrape the Photo de l'entité section for Club (with photo)"""
+        section = {}
+        
+        try:
+            # Texte
+            texte_element = self.driver.find_element(By.XPATH, "//div[contains(@class, 'photo-entite')]//div[contains(@class, 'texte')]")
+            section['photo_texte'] = texte_element.text.strip()
+        except:
+            section['photo_texte'] = ''
+        
+        # Bloc photo renseigné
+        try:
+            img_element = self.driver.find_element(By.XPATH, "//div[contains(@class, 'photo-entite')]//img")
+            section['photo_url'] = img_element.get_attribute('src')
+        except:
+            section['photo_url'] = ''
+        
+        try:
+            # Consigne à côté, en bas à droite de l'image
+            consigne_element = self.driver.find_element(By.XPATH, "//div[contains(@class, 'photo-entite')]//div[contains(@class, 'consigne')]")
+            section['photo_consigne'] = consigne_element.text.strip()
+        except:
+            section['photo_consigne'] = ''
+            
+        return section
+
+    def scrape_ecoles_bridge_section(self):
+        """Scrape the Écoles de bridge + Logo section"""
+        section = {}
+        
+        try:
+            # Texte
+            texte_element = self.driver.find_element(By.XPATH, "//div[contains(@class, 'ecoles-bridge')]//div[contains(@class, 'texte')]")
+            section['ecoles_texte'] = texte_element.text.strip()
+        except:
+            section['ecoles_texte'] = ''
+        
+        # Logo
+        try:
+            logo_element = self.driver.find_element(By.XPATH, "//div[contains(@class, 'ecoles-bridge')]//img")
+            section['ecoles_logo_url'] = logo_element.get_attribute('src')
+        except:
+            section['ecoles_logo_url'] = ''
+            
+        return section
+
+    def scrape_enseignants_actifs_section(self):
+        """Scrape the Liste des enseignants actifs section"""
+        section = {}
+        
+        try:
+            # En-tête + Liste
+            titre_element = self.driver.find_element(By.XPATH, "//h4[contains(text(), 'enseignants actifs')]")
+            section['enseignants_titre'] = titre_element.text.strip()
+        except:
+            section['enseignants_titre'] = ''
+        
+        # Find the table
+        try:
+            table = self.driver.find_element(By.XPATH, "//table[contains(@class, 'enseignants-table')]")
+            rows = table.find_elements(By.TAG_NAME, 'tr')
+            
+            enseignants = []
+            for row in rows[1:]:  # Skip header
+                cells = row.find_elements(By.TAG_NAME, 'td')
+                if cells:
+                    enseignant = {
+                        'nom': cells[0].text.strip() if len(cells) > 0 else '',
+                        'prenom': cells[1].text.strip() if len(cells) > 1 else '',
+                        'agrement': cells[2].text.strip() if len(cells) > 2 else ''
+                    }
+                    enseignants.append(enseignant)
+            
+            section['enseignants_liste'] = enseignants
+        except:
+            section['enseignants_liste'] = []
+            
+        return section
+
+    def scrape_cours_tab(self):
+        """Scrape the COURS tab (table without last column)"""
+        cours = []
+        
+        try:
+            # Click on COURS tab
+            cours_tab = self.driver.find_element(By.XPATH, "//a[contains(text(), 'Cours')]")
+            cours_tab.click()
+            time.sleep(2)
+            
+            # Find the table
+            table = self.driver.find_element(By.XPATH, "//table[contains(@class, 'cours-table')]")
+            rows = table.find_elements(By.TAG_NAME, 'tr')
+            
+            # Get headers (excluding last column)
+            headers = []
+            header_cells = rows[0].find_elements(By.TAG_NAME, 'th')
+            for i, cell in enumerate(header_cells[:-1]):  # Exclude last column
+                headers.append(cell.text.strip())
+            
+            # Get data rows (excluding last column)
+            for row in rows[1:]:
+                cells = row.find_elements(By.TAG_NAME, 'td')
+                cours_data = {}
+                for i, cell in enumerate(cells[:-1]):  # Exclude last column
+                    if i < len(headers):
+                        cours_data[headers[i]] = cell.text.strip()
+                cours.append(cours_data)
+                
+        except Exception as e:
+            print(f"Error scraping Cours tab: {e}")
+            
+        return cours
+
+    def scrape_club_facturation_tab(self):
+        """Scrape the FACTURATION tab for Club (similar to Comité but with additional sections)"""
+        facturation = {}
+        
+        try:
+            # Click on Facturation tab
+            facturation_tab = self.driver.find_element(By.XPATH, "//a[contains(text(), 'Facturation')]")
+            facturation_tab.click()
+            time.sleep(2)
+            
+            # Barèmes (same as Comité but different amounts)
+            facturation['baremes'] = self.scrape_club_baremes_section()
+            
+            # Montants Comité/FFB (additional section for Club)
+            facturation['montants_comite_ffb'] = self.scrape_montants_comite_ffb_section()
+            
+            # 5 séance Découverte (if present)
+            facturation['seance_decouverte'] = self.scrape_seance_decouverte_section()
+            
+        except Exception as e:
+            print(f"Error scraping Club facturation tab: {e}")
+            
+        return facturation
+
+    def scrape_club_baremes_section(self):
+        """Scrape the Barèmes section for Club (different amounts)"""
+        baremes = {}
+        
+        try:
+            # AFFILIATION DU CLUB (different amounts: 57,50€, 10€, 67,50€)
+            try:
+                part_ffb_element = self.driver.find_element(By.XPATH, "//td[contains(text(), 'Part FFB')]/following-sibling::td")
+                baremes['part_ffb'] = part_ffb_element.text.strip()
+            except:
+                baremes['part_ffb'] = ''
+                
+            try:
+                part_comite_element = self.driver.find_element(By.XPATH, "//td[contains(text(), 'Part comité')]/following-sibling::td")
+                baremes['part_comite'] = part_comite_element.text.strip()
+            except:
+                baremes['part_comite'] = ''
+                
+            try:
+                total_element = self.driver.find_element(By.XPATH, "//td[contains(text(), 'Total')]/following-sibling::td")
+                baremes['total'] = total_element.text.strip()
+            except:
+                baremes['total'] = ''
+            
+            # PRIX DES LICENCES (same as Comité)
+            baremes['prix_licences'] = self.scrape_prix_licences_table()
+            
+        except Exception as e:
+            print(f"Error scraping Club Barèmes section: {e}")
+            
+        return baremes
+
+    def scrape_montants_comite_ffb_section(self):
+        """Scrape the Montants Comité/FFB section (additional for Club)"""
+        montants = {}
+        
+        try:
+            # Titre + Tableau + Warning sous le tableau
+            try:
+                titre_element = self.driver.find_element(By.XPATH, "//h4[contains(text(), 'Montants Comité/FFB')]")
+                montants['titre'] = titre_element.text.strip()
+            except:
+                montants['titre'] = ''
+            
+            # Find the table
+            try:
+                table = self.driver.find_element(By.XPATH, "//table[contains(@class, 'montants-comite-ffb-table')]")
+                rows = table.find_elements(By.TAG_NAME, 'tr')
+                
+                table_data = []
+                for row in rows:
+                    cells = row.find_elements(By.TAG_NAME, 'td')
+                    if cells:
+                        row_data = [cell.text.strip() for cell in cells]
+                        table_data.append(row_data)
+                
+                montants['tableau'] = table_data
+            except:
+                montants['tableau'] = []
+            
+            # Warning sous le tableau
+            try:
+                warning_element = self.driver.find_element(By.XPATH, "//div[contains(@class, 'warning')]")
+                montants['warning'] = warning_element.text.strip()
+            except:
+                montants['warning'] = ''
+            
+            # TRANSFERTS DE LICENCES
+            montants['transfers_licences'] = self.scrape_transfers_licences_table()
+            
+            # SOMME DUE AU COMITÉ (same as Comité)
+            montants['somme_due_comite'] = self.scrape_somme_due_comite_table()
+            
+        except Exception as e:
+            print(f"Error scraping Montants Comité/FFB section: {e}")
+            
+        return montants
+
+    def scrape_transfers_licences_table(self):
+        """Scrape the TRANSFERTS DE LICENCES table"""
+        transfers = []
+        
+        try:
+            # Find the table
+            table = self.driver.find_element(By.XPATH, "//table[contains(@class, 'transfers-licences-table')]")
+            rows = table.find_elements(By.TAG_NAME, 'tr')
+            
+            # Get headers
+            headers = []
+            header_cells = rows[0].find_elements(By.TAG_NAME, 'th')
+            for cell in header_cells:
+                headers.append(cell.text.strip())
+            
+            # Get data rows
+            for row in rows[1:]:
+                cells = row.find_elements(By.TAG_NAME, 'td')
+                transfer_data = {}
+                for i, cell in enumerate(cells):
+                    if i < len(headers):
+                        transfer_data[headers[i]] = cell.text.strip()
+                transfers.append(transfer_data)
+                
+        except Exception as e:
+            print(f"Error scraping transfers licences table: {e}")
+            
+                return transfers
+
+    def scrape_entity_by_type(self, entity_id, entity_type=None):
+        """
+        Main function to scrape an entity based on its type.
+        Automatically detects entity type from breadcrumb if not provided.
+        """
+        print(f"Starting to scrape entity ID: {entity_id}")
+        
+        # First, navigate to the entity to detect its type
+        self.driver.get(f"https://metier.ffbridge.fr/#/entites/{entity_id}/informations")
+        time.sleep(2)
+        
+        # Detect entity type from breadcrumb if not provided
+        if not entity_type:
+            try:
+                breadcrumb = self.driver.find_element(By.CSS_SELECTOR, ".breadcrumb")
+                breadcrumb_text = breadcrumb.text.lower()
+                
+                if "ffb" in breadcrumb_text:
+                    entity_type = "FFB"
+                elif "zone" in breadcrumb_text:
+                    entity_type = "Zone"
+                elif "ligue" in breadcrumb_text:
+                    entity_type = "Ligue"
+                elif "comité" in breadcrumb_text or "comite" in breadcrumb_text:
+                    entity_type = "Comité"
+                elif "club" in breadcrumb_text:
+                    entity_type = "Club"
+                else:
+                    entity_type = "Unknown"
+                    
+                print(f"Detected entity type: {entity_type}")
+            except Exception as e:
+                print(f"Error detecting entity type: {e}")
+                entity_type = "Unknown"
+        
+        # Scrape based on entity type
+        if entity_type == "FFB":
+            return self.scrape_ffb_entity(entity_id)
+        elif entity_type == "Zone":
+            return self.scrape_zone_entity(entity_id)
+        elif entity_type == "Ligue":
+            return self.scrape_ligue_entity(entity_id)
+        elif entity_type == "Comité":
+            return self.scrape_comite_entity(entity_id)
+        elif entity_type == "Club":
+            return self.scrape_club_entity(entity_id)
+        else:
+            print(f"Unknown entity type: {entity_type}")
+            return {}
+
+    def scrape_all_entities(self, start_id=1, end_id=5000):
+        """
+        Scrape all entities from start_id to end_id.
+        Saves progress frequently and can resume from interruptions.
+        """
+        output_dir = self.get_output_dir()
+        progress_file = os.path.join(output_dir, 'scraping_progress.json')
+        
+        # Load progress if exists
+        if os.path.exists(progress_file):
+            with open(progress_file, 'r') as f:
+                progress = json.load(f)
+            last_processed = progress.get('last_processed_id', start_id - 1)
+            print(f"Resuming from entity ID: {last_processed + 1}")
+        else:
+            last_processed = start_id - 1
+            progress = {'last_processed_id': last_processed, 'entities': {}}
+        
+        entities_data = []
+        
+        for entity_id in range(last_processed + 1, end_id + 1):
+            try:
+                print(f"\n--- Processing Entity ID: {entity_id} ---")
+                
+                # Scrape the entity
+                entity_data = self.scrape_entity_by_type(entity_id)
+                
+                if entity_data:
+                    entities_data.append(entity_data)
+                    
+                    # Save progress after each entity
+                    progress['last_processed_id'] = entity_id
+                    progress['entities'][str(entity_id)] = entity_data
+                    
+                    with open(progress_file, 'w') as f:
+                        json.dump(progress, f, indent=2, ensure_ascii=False)
+                    
+                    print(f"✓ Entity {entity_id} processed and saved")
+                else:
+                    print(f"✗ No data found for entity {entity_id}")
+                
+                # Small delay between requests
+                time.sleep(1)
+                
+            except Exception as e:
+                print(f"✗ Error processing entity {entity_id}: {e}")
+                # Save progress even on error
+                progress['last_processed_id'] = entity_id
+                with open(progress_file, 'w') as f:
+                    json.dump(progress, f, indent=2, ensure_ascii=False)
+                continue
+        
+        # Save final results
+        entities_file = os.path.join(output_dir, 'entities_data.json')
+        with open(entities_file, 'w') as f:
+            json.dump(entities_data, f, indent=2, ensure_ascii=False)
+        
+        print(f"\n=== Scraping completed ===")
+        print(f"Total entities processed: {len(entities_data)}")
+        print(f"Results saved to: {entities_file}")
+        print(f"Progress saved to: {progress_file}")
+        
+        return entities_data
+     
+     def close(self):
+         self.driver.quit()
 
 def main():
     scraper = FFBScraper()
     try:
-        output_dir = scraper.get_output_dir()
-        clubs_file = os.path.join(output_dir, 'clubs.csv')
-        players_file = os.path.join(output_dir, 'players.csv')
-        all_columns = set([ "numero_licence", "nom", "prenom", "club_nom", "club_id", "member_type", "statut"])
+        print("=== FFB Database Scraper ===")
+        print("Starting login process...")
         scraper.login()
-        # Optimization: load clubs from CSV if it exists
-        if os.path.exists(clubs_file):
-            print(f"Loading clubs from {clubs_file}")
-            clubs_df = pd.read_csv(clubs_file, sep='\t')
-            entites = clubs_df.to_dict('records')
-        else:
-            print("Clubs CSV not found, scraping entities...")
-            entites = scraper.scrape_entites()
-            clubs_df = pd.DataFrame(entites)
-            clubs_df.to_csv(clubs_file, index=False, sep='\t')
-        if entites:
-            print(f"Loaded {len(entites)} clubs. Starting member scraping...")
-            all_members = []
-            for entite in entites:
-                try:
-                    members = scraper.scrape_licensees(entite['id'], entite['nom'], players_file)
-                    print(f"Found {len(members)} members for club {entite['nom']}")
-                    all_members.extend(members)
-                except Exception as e:
-                    print(f"Error scraping members for club {entite['nom']}: {e}")
-                    continue
-            # Final save (redundant, but ensures all data is written)
-            if all_members:
-                players_df = pd.DataFrame(all_members)
-                for col in all_columns:
-                    if col not in players_df.columns:
-                        players_df[col] = ''
-                ordered_columns = [str(col) for col in all_columns if col in players_df.columns]
-                players_df = players_df.loc[:, ordered_columns]
-                players_df.to_csv(players_file, index=False, sep='\t')
-                print(f"[Final] Saved {len(players_df)} players to {players_file}")
+        
+        print("\n=== Entity Scraping Options ===")
+        print("1. Scrape specific entity by ID")
+        print("2. Scrape all entities (1-5000)")
+        print("3. Scrape FFB entity (ID: 1)")
+        print("4. Scrape Zone entity (ID: 2)")
+        print("5. Scrape Ligue entity (ID: 18)")
+        print("6. Scrape Comité entity (ID: 38)")
+        print("7. Scrape Club entity (ID: 850)")
+        
+        choice = input("\nEnter your choice (1-7): ").strip()
+        
+        if choice == "1":
+            entity_id = int(input("Enter entity ID: "))
+            entity_type = input("Enter entity type (optional, will auto-detect if empty): ").strip()
+            if not entity_type:
+                entity_type = None
+            
+            print(f"\nScraping entity ID: {entity_id}")
+            entity_data = scraper.scrape_entity_by_type(entity_id, entity_type)
+            
+            if entity_data:
+                output_dir = scraper.get_output_dir()
+                entity_file = os.path.join(output_dir, f'entity_{entity_id}.json')
+                with open(entity_file, 'w') as f:
+                    json.dump(entity_data, f, indent=2, ensure_ascii=False)
+                print(f"✓ Entity data saved to: {entity_file}")
             else:
-                print("No members found")
+                print("✗ No data found for this entity")
+                
+        elif choice == "2":
+            start_id = int(input("Enter start ID (default: 1): ") or "1")
+            end_id = int(input("Enter end ID (default: 5000): ") or "5000")
+            
+            print(f"\nStarting batch scraping from ID {start_id} to {end_id}")
+            entities_data = scraper.scrape_all_entities(start_id, end_id)
+            
+        elif choice == "3":
+            print("\nScraping FFB entity (ID: 1)")
+            entity_data = scraper.scrape_ffb_entity(1)
+            if entity_data:
+                output_dir = scraper.get_output_dir()
+                entity_file = os.path.join(output_dir, 'ffb_entity.json')
+                with open(entity_file, 'w') as f:
+                    json.dump(entity_data, f, indent=2, ensure_ascii=False)
+                print(f"✓ FFB entity data saved to: {entity_file}")
+                
+        elif choice == "4":
+            print("\nScraping Zone entity (ID: 2)")
+            entity_data = scraper.scrape_zone_entity(2)
+            if entity_data:
+                output_dir = scraper.get_output_dir()
+                entity_file = os.path.join(output_dir, 'zone_entity.json')
+                with open(entity_file, 'w') as f:
+                    json.dump(entity_data, f, indent=2, ensure_ascii=False)
+                print(f"✓ Zone entity data saved to: {entity_file}")
+                
+        elif choice == "5":
+            print("\nScraping Ligue entity (ID: 18)")
+            entity_data = scraper.scrape_ligue_entity(18)
+            if entity_data:
+                output_dir = scraper.get_output_dir()
+                entity_file = os.path.join(output_dir, 'ligue_entity.json')
+                with open(entity_file, 'w') as f:
+                    json.dump(entity_data, f, indent=2, ensure_ascii=False)
+                print(f"✓ Ligue entity data saved to: {entity_file}")
+                
+        elif choice == "6":
+            print("\nScraping Comité entity (ID: 38)")
+            entity_data = scraper.scrape_comite_entity(38)
+            if entity_data:
+                output_dir = scraper.get_output_dir()
+                entity_file = os.path.join(output_dir, 'comite_entity.json')
+                with open(entity_file, 'w') as f:
+                    json.dump(entity_data, f, indent=2, ensure_ascii=False)
+                print(f"✓ Comité entity data saved to: {entity_file}")
+                
+        elif choice == "7":
+            print("\nScraping Club entity (ID: 850)")
+            entity_data = scraper.scrape_club_entity(850)
+            if entity_data:
+                output_dir = scraper.get_output_dir()
+                entity_file = os.path.join(output_dir, 'club_entity.json')
+                with open(entity_file, 'w') as f:
+                    json.dump(entity_data, f, indent=2, ensure_ascii=False)
+                print(f"✓ Club entity data saved to: {entity_file}")
+                
         else:
-            print("No entities found")
-            empty_clubs_df = pd.DataFrame([{"id": "", "nom": "", "region": ""}])
-            clubs_file = os.path.join(output_dir, 'clubs.csv')
-            empty_clubs_df.to_csv(clubs_file, index=False, sep='\t')
-            empty_players_df = pd.DataFrame([{col: "" for col in all_columns}])
-            players_file = os.path.join(output_dir, 'players.csv')
-            empty_players_df.to_csv(players_file, index=False, sep='\t')
-            print(f"Created empty CSV files in {output_dir}")
+            print("Invalid choice. Exiting.")
             
     except Exception as e:
         print(f"Error: {str(e)}")
+        traceback.print_exc()
     finally:
         scraper.close()
 
