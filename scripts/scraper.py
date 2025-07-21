@@ -494,6 +494,48 @@ class FFBScraper:
         # (Add code to extract each table here)
         return stats
 
+    def scrape_identification_section(self):
+        """
+        Generic method to scrape the 'Identification' section, common to many entities.
+        """
+        identification_data = {}
+        try:
+            # Using more robust selectors to find the section
+            section = self.driver.find_element(By.XPATH, "//*[contains(text(), 'Identification')]//ancestor::div[contains(@class, 'block-content')]")
+            
+            # Extract fields based on their labels
+            fields_to_scrape = {
+                "Nom de l’entité": "entity_name",
+                "Numéro d’entité": "entity_code",
+                "Type": "entity_type"
+            }
+
+            for label, key in fields_to_scrape.items():
+                try:
+                    value_element = section.find_element(By.XPATH, f".//label[contains(text(), '{label}')]/following-sibling::div")
+                    identification_data[key] = value_element.text.strip()
+                except Exception as e:
+                    print(f"Could not find field '{label}': {e}")
+                    identification_data[key] = None
+
+            # Scrape checkboxes
+            checkboxes = section.find_elements(By.XPATH, ".//input[@type='checkbox']")
+            for i, checkbox in enumerate(checkboxes, 1):
+                try:
+                    # Find the label associated with the checkbox
+                    # This might need adjustment based on the actual HTML structure
+                    label_element = checkbox.find_element(By.XPATH, "./following-sibling::label")
+                    label_text = label_element.text.strip().lower().replace(" ", "_")
+                    identification_data[f'is_{label_text}'] = checkbox.is_selected()
+                except Exception:
+                    # Fallback to generic names if label is not found
+                    identification_data[f'checkbox_{i}'] = checkbox.is_selected()
+
+        except Exception as e:
+            print(f"Error scraping Identification section: {e}")
+        
+        return identification_data
+
     def scrape_zone_entity(self, entity_id=2):
         """
         Scrape all required data for a Zone entity as per the detailed spec.
@@ -1532,94 +1574,100 @@ def main():
         print("Starting login process...")
         scraper.login()
         
-        print("\n=== Entity Scraping Options ===")
-        print("1. Scrape specific entity by ID")
-        print("2. Scrape all entities (1-5000)")
-        print("3. Scrape FFB entity (ID: 1)")
-        print("4. Scrape Zone entity (ID: 2)")
-        print("5. Scrape Ligue entity (ID: 18)")
-        print("6. Scrape Comité entity (ID: 38)")
-        print("7. Scrape Club entity (ID: 850)")
-        
-        choice = input("\nEnter your choice (1-7): ").strip()
-        
-        if choice == "1":
-            entity_id = int(input("Enter entity ID: "))
-            entity_type = input("Enter entity type (optional, will auto-detect if empty): ").strip()
-            if not entity_type:
-                entity_type = None
+        while True:
+            print("\n=== Entity Scraping Options ===")
+            print("1. Scrape specific entity by ID")
+            print("2. Scrape all entities (1-5000)")
+            print("3. Scrape FFB entity (ID: 1)")
+            print("4. Scrape Zone entity (ID: 2)")
+            print("5. Scrape Ligue entity (ID: 18)")
+            print("6. Scrape Comité entity (ID: 38)")
+            print("7. Scrape Club entity (ID: 850)")
+            print("8. Exit")
             
-            print(f"\nScraping entity ID: {entity_id}")
-            entity_data = scraper.scrape_entity_by_type(entity_id, entity_type)
+            choice = input("\nEnter your choice (1-8): ").strip()
+
+            if choice == "1":
+                entity_id = int(input("Enter entity ID: "))
+                entity_type = input("Enter entity type (optional, will auto-detect if empty): ").strip()
+                if not entity_type:
+                    entity_type = None
+                
+                print(f"\nScraping entity ID: {entity_id}")
+                entity_data = scraper.scrape_entity_by_type(entity_id, entity_type)
+                
+                if entity_data:
+                    output_dir = scraper.get_output_dir()
+                    entity_file = os.path.join(output_dir, f'entity_{entity_id}.json')
+                    with open(entity_file, 'w') as f:
+                        json.dump(entity_data, f, indent=2, ensure_ascii=False)
+                    print(f"✓ Entity data saved to: {entity_file}")
+                else:
+                    print("✗ No data found for this entity")
+                    
+            elif choice == "2":
+                start_id = int(input("Enter start ID (default: 1): ") or "1")
+                end_id = int(input("Enter end ID (default: 5000): ") or "5000")
+                
+                print(f"\nStarting batch scraping from ID {start_id} to {end_id}")
+                entities_data = scraper.scrape_all_entities(start_id, end_id)
+                
+            elif choice == "3":
+                print("\nScraping FFB entity (ID: 1)")
+                entity_data = scraper.scrape_ffb_entity(1)
+                if entity_data:
+                    output_dir = scraper.get_output_dir()
+                    entity_file = os.path.join(output_dir, 'ffb_entity.json')
+                    with open(entity_file, 'w') as f:
+                        json.dump(entity_data, f, indent=2, ensure_ascii=False)
+                    print(f"✓ FFB entity data saved to: {entity_file}")
+                    
+            elif choice == "4":
+                print("\nScraping Zone entity (ID: 2)")
+                entity_data = scraper.scrape_zone_entity(2)
+                if entity_data:
+                    output_dir = scraper.get_output_dir()
+                    entity_file = os.path.join(output_dir, 'zone_entity.json')
+                    with open(entity_file, 'w') as f:
+                        json.dump(entity_data, f, indent=2, ensure_ascii=False)
+                    print(f"✓ Zone entity data saved to: {entity_file}")
+                    
+            elif choice == "5":
+                print("\nScraping Ligue entity (ID: 18)")
+                entity_data = scraper.scrape_ligue_entity(18)
+                if entity_data:
+                    output_dir = scraper.get_output_dir()
+                    entity_file = os.path.join(output_dir, 'ligue_entity.json')
+                    with open(entity_file, 'w') as f:
+                        json.dump(entity_data, f, indent=2, ensure_ascii=False)
+                    print(f"✓ Ligue entity data saved to: {entity_file}")
+                    
+            elif choice == "6":
+                print("\nScraping Comité entity (ID: 38)")
+                entity_data = scraper.scrape_comite_entity(38)
+                if entity_data:
+                    output_dir = scraper.get_output_dir()
+                    entity_file = os.path.join(output_dir, 'comite_entity.json')
+                    with open(entity_file, 'w') as f:
+                        json.dump(entity_data, f, indent=2, ensure_ascii=False)
+                    print(f"✓ Comité entity data saved to: {entity_file}")
+                    
+            elif choice == "7":
+                print("\nScraping Club entity (ID: 850)")
+                entity_data = scraper.scrape_club_entity(850)
+                if entity_data:
+                    output_dir = scraper.get_output_dir()
+                    entity_file = os.path.join(output_dir, 'club_entity.json')
+                    with open(entity_file, 'w') as f:
+                        json.dump(entity_data, f, indent=2, ensure_ascii=False)
+                    print(f"✓ Club entity data saved to: {entity_file}")
             
-            if entity_data:
-                output_dir = scraper.get_output_dir()
-                entity_file = os.path.join(output_dir, f'entity_{entity_id}.json')
-                with open(entity_file, 'w') as f:
-                    json.dump(entity_data, f, indent=2, ensure_ascii=False)
-                print(f"✓ Entity data saved to: {entity_file}")
+            elif choice == "8":
+                print("Exiting.")
+                break
+                    
             else:
-                print("✗ No data found for this entity")
-                
-        elif choice == "2":
-            start_id = int(input("Enter start ID (default: 1): ") or "1")
-            end_id = int(input("Enter end ID (default: 5000): ") or "5000")
-            
-            print(f"\nStarting batch scraping from ID {start_id} to {end_id}")
-            entities_data = scraper.scrape_all_entities(start_id, end_id)
-            
-        elif choice == "3":
-            print("\nScraping FFB entity (ID: 1)")
-            entity_data = scraper.scrape_ffb_entity(1)
-            if entity_data:
-                output_dir = scraper.get_output_dir()
-                entity_file = os.path.join(output_dir, 'ffb_entity.json')
-                with open(entity_file, 'w') as f:
-                    json.dump(entity_data, f, indent=2, ensure_ascii=False)
-                print(f"✓ FFB entity data saved to: {entity_file}")
-                
-        elif choice == "4":
-            print("\nScraping Zone entity (ID: 2)")
-            entity_data = scraper.scrape_zone_entity(2)
-            if entity_data:
-                output_dir = scraper.get_output_dir()
-                entity_file = os.path.join(output_dir, 'zone_entity.json')
-                with open(entity_file, 'w') as f:
-                    json.dump(entity_data, f, indent=2, ensure_ascii=False)
-                print(f"✓ Zone entity data saved to: {entity_file}")
-                
-        elif choice == "5":
-            print("\nScraping Ligue entity (ID: 18)")
-            entity_data = scraper.scrape_ligue_entity(18)
-            if entity_data:
-                output_dir = scraper.get_output_dir()
-                entity_file = os.path.join(output_dir, 'ligue_entity.json')
-                with open(entity_file, 'w') as f:
-                    json.dump(entity_data, f, indent=2, ensure_ascii=False)
-                print(f"✓ Ligue entity data saved to: {entity_file}")
-                
-        elif choice == "6":
-            print("\nScraping Comité entity (ID: 38)")
-            entity_data = scraper.scrape_comite_entity(38)
-            if entity_data:
-                output_dir = scraper.get_output_dir()
-                entity_file = os.path.join(output_dir, 'comite_entity.json')
-                with open(entity_file, 'w') as f:
-                    json.dump(entity_data, f, indent=2, ensure_ascii=False)
-                print(f"✓ Comité entity data saved to: {entity_file}")
-                
-        elif choice == "7":
-            print("\nScraping Club entity (ID: 850)")
-            entity_data = scraper.scrape_club_entity(850)
-            if entity_data:
-                output_dir = scraper.get_output_dir()
-                entity_file = os.path.join(output_dir, 'club_entity.json')
-                with open(entity_file, 'w') as f:
-                    json.dump(entity_data, f, indent=2, ensure_ascii=False)
-                print(f"✓ Club entity data saved to: {entity_file}")
-                
-        else:
-            print("Invalid choice. Exiting.")
+                print("Invalid choice. Please try again.")
             
     except Exception as e:
         print(f"Error: {str(e)}")
