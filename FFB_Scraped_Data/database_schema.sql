@@ -1,5 +1,5 @@
 -- FFB Database Schema
--- Generated on: 2025-07-21 03:45:46
+-- Generated on: 2025-07-21 04:42:36
 -- Based on analysis of entities: 1 (FFB), 2 (Zone), 18 (Ligue), 38 (Comité), 850 (Club)
 
 -- Entity Types
