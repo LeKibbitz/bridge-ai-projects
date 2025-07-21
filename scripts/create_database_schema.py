@@ -25,13 +25,29 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
 from config import FFB_USERNAME, FFB_PASSWORD
+import re
+from unidecode import unidecode
+
+def to_snake_case(name):
+    """Convert a string to snake_case."""
+    name = unidecode(name)  # Transliterate unicode characters
+    name = re.sub(r'[^a-zA-Z0-9\s]', '', name).strip() # Remove special characters
+    name = re.sub(r'\s+', '_', name) # Replace spaces with underscores
+    return name.lower()
 
 class DatabaseSchemaGenerator:
     def __init__(self):
         self.driver = self._setup_driver()
         self.wait = WebDriverWait(self.driver, 10)
         self.schema = {
-            'tables': {},
+            'tables': {
+                'entities': {
+                    'fields': [],
+                    'primary_key': 'entity_code',
+                    'foreign_keys': [],
+                    'indexes': []
+                }
+            },
             'relationships': [],
             'enums': {},
             'indexes': [],
@@ -208,208 +224,75 @@ class DatabaseSchemaGenerator:
         self.driver.get(entity_url)
         time.sleep(3)
         
-        print(f"  Current URL after navigation: {self.driver.current_url}")
-        print(f"  Page title: {self.driver.title}")
+        # The scraping logic is now centralized
+        self._scrape_informations_principales_unified()
         
-        # Analyze main information tab
-        self._analyze_informations_principales(entity_type)
-        
-        # Analyze other tabs based on entity type
+        # Analyze other tabs for related tables (1-to-N or N-to-N)
         self._analyze_entity_tabs(entity_type)
         
         print(f"✓ {entity_type} entity analysis completed")
-    
-    def _analyze_informations_principales(self, entity_type: str):
-        """Analyze the 'Informations principales' tab"""
-        print("  Analyzing 'Informations principales' tab...")
+
+    def _scrape_informations_principales_unified(self):
+        """
+        Scrapes all sections from the main 'Informations principales' page 
+        and adds the fields to the single 'entities' table.
+        It uses labels to generate explicit, snake_case field names.
+        """
+        print("  Scraping 'Informations principales' into unified 'entities' table...")
         
-        # Section Identification
-        self._analyze_identification_section(entity_type)
-        
-        # Section Subordination
-        self._analyze_subordination_section(entity_type)
-        
-        # Section Coordonnées
-        self._analyze_coordonnees_section(entity_type)
-        
-        # Section Adresse(s) email de notification des factures
-        self._analyze_notification_factures_section(entity_type)
-        
-        # Section Infos complémentaires
-        self._analyze_infos_complementaires_section(entity_type)
-        
-        # Section Photo de l'entité
-        self._analyze_photo_entite_section(entity_type)
-        
-        # Section Adresse
-        self._analyze_adresse_section(entity_type)
-    
-    def _analyze_identification_section(self, entity_type: str):
-        """Analyze the Identification section"""
-        fields = [
-            ('nom_entite', 'VARCHAR(255)', 'Nom de l\'entité'),
-            ('numero_entite', 'VARCHAR(50)', 'Numéro d\'entité'),
-            ('type_entite', 'VARCHAR(100)', 'Type'),
-            ('checkbox_1', 'BOOLEAN', 'Checkbox 1'),
-            ('checkbox_2', 'BOOLEAN', 'Checkbox 2'),
-            ('checkbox_3', 'BOOLEAN', 'Checkbox 3'),
-            ('checkbox_4', 'BOOLEAN', 'Checkbox 4')
-        ]
-        
-        self._add_fields_to_table('entities', fields)
-    
-    def _analyze_subordination_section(self, entity_type: str):
-        """Analyze the Subordination section"""
-        if entity_type == 'FFB':
-            fields = [
-                ('entite_subordination', 'VARCHAR(255)', 'Entité de subordination'),
-                ('entite_regroupement', 'VARCHAR(255)', 'Entité de regroupement')
-            ]
-        elif entity_type in ['Zone', 'Ligue']:
-            fields = [
-                ('entite_regroupement', 'VARCHAR(255)', 'Entité de regroupement')
-            ]
-        elif entity_type == 'Comité':
-            # Multiple entities de regroupement
-            self._add_junction_table('entity_regroupements', [
-                ('entity_id', 'VARCHAR(50)', 'FK to entities'),
-                ('regroupement_entity_id', 'VARCHAR(50)', 'FK to entities'),
-                ('regroupement_type', 'VARCHAR(100)', 'Type of relationship')
-            ])
-            return
-        else:  # Club
-            fields = [
-                ('subordination', 'VARCHAR(255)', 'Subordination')
-            ]
-        
-        self._add_fields_to_table('entities', fields)
-    
-    def _analyze_coordonnees_section(self, entity_type: str):
-        """Analyze the Coordonnées section"""
-        base_fields = [
-            ('email', 'VARCHAR(255)', 'E-mail'),
-            ('site_internet', 'VARCHAR(255)', 'Site internet'),
-            ('telephone_principal', 'VARCHAR(50)', 'Téléphone principal'),
-            ('telephone_secondaire', 'VARCHAR(50)', 'Téléphone secondaire')
-        ]
-        
-        if entity_type in ['FFB', 'Comité', 'Club']:
-            base_fields.append(('email_competitions', 'VARCHAR(255)', 'E-mail des Compétitions'))
-        
-        self._add_fields_to_table('entity_coordinates', base_fields)
-    
-    def _analyze_notification_factures_section(self, entity_type: str):
-        """Analyze the notification factures section"""
-        fields = [
-            ('email_principal', 'VARCHAR(255)', 'E-mail principal'),
-            ('email_secondaire', 'VARCHAR(255)', 'E-mail secondaire'),
-            ('commentaires', 'TEXT', 'Commentaires')
-        ]
-        
-        self._add_fields_to_table('entity_notifications', fields)
-    
-    def _analyze_infos_complementaires_section(self, entity_type: str):
-        """Analyze the Infos complémentaires section"""
-        base_fields = [
-            ('info_checkbox_1', 'BOOLEAN', 'Info checkbox 1'),
-            ('info_checkbox_2', 'BOOLEAN', 'Info checkbox 2'),
-            ('info_checkbox_3', 'BOOLEAN', 'Info checkbox 3'),
-            ('nombre_tables', 'INTEGER', 'Nombre de tables'),
-            ('organisme_tutelle', 'VARCHAR(255)', 'Organisme de tutelle'),
-            ('horaires_ouverture', 'TEXT', 'Horaires d\'ouverture'),
-            ('dates_fermeture', 'TEXT', 'Dates de fermeture'),
-            ('saisonnier', 'VARCHAR(100)', 'Saisonnier'),
-            ('plus_club', 'TEXT', 'Les plus du club')
-        ]
-        
-        if entity_type == 'Club':
-            base_fields.append(('participe_seances_decouverte', 'BOOLEAN', 'Participe aux 5 séances Découverte'))
-        
-        # 6 empty text blocks
-        for i in range(1, 7):
-            base_fields.append((f'info_texte_{i}', 'TEXT', f'Info texte {i}'))
-        
-        self._add_fields_to_table('entity_complementary_info', base_fields)
-    
-    def _analyze_photo_entite_section(self, entity_type: str):
-        """Analyze the Photo de l'entité section"""
-        fields = [
-            ('photo_texte', 'TEXT', 'Photo texte'),
-            ('photo_url', 'VARCHAR(500)', 'Photo URL'),
-            ('photo_recommendations', 'TEXT', 'Photo recommendations'),
-            ('photo_consigne', 'TEXT', 'Photo consigne')
-        ]
-        
-        self._add_fields_to_table('entity_photos', fields)
-    
-    def _analyze_adresse_section(self, entity_type: str):
-        """Analyze the Adresse section"""
-        # Jeu address
-        jeu_fields = [
-            ('address_line_1', 'VARCHAR(255)', 'Address Line 1'),
-            ('address_line_2', 'VARCHAR(255)', 'Address Line 2'),
-            ('address_line_3', 'VARCHAR(255)', 'Address Line 3'),
-            ('zipcode', 'VARCHAR(50)', 'Zipcode'),
-            ('city', 'VARCHAR(255)', 'City'),
-            ('country', 'VARCHAR(255)', 'Country')
-        ]
-        
-        # Courrier address
-        courrier_fields = [
-            ('courrier_opg_option', 'VARCHAR(100)', 'Courrier OPG option'),
-            ('courrier_1', 'VARCHAR(255)', 'Courrier 1'),
-            ('courrier_2', 'VARCHAR(255)', 'Courrier 2'),
-            ('courrier_3', 'VARCHAR(255)', 'Courrier 3'),
-            ('courrier_4', 'VARCHAR(255)', 'Courrier 4'),
-            ('courrier_5', 'VARCHAR(255)', 'Courrier 5'),
-            ('courrier_6', 'VARCHAR(255)', 'Courrier 6'),
-            ('country', 'VARCHAR(255)', 'Country')
-        ]
-        
-        # Facturation address
-        facturation_fields = [
-            ('facturation_opg_option', 'VARCHAR(100)', 'Facturation OPG option'),
-            ('facturation_1', 'VARCHAR(255)', 'Facturation 1'),
-            ('facturation_2', 'VARCHAR(255)', 'Facturation 2'),
-            ('facturation_3', 'VARCHAR(255)', 'Facturation 3'),
-            ('facturation_4', 'VARCHAR(255)', 'Facturation 4'),
-            ('facturation_5', 'VARCHAR(255)', 'Facturation 5'),
-            ('facturation_6', 'VARCHAR(255)', 'Facturation 6'),
-            ('country', 'VARCHAR(255)', 'Country')
-        ]
-        
-        self._add_fields_to_table('entity_addresses_jeu', jeu_fields)
-        self._add_fields_to_table('entity_addresses_courrier', courrier_fields)
-        self._add_fields_to_table('entity_addresses_facturation', facturation_fields)
-    
+        try:
+            # Find all potential field containers. This is a common pattern on the site.
+            field_containers = self.driver.find_elements(By.XPATH, "//div[contains(@class, 'row') and .//label]")
+            
+            for container in field_containers:
+                try:
+                    label_element = container.find_element(By.TAG_NAME, "label")
+                    label_text = label_element.text.strip()
+
+                    if not label_text:
+                        continue
+
+                    # Generate a clean, snake_cased field name from the label
+                    field_name = to_snake_case(label_text)
+                    
+                    # Default field type is VARCHAR, can be overridden
+                    field_type = 'VARCHAR(255)'
+
+                    # Check if it's a checkbox and adjust type
+                    try:
+                        container.find_element(By.XPATH, ".//input[@type='checkbox']")
+                        field_type = 'BOOLEAN'
+                    except:
+                        pass # It's not a checkbox
+
+                    # Add the discovered field to the 'entities' table definition
+                    self._add_fields_to_table('entities', [(field_name, field_type, label_text)])
+
+                except Exception as e:
+                    # Some containers might not be fields, we can ignore them.
+                    # print(f"    - Could not parse a container: {e}")
+                    pass
+        except Exception as e:
+            print(f"  ERROR: Could not find field containers on the page. {e}")
+
     def _analyze_entity_tabs(self, entity_type: str):
-        """Analyze other tabs based on entity type"""
+        """
+        Analyzes the tabs for data that should go into separate, related tables
+        (e.g., actors, roles, etc.).
+        """
         if entity_type in ['FFB', 'Zone', 'Ligue', 'Comité', 'Club']:
             self._analyze_acteurs_tab()
         
         if entity_type in ['Comité', 'Club']:
             self._analyze_roles_tab()
         
-        if entity_type in ['Zone', 'Ligue', 'Comité', 'Club']:
-            self._analyze_tournois_tab()
-        
-        if entity_type in ['Comité', 'Club']:
-            self._analyze_facturation_tab()
-        
-        if entity_type in ['FFB', 'Comité']:
-            self._analyze_tableau_de_bord_tab()
-        
-        if entity_type == 'Comité':
-            self._analyze_clubs_actifs_inactifs_tab()
-        
-        if entity_type == 'Club':
-            self._analyze_cours_tab()
-            self._analyze_ecoles_bridge_section()
-            self._analyze_enseignants_actifs_section()
-    
+        # Add other tab analyses here for 1-to-N relationships
+        # For example: _analyze_tournois_tab, _analyze_facturation_tab etc.
+        # These will create new tables like 'tournaments', 'billing_rates' etc.
+
     def _analyze_acteurs_tab(self):
         """Analyze the Acteurs tab"""
-        print("  Analyzing 'Acteurs' tab...")
+        print("  Analyzing 'Acteurs' tab for 'entity_actors' table...")
         print(f"    Current URL: {self.driver.current_url}")
         print(f"    Page title: {self.driver.title}")
         
@@ -436,43 +319,30 @@ class DatabaseSchemaGenerator:
             print(f"    Current URL when error occurred: {self.driver.current_url}")
             return
         
-        # Analyze Actifs sub-tab
-        self._analyze_acteurs_actifs()
-        
-        # Analyze Historique sub-tab
-        self._analyze_acteurs_historique()
-    
-    def _analyze_acteurs_actifs(self):
-        """Analyze the Actifs sub-tab"""
-        fields = [
-            ('nom', 'VARCHAR(255)', 'Nom'),
-            ('prenom', 'VARCHAR(255)', 'Prénom'),
+        # Define fields for the separate 'entity_actors' table
+        actor_fields = [
+            ('last_name', 'VARCHAR(255)', 'Nom'),
+            ('first_name', 'VARCHAR(255)', 'Prénom'),
+            ('middle_name', 'VARCHAR(255)', 'Deuxième prénom'),
             ('role', 'VARCHAR(255)', 'Rôle'),
-            ('statut', 'VARCHAR(50)', 'Statut')
+            ('status', 'VARCHAR(50)', 'Statut')
         ]
-        
-        self._add_fields_to_table('entity_actors', fields)
-    
-    def _analyze_acteurs_historique(self):
-        """Analyze the Historique sub-tab"""
-        # Same structure as actifs but with additional fields
-        fields = [
-            ('nom', 'VARCHAR(255)', 'Nom'),
-            ('prenom', 'VARCHAR(255)', 'Prénom'),
+        self._add_fields_to_table('entity_actors', actor_fields)
+
+        history_fields = [
+            ('last_name', 'VARCHAR(255)', 'Nom'),
+            ('first_name', 'VARCHAR(255)', 'Prénom'),
+            ('middle_name', 'VARCHAR(255)', 'Deuxième prénom'),
             ('role', 'VARCHAR(255)', 'Rôle'),
-            ('statut', 'VARCHAR(50)', 'Statut'),
-            ('date_fin', 'DATE', 'Date de fin'),
+            ('status', 'VARCHAR(50)', 'Statut'),
+            ('end_date', 'DATE', 'Date de fin'),
             ('page', 'INTEGER', 'Page number')
         ]
-        
-        self._add_fields_to_table('entity_actors_history', fields)
+        self._add_fields_to_table('entity_actors_history', history_fields)
     
     def _analyze_roles_tab(self):
         """Analyze the Rôles tab"""
-        print("  Analyzing 'Rôles' tab...")
-        print(f"    Current URL: {self.driver.current_url}")
-        print(f"    Page title: {self.driver.title}")
-        
+        print("  Analyzing 'Rôles' tab for 'entity_roles' table...")
         try:
             roles_xpath = "//a[.//tab-heading[contains(normalize-space(text()), 'Rôles')]]"
             print(f"    Looking for Rôles tab with XPath: {roles_xpath}")
@@ -486,191 +356,13 @@ class DatabaseSchemaGenerator:
             print(f"    Current URL when error occurred: {self.driver.current_url}")
             return
         
-        # Generic roles table structure
-        self._add_fields_to_table('entity_roles', [
+        # Define fields for the separate 'entity_roles' table
+        role_fields = [
             ('role_name', 'VARCHAR(255)', 'Nom du rôle'),
             ('role_description', 'TEXT', 'Description du rôle'),
             ('role_type', 'VARCHAR(100)', 'Type de rôle')
-        ])
-    
-    def _analyze_tournois_tab(self):
-        """Analyze the Tournois tab"""
-        print("  Analyzing 'Tournois' tab...")
-        print(f"    Current URL: {self.driver.current_url}")
-        print(f"    Page title: {self.driver.title}")
-        
-        try:
-            tournois_xpath = "//a[.//tab-heading[contains(normalize-space(text()), 'Tournois')]]"
-            print(f"    Looking for Tournois tab with XPath: {tournois_xpath}")
-            tournois_tab = self.driver.find_element(By.XPATH, tournois_xpath)
-            print(f"    Found Tournois tab: {tournois_tab.text}")
-            tournois_tab.click()
-            time.sleep(2)
-            print(f"    Current URL after clicking Tournois: {self.driver.current_url}")
-        except Exception as e:
-            print(f"    Tournois tab not found - Error: {e}")
-            print(f"    Current URL when error occurred: {self.driver.current_url}")
-            return
-        
-        # Analyze Calendrier if available
-        try:
-            calendrier_btn = self.driver.find_element(By.XPATH, "//button[contains(text(), 'Calendrier')]")
-            calendrier_btn.click()
-            time.sleep(2)
-            
-            self._add_fields_to_table('tournament_calendar', [
-                ('tournament_name', 'VARCHAR(255)', 'Nom du tournoi'),
-                ('tournament_date', 'DATE', 'Date du tournoi'),
-                ('tournament_location', 'VARCHAR(255)', 'Lieu'),
-                ('tournament_type', 'VARCHAR(100)', 'Type de tournoi'),
-                ('legende', 'TEXT', 'Légende')
-            ])
-        except:
-            print("    Calendrier not available")
-    
-    def _analyze_facturation_tab(self):
-        """Analyze the Facturation tab"""
-        print("  Analyzing 'Facturation' tab...")
-        print(f"    Current URL: {self.driver.current_url}")
-        print(f"    Page title: {self.driver.title}")
-        
-        try:
-            facturation_xpath = "//a[.//tab-heading[contains(normalize-space(text()), 'Facturation')]]"
-            print(f"    Looking for Facturation tab with XPath: {facturation_xpath}")
-            facturation_tab = self.driver.find_element(By.XPATH, facturation_xpath)
-            print(f"    Found Facturation tab: {facturation_tab.text}")
-            facturation_tab.click()
-            time.sleep(2)
-            print(f"    Current URL after clicking Facturation: {self.driver.current_url}")
-        except Exception as e:
-            print(f"    Facturation tab not found - Error: {e}")
-            print(f"    Current URL when error occurred: {self.driver.current_url}")
-            return
-        
-        # Barèmes section
-        self._add_fields_to_table('billing_rates', [
-            ('part_ffb', 'DECIMAL(10,2)', 'Part FFB'),
-            ('part_comite', 'DECIMAL(10,2)', 'Part comité'),
-            ('total', 'DECIMAL(10,2)', 'Total'),
-            ('rate_type', 'VARCHAR(100)', 'Type de barème')
-        ])
-        
-        # Prix des licences
-        self._add_fields_to_table('license_prices', [
-            ('license_type', 'VARCHAR(100)', 'Type de licence'),
-            ('price', 'DECIMAL(10,2)', 'Prix'),
-            ('description', 'TEXT', 'Description')
-        ])
-        
-        # Montants FFB
-        self._add_fields_to_table('ffb_amounts', [
-            ('total', 'DECIMAL(10,2)', 'Total'),
-            ('amount_type', 'VARCHAR(100)', 'Type de montant')
-        ])
-        
-        # Somme due au comité
-        self._add_fields_to_table('committee_amounts', [
-            ('amount_description', 'VARCHAR(255)', 'Description'),
-            ('amount', 'DECIMAL(10,2)', 'Montant'),
-            ('due_date', 'DATE', 'Date d\'échéance')
-        ])
-        
-        # 5 séance Découverte
-        self._add_fields_to_table('discovery_sessions', [
-            ('session_name', 'VARCHAR(255)', 'Nom de la session'),
-            ('session_date', 'DATE', 'Date de la session'),
-            ('participants', 'INTEGER', 'Nombre de participants')
-        ])
-        
-        # Montants Comité/FFB (Club specific)
-        self._add_fields_to_table('committee_ffb_amounts', [
-            ('titre', 'VARCHAR(255)', 'Titre'),
-            ('montant', 'DECIMAL(10,2)', 'Montant'),
-            ('warning', 'TEXT', 'Warning')
-        ])
-        
-        # Transfers de licences (Club specific)
-        self._add_fields_to_table('license_transfers', [
-            ('transfer_type', 'VARCHAR(100)', 'Type de transfert'),
-            ('from_entity', 'VARCHAR(50)', 'Entité d\'origine'),
-            ('to_entity', 'VARCHAR(50)', 'Entité de destination'),
-            ('transfer_date', 'DATE', 'Date de transfert')
-        ])
-    
-    def _analyze_tableau_de_bord_tab(self):
-        """Analyze the Tableau de bord tab"""
-        print("  Analyzing 'Tableau de bord' tab...")
-        
-        try:
-            tableau_tab = self.driver.find_element(By.XPATH, "//a[contains(text(), 'Tableau de bord')]")
-            tableau_tab.click()
-            time.sleep(2)
-        except:
-            print("    Tableau de bord tab not found")
-            return
-        
-        # Licences et Tournois stats
-        self._add_fields_to_table('dashboard_stats', [
-            ('stat_title', 'VARCHAR(255)', 'Titre de la statistique'),
-            ('stat_value', 'VARCHAR(255)', 'Valeur'),
-            ('stat_type', 'VARCHAR(100)', 'Type de statistique'),
-            ('stat_period', 'VARCHAR(100)', 'Période')
-        ])
-    
-    def _analyze_clubs_actifs_inactifs_tab(self):
-        """Analyze the Clubs actifs inactifs tab"""
-        print("  Analyzing 'Clubs actifs inactifs' tab...")
-        
-        try:
-            clubs_tab = self.driver.find_element(By.XPATH, "//a[contains(text(), 'Clubs actifs inactifs')]")
-            clubs_tab.click()
-            time.sleep(2)
-        except:
-            print("    Clubs actifs inactifs tab not found")
-            return
-        
-        self._add_fields_to_table('club_status', [
-            ('club_name', 'VARCHAR(255)', 'Nom du club'),
-            ('club_code', 'VARCHAR(50)', 'Code du club'),
-            ('statut', 'VARCHAR(50)', 'Statut (Actif/Inactif)'),
-            ('last_activity', 'DATE', 'Dernière activité')
-        ])
-    
-    def _analyze_cours_tab(self):
-        """Analyze the Cours tab"""
-        print("  Analyzing 'Cours' tab...")
-        
-        try:
-            cours_tab = self.driver.find_element(By.XPATH, "//a[contains(text(), 'Cours')]")
-            cours_tab.click()
-            time.sleep(2)
-        except:
-            print("    Cours tab not found")
-            return
-        
-        self._add_fields_to_table('courses', [
-            ('course_name', 'VARCHAR(255)', 'Nom du cours'),
-            ('course_type', 'VARCHAR(100)', 'Type de cours'),
-            ('instructor', 'VARCHAR(255)', 'Instructeur'),
-            ('schedule', 'VARCHAR(255)', 'Horaire'),
-            ('duration', 'VARCHAR(100)', 'Durée')
-        ])
-    
-    def _analyze_ecoles_bridge_section(self):
-        """Analyze the Écoles de bridge section"""
-        self._add_fields_to_table('bridge_schools', [
-            ('ecoles_texte', 'TEXT', 'Texte des écoles'),
-            ('ecoles_logo_url', 'VARCHAR(500)', 'URL du logo')
-        ])
-    
-    def _analyze_enseignants_actifs_section(self):
-        """Analyze the Enseignants actifs section"""
-        self._add_fields_to_table('active_teachers', [
-            ('nom', 'VARCHAR(255)', 'Nom'),
-            ('prenom', 'VARCHAR(255)', 'Prénom'),
-            ('agrement', 'VARCHAR(100)', 'Agrément'),
-            ('validity_date', 'DATE', 'Date de validité')
-        ])
+        ]
+        self._add_fields_to_table('entity_roles', role_fields)
     
     def _add_fields_to_table(self, table_name: str, fields: List[tuple]):
         """Add fields to a table in the schema"""
@@ -682,15 +374,21 @@ class DatabaseSchemaGenerator:
                 'indexes': []
             }
         
+        table_definition = self.schema['tables'][table_name]
         # Get existing field names to avoid duplicates
-        existing_fields = {field['name'] for field in self.schema['tables'][table_name]['fields']}
+        existing_fields = {field['name'] for field in table_definition['fields']}
         
         for field_name, field_type, description in fields:
             # Skip if field already exists
             if field_name in existing_fields:
-                print(f"    Skipping duplicate field '{field_name}' in table '{table_name}'")
+                # print(f"    Skipping duplicate field '{field_name}' in table '{table_name}'")
                 continue
                 
+            # Special handling for middle_name
+            if field_name == 'middle_name' and table_name == 'entity_actors':
+                 # you can add specific logic here if needed in the future
+                pass
+
             field = {
                 'name': field_name,
                 'type': field_type,
@@ -703,19 +401,10 @@ class DatabaseSchemaGenerator:
             if table_name == 'entities' and field_name == 'entity_code':
                 field['primary_key'] = True
                 field['nullable'] = False
-            elif table_name == 'members' and field_name == 'member_license':
-                field['primary_key'] = True
-                field['nullable'] = False
             
-            # Add standard fields for non-junction tables
-            if table_name not in ['entity_regroupements', 'entity_relationships']:
-                if field_name not in ['created_at', 'updated_at', 'created_by', 'updated_by', 'soft_deleted']:
-                    self.schema['tables'][table_name]['fields'].append(field)
-                    existing_fields.add(field_name)  # Update the set
-        
-        # Add standard fields (only if not already present)
-        self._add_standard_fields(table_name)
-    
+            table_definition['fields'].append(field)
+            existing_fields.add(field_name)
+
     def _add_junction_table(self, table_name: str, fields: List[tuple]):
         """Add a junction table to the schema"""
         if table_name not in self.schema['tables']:
@@ -748,24 +437,27 @@ class DatabaseSchemaGenerator:
             existing_fields.add(field_name)  # Update the set
     
     def _add_standard_fields(self, table_name: str):
-        """Add standard fields to a table"""
-        standard_fields = [
-            ('created_at', 'TIMESTAMP', 'Date de création', 'CURRENT_TIMESTAMP'),
-            ('updated_at', 'TIMESTAMP', 'Date de modification', 'CURRENT_TIMESTAMP'),
-            ('created_by', 'VARCHAR(100)', 'Créé par', None),
-            ('updated_by', 'VARCHAR(100)', 'Modifié par', None),
-            ('soft_deleted', 'BOOLEAN', 'Supprimé logiquement', 'FALSE')
+        """Add standard fields to a table in a specific order at the end."""
+        standard_fields_order = [
+            'created_at', 'created_by', 'updated_at', 'updated_by', 'soft_deleted'
         ]
         
-        # Get existing field names to avoid duplicates
-        existing_fields = {field['name'] for field in self.schema['tables'][table_name]['fields']}
+        standard_fields_map = {
+            'created_at': ('TIMESTAMP', 'Date de création', 'CURRENT_TIMESTAMP'),
+            'created_by': ('VARCHAR(100)', 'Créé par', None),
+            'updated_at': ('TIMESTAMP', 'Date de modification', 'CURRENT_TIMESTAMP'),
+            'updated_by': ('VARCHAR(100)', 'Modifié par', None),
+            'soft_deleted': ('BOOLEAN', 'Supprimé logiquement', 'FALSE')
+        }
         
-        for field_name, field_type, description, default in standard_fields:
-            # Skip if field already exists
-            if field_name in existing_fields:
-                print(f"    Skipping duplicate standard field '{field_name}' in table '{table_name}'")
-                continue
-                
+        table_definition = self.schema['tables'][table_name]
+        
+        # Get current fields and remove any existing standard fields to re-add them at the end
+        current_fields = [f for f in table_definition['fields'] if f['name'] not in standard_fields_order]
+        
+        new_standard_fields = []
+        for field_name in standard_fields_order:
+            field_type, description, default = standard_fields_map[field_name]
             field = {
                 'name': field_name,
                 'type': field_type,
@@ -773,8 +465,9 @@ class DatabaseSchemaGenerator:
                 'nullable': True,
                 'default': default
             }
-            self.schema['tables'][table_name]['fields'].append(field)
-            existing_fields.add(field_name)  # Update the set
+            new_standard_fields.append(field)
+
+        table_definition['fields'] = current_fields + new_standard_fields
     
     def _clean_schema_duplicates(self):
         """Remove duplicate fields from all tables"""
@@ -953,6 +646,12 @@ $$ language 'plpgsql';
     
     def save_schema(self):
         """Save the schema to files"""
+        
+        # Add standard fields to all non-junction tables just before saving
+        for table_name in self.schema['tables']:
+             if 'regroupements' not in table_name: # A simple way to exclude junction tables
+                self._add_standard_fields(table_name)
+
         output_dir = os.path.join(os.path.dirname(__file__), '..', 'FFB_Scraped_Data')
         os.makedirs(output_dir, exist_ok=True)
         
