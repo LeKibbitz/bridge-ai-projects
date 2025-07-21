@@ -1,0 +1,1580 @@
+{
+  "tables": {
+    "entities": {
+      "fields": [
+        {
+          "name": "nom_entite",
+          "type": "VARCHAR(255)",
+          "description": "Nom de l'entité",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "numero_entite",
+          "type": "VARCHAR(50)",
+          "description": "Numéro d'entité",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "type_entite",
+          "type": "VARCHAR(100)",
+          "description": "Type",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "checkbox_1",
+          "type": "BOOLEAN",
+          "description": "Checkbox 1",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "checkbox_2",
+          "type": "BOOLEAN",
+          "description": "Checkbox 2",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "checkbox_3",
+          "type": "BOOLEAN",
+          "description": "Checkbox 3",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "checkbox_4",
+          "type": "BOOLEAN",
+          "description": "Checkbox 4",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "description": "Date de création",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "description": "Date de modification",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "created_by",
+          "type": "VARCHAR(100)",
+          "description": "Créé par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "updated_by",
+          "type": "VARCHAR(100)",
+          "description": "Modifié par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "soft_deleted",
+          "type": "BOOLEAN",
+          "description": "Supprimé logiquement",
+          "nullable": true,
+          "default": "FALSE"
+        },
+        {
+          "name": "entite_subordination",
+          "type": "VARCHAR(255)",
+          "description": "Entité de subordination",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "entite_regroupement",
+          "type": "VARCHAR(255)",
+          "description": "Entité de regroupement",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "subordination",
+          "type": "VARCHAR(255)",
+          "description": "Subordination",
+          "nullable": true,
+          "default": null
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": [],
+      "indexes": []
+    },
+    "entity_coordinates": {
+      "fields": [
+        {
+          "name": "email",
+          "type": "VARCHAR(255)",
+          "description": "E-mail",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "site_internet",
+          "type": "VARCHAR(255)",
+          "description": "Site internet",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "telephone_principal",
+          "type": "VARCHAR(50)",
+          "description": "Téléphone principal",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "telephone_secondaire",
+          "type": "VARCHAR(50)",
+          "description": "Téléphone secondaire",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "email_competitions",
+          "type": "VARCHAR(255)",
+          "description": "E-mail des Compétitions",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "description": "Date de création",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "description": "Date de modification",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "created_by",
+          "type": "VARCHAR(100)",
+          "description": "Créé par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "updated_by",
+          "type": "VARCHAR(100)",
+          "description": "Modifié par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "soft_deleted",
+          "type": "BOOLEAN",
+          "description": "Supprimé logiquement",
+          "nullable": true,
+          "default": "FALSE"
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": [],
+      "indexes": []
+    },
+    "entity_notifications": {
+      "fields": [
+        {
+          "name": "email_principal",
+          "type": "VARCHAR(255)",
+          "description": "E-mail principal",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "email_secondaire",
+          "type": "VARCHAR(255)",
+          "description": "E-mail secondaire",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "commentaires",
+          "type": "TEXT",
+          "description": "Commentaires",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "description": "Date de création",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "description": "Date de modification",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "created_by",
+          "type": "VARCHAR(100)",
+          "description": "Créé par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "updated_by",
+          "type": "VARCHAR(100)",
+          "description": "Modifié par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "soft_deleted",
+          "type": "BOOLEAN",
+          "description": "Supprimé logiquement",
+          "nullable": true,
+          "default": "FALSE"
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": [],
+      "indexes": []
+    },
+    "entity_complementary_info": {
+      "fields": [
+        {
+          "name": "info_checkbox_1",
+          "type": "BOOLEAN",
+          "description": "Info checkbox 1",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "info_checkbox_2",
+          "type": "BOOLEAN",
+          "description": "Info checkbox 2",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "info_checkbox_3",
+          "type": "BOOLEAN",
+          "description": "Info checkbox 3",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "nombre_tables",
+          "type": "INTEGER",
+          "description": "Nombre de tables",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "organisme_tutelle",
+          "type": "VARCHAR(255)",
+          "description": "Organisme de tutelle",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "horaires_ouverture",
+          "type": "TEXT",
+          "description": "Horaires d'ouverture",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "dates_fermeture",
+          "type": "TEXT",
+          "description": "Dates de fermeture",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "saisonnier",
+          "type": "VARCHAR(100)",
+          "description": "Saisonnier",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "plus_club",
+          "type": "TEXT",
+          "description": "Les plus du club",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "info_texte_1",
+          "type": "TEXT",
+          "description": "Info texte 1",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "info_texte_2",
+          "type": "TEXT",
+          "description": "Info texte 2",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "info_texte_3",
+          "type": "TEXT",
+          "description": "Info texte 3",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "info_texte_4",
+          "type": "TEXT",
+          "description": "Info texte 4",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "info_texte_5",
+          "type": "TEXT",
+          "description": "Info texte 5",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "info_texte_6",
+          "type": "TEXT",
+          "description": "Info texte 6",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "description": "Date de création",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "description": "Date de modification",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "created_by",
+          "type": "VARCHAR(100)",
+          "description": "Créé par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "updated_by",
+          "type": "VARCHAR(100)",
+          "description": "Modifié par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "soft_deleted",
+          "type": "BOOLEAN",
+          "description": "Supprimé logiquement",
+          "nullable": true,
+          "default": "FALSE"
+        },
+        {
+          "name": "participe_seances_decouverte",
+          "type": "BOOLEAN",
+          "description": "Participe aux 5 séances Découverte",
+          "nullable": true,
+          "default": null
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": [],
+      "indexes": []
+    },
+    "entity_photos": {
+      "fields": [
+        {
+          "name": "photo_texte",
+          "type": "TEXT",
+          "description": "Photo texte",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "photo_url",
+          "type": "VARCHAR(500)",
+          "description": "Photo URL",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "photo_recommendations",
+          "type": "TEXT",
+          "description": "Photo recommendations",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "photo_consigne",
+          "type": "TEXT",
+          "description": "Photo consigne",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "description": "Date de création",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "description": "Date de modification",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "created_by",
+          "type": "VARCHAR(100)",
+          "description": "Créé par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "updated_by",
+          "type": "VARCHAR(100)",
+          "description": "Modifié par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "soft_deleted",
+          "type": "BOOLEAN",
+          "description": "Supprimé logiquement",
+          "nullable": true,
+          "default": "FALSE"
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": [],
+      "indexes": []
+    },
+    "entity_addresses_jeu": {
+      "fields": [
+        {
+          "name": "address_line_1",
+          "type": "VARCHAR(255)",
+          "description": "Address Line 1",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "address_line_2",
+          "type": "VARCHAR(255)",
+          "description": "Address Line 2",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "address_line_3",
+          "type": "VARCHAR(255)",
+          "description": "Address Line 3",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "zipcode",
+          "type": "VARCHAR(50)",
+          "description": "Zipcode",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "city",
+          "type": "VARCHAR(255)",
+          "description": "City",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "country",
+          "type": "VARCHAR(255)",
+          "description": "Country",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "description": "Date de création",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "description": "Date de modification",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "created_by",
+          "type": "VARCHAR(100)",
+          "description": "Créé par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "updated_by",
+          "type": "VARCHAR(100)",
+          "description": "Modifié par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "soft_deleted",
+          "type": "BOOLEAN",
+          "description": "Supprimé logiquement",
+          "nullable": true,
+          "default": "FALSE"
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": [],
+      "indexes": []
+    },
+    "entity_addresses_courrier": {
+      "fields": [
+        {
+          "name": "courrier_opg_option",
+          "type": "VARCHAR(100)",
+          "description": "Courrier OPG option",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "courrier_1",
+          "type": "VARCHAR(255)",
+          "description": "Courrier 1",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "courrier_2",
+          "type": "VARCHAR(255)",
+          "description": "Courrier 2",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "courrier_3",
+          "type": "VARCHAR(255)",
+          "description": "Courrier 3",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "courrier_4",
+          "type": "VARCHAR(255)",
+          "description": "Courrier 4",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "courrier_5",
+          "type": "VARCHAR(255)",
+          "description": "Courrier 5",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "courrier_6",
+          "type": "VARCHAR(255)",
+          "description": "Courrier 6",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "country",
+          "type": "VARCHAR(255)",
+          "description": "Country",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "description": "Date de création",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "description": "Date de modification",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "created_by",
+          "type": "VARCHAR(100)",
+          "description": "Créé par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "updated_by",
+          "type": "VARCHAR(100)",
+          "description": "Modifié par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "soft_deleted",
+          "type": "BOOLEAN",
+          "description": "Supprimé logiquement",
+          "nullable": true,
+          "default": "FALSE"
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": [],
+      "indexes": []
+    },
+    "entity_addresses_facturation": {
+      "fields": [
+        {
+          "name": "facturation_opg_option",
+          "type": "VARCHAR(100)",
+          "description": "Facturation OPG option",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "facturation_1",
+          "type": "VARCHAR(255)",
+          "description": "Facturation 1",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "facturation_2",
+          "type": "VARCHAR(255)",
+          "description": "Facturation 2",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "facturation_3",
+          "type": "VARCHAR(255)",
+          "description": "Facturation 3",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "facturation_4",
+          "type": "VARCHAR(255)",
+          "description": "Facturation 4",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "facturation_5",
+          "type": "VARCHAR(255)",
+          "description": "Facturation 5",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "facturation_6",
+          "type": "VARCHAR(255)",
+          "description": "Facturation 6",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "country",
+          "type": "VARCHAR(255)",
+          "description": "Country",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "description": "Date de création",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "description": "Date de modification",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "created_by",
+          "type": "VARCHAR(100)",
+          "description": "Créé par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "updated_by",
+          "type": "VARCHAR(100)",
+          "description": "Modifié par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "soft_deleted",
+          "type": "BOOLEAN",
+          "description": "Supprimé logiquement",
+          "nullable": true,
+          "default": "FALSE"
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": [],
+      "indexes": []
+    },
+    "entity_actors": {
+      "fields": [
+        {
+          "name": "nom",
+          "type": "VARCHAR(255)",
+          "description": "Nom",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "prenom",
+          "type": "VARCHAR(255)",
+          "description": "Prénom",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "role",
+          "type": "VARCHAR(255)",
+          "description": "Rôle",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "statut",
+          "type": "VARCHAR(50)",
+          "description": "Statut",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "description": "Date de création",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "description": "Date de modification",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "created_by",
+          "type": "VARCHAR(100)",
+          "description": "Créé par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "updated_by",
+          "type": "VARCHAR(100)",
+          "description": "Modifié par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "soft_deleted",
+          "type": "BOOLEAN",
+          "description": "Supprimé logiquement",
+          "nullable": true,
+          "default": "FALSE"
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": [],
+      "indexes": []
+    },
+    "entity_actors_history": {
+      "fields": [
+        {
+          "name": "nom",
+          "type": "VARCHAR(255)",
+          "description": "Nom",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "prenom",
+          "type": "VARCHAR(255)",
+          "description": "Prénom",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "role",
+          "type": "VARCHAR(255)",
+          "description": "Rôle",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "statut",
+          "type": "VARCHAR(50)",
+          "description": "Statut",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "date_fin",
+          "type": "DATE",
+          "description": "Date de fin",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "page",
+          "type": "INTEGER",
+          "description": "Page number",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "description": "Date de création",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "description": "Date de modification",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "created_by",
+          "type": "VARCHAR(100)",
+          "description": "Créé par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "updated_by",
+          "type": "VARCHAR(100)",
+          "description": "Modifié par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "soft_deleted",
+          "type": "BOOLEAN",
+          "description": "Supprimé logiquement",
+          "nullable": true,
+          "default": "FALSE"
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": [],
+      "indexes": []
+    },
+    "entity_regroupements": {
+      "fields": [
+        {
+          "name": "entity_id",
+          "type": "VARCHAR(50)",
+          "description": "FK to entities",
+          "nullable": false
+        },
+        {
+          "name": "regroupement_entity_id",
+          "type": "VARCHAR(50)",
+          "description": "FK to entities",
+          "nullable": false
+        },
+        {
+          "name": "regroupement_type",
+          "type": "VARCHAR(100)",
+          "description": "Type of relationship",
+          "nullable": false
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": [],
+      "indexes": []
+    },
+    "entity_roles": {
+      "fields": [
+        {
+          "name": "role_name",
+          "type": "VARCHAR(255)",
+          "description": "Nom du rôle",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "role_description",
+          "type": "TEXT",
+          "description": "Description du rôle",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "role_type",
+          "type": "VARCHAR(100)",
+          "description": "Type de rôle",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "description": "Date de création",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "description": "Date de modification",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "created_by",
+          "type": "VARCHAR(100)",
+          "description": "Créé par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "updated_by",
+          "type": "VARCHAR(100)",
+          "description": "Modifié par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "soft_deleted",
+          "type": "BOOLEAN",
+          "description": "Supprimé logiquement",
+          "nullable": true,
+          "default": "FALSE"
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": [],
+      "indexes": []
+    },
+    "billing_rates": {
+      "fields": [
+        {
+          "name": "part_ffb",
+          "type": "DECIMAL(10,2)",
+          "description": "Part FFB",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "part_comite",
+          "type": "DECIMAL(10,2)",
+          "description": "Part comité",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "total",
+          "type": "DECIMAL(10,2)",
+          "description": "Total",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "rate_type",
+          "type": "VARCHAR(100)",
+          "description": "Type de barème",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "description": "Date de création",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "description": "Date de modification",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "created_by",
+          "type": "VARCHAR(100)",
+          "description": "Créé par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "updated_by",
+          "type": "VARCHAR(100)",
+          "description": "Modifié par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "soft_deleted",
+          "type": "BOOLEAN",
+          "description": "Supprimé logiquement",
+          "nullable": true,
+          "default": "FALSE"
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": [],
+      "indexes": []
+    },
+    "license_prices": {
+      "fields": [
+        {
+          "name": "license_type",
+          "type": "VARCHAR(100)",
+          "description": "Type de licence",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "price",
+          "type": "DECIMAL(10,2)",
+          "description": "Prix",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "description",
+          "type": "TEXT",
+          "description": "Description",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "description": "Date de création",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "description": "Date de modification",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "created_by",
+          "type": "VARCHAR(100)",
+          "description": "Créé par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "updated_by",
+          "type": "VARCHAR(100)",
+          "description": "Modifié par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "soft_deleted",
+          "type": "BOOLEAN",
+          "description": "Supprimé logiquement",
+          "nullable": true,
+          "default": "FALSE"
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": [],
+      "indexes": []
+    },
+    "ffb_amounts": {
+      "fields": [
+        {
+          "name": "total",
+          "type": "DECIMAL(10,2)",
+          "description": "Total",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "amount_type",
+          "type": "VARCHAR(100)",
+          "description": "Type de montant",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "description": "Date de création",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "description": "Date de modification",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "created_by",
+          "type": "VARCHAR(100)",
+          "description": "Créé par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "updated_by",
+          "type": "VARCHAR(100)",
+          "description": "Modifié par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "soft_deleted",
+          "type": "BOOLEAN",
+          "description": "Supprimé logiquement",
+          "nullable": true,
+          "default": "FALSE"
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": [],
+      "indexes": []
+    },
+    "committee_amounts": {
+      "fields": [
+        {
+          "name": "amount_description",
+          "type": "VARCHAR(255)",
+          "description": "Description",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "amount",
+          "type": "DECIMAL(10,2)",
+          "description": "Montant",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "due_date",
+          "type": "DATE",
+          "description": "Date d'échéance",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "description": "Date de création",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "description": "Date de modification",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "created_by",
+          "type": "VARCHAR(100)",
+          "description": "Créé par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "updated_by",
+          "type": "VARCHAR(100)",
+          "description": "Modifié par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "soft_deleted",
+          "type": "BOOLEAN",
+          "description": "Supprimé logiquement",
+          "nullable": true,
+          "default": "FALSE"
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": [],
+      "indexes": []
+    },
+    "discovery_sessions": {
+      "fields": [
+        {
+          "name": "session_name",
+          "type": "VARCHAR(255)",
+          "description": "Nom de la session",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "session_date",
+          "type": "DATE",
+          "description": "Date de la session",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "participants",
+          "type": "INTEGER",
+          "description": "Nombre de participants",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "description": "Date de création",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "description": "Date de modification",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "created_by",
+          "type": "VARCHAR(100)",
+          "description": "Créé par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "updated_by",
+          "type": "VARCHAR(100)",
+          "description": "Modifié par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "soft_deleted",
+          "type": "BOOLEAN",
+          "description": "Supprimé logiquement",
+          "nullable": true,
+          "default": "FALSE"
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": [],
+      "indexes": []
+    },
+    "committee_ffb_amounts": {
+      "fields": [
+        {
+          "name": "titre",
+          "type": "VARCHAR(255)",
+          "description": "Titre",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "montant",
+          "type": "DECIMAL(10,2)",
+          "description": "Montant",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "warning",
+          "type": "TEXT",
+          "description": "Warning",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "description": "Date de création",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "description": "Date de modification",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "created_by",
+          "type": "VARCHAR(100)",
+          "description": "Créé par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "updated_by",
+          "type": "VARCHAR(100)",
+          "description": "Modifié par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "soft_deleted",
+          "type": "BOOLEAN",
+          "description": "Supprimé logiquement",
+          "nullable": true,
+          "default": "FALSE"
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": [],
+      "indexes": []
+    },
+    "license_transfers": {
+      "fields": [
+        {
+          "name": "transfer_type",
+          "type": "VARCHAR(100)",
+          "description": "Type de transfert",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "from_entity",
+          "type": "VARCHAR(50)",
+          "description": "Entité d'origine",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "to_entity",
+          "type": "VARCHAR(50)",
+          "description": "Entité de destination",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "transfer_date",
+          "type": "DATE",
+          "description": "Date de transfert",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "description": "Date de création",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "description": "Date de modification",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "created_by",
+          "type": "VARCHAR(100)",
+          "description": "Créé par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "updated_by",
+          "type": "VARCHAR(100)",
+          "description": "Modifié par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "soft_deleted",
+          "type": "BOOLEAN",
+          "description": "Supprimé logiquement",
+          "nullable": true,
+          "default": "FALSE"
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": [],
+      "indexes": []
+    },
+    "bridge_schools": {
+      "fields": [
+        {
+          "name": "ecoles_texte",
+          "type": "TEXT",
+          "description": "Texte des écoles",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "ecoles_logo_url",
+          "type": "VARCHAR(500)",
+          "description": "URL du logo",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "description": "Date de création",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "description": "Date de modification",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "created_by",
+          "type": "VARCHAR(100)",
+          "description": "Créé par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "updated_by",
+          "type": "VARCHAR(100)",
+          "description": "Modifié par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "soft_deleted",
+          "type": "BOOLEAN",
+          "description": "Supprimé logiquement",
+          "nullable": true,
+          "default": "FALSE"
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": [],
+      "indexes": []
+    },
+    "active_teachers": {
+      "fields": [
+        {
+          "name": "nom",
+          "type": "VARCHAR(255)",
+          "description": "Nom",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "prenom",
+          "type": "VARCHAR(255)",
+          "description": "Prénom",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "agrement",
+          "type": "VARCHAR(100)",
+          "description": "Agrément",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "validity_date",
+          "type": "DATE",
+          "description": "Date de validité",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "description": "Date de création",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP",
+          "description": "Date de modification",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        {
+          "name": "created_by",
+          "type": "VARCHAR(100)",
+          "description": "Créé par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "updated_by",
+          "type": "VARCHAR(100)",
+          "description": "Modifié par",
+          "nullable": true,
+          "default": null
+        },
+        {
+          "name": "soft_deleted",
+          "type": "BOOLEAN",
+          "description": "Supprimé logiquement",
+          "nullable": true,
+          "default": "FALSE"
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": [],
+      "indexes": []
+    }
+  },
+  "relationships": [],
+  "enums": {},
+  "indexes": [],
+  "triggers": []
+}

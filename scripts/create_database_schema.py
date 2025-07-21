@@ -24,7 +24,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
-from scripts.config import FFB_USERNAME, FFB_PASSWORD
+from config import FFB_USERNAME, FFB_PASSWORD
 
 class DatabaseSchemaGenerator:
     def __init__(self):
@@ -68,49 +68,148 @@ class DatabaseSchemaGenerator:
     def _perform_login(self):
         """Perform the actual login"""
         try:
+            # Wait a moment for page to load
             time.sleep(3)
+            print(f"Page title: {self.driver.title}")
             
-            # Find login form elements
+            # Debug: List all input elements on the page
+            print("Looking for input elements...")
+            inputs = self.driver.find_elements(By.TAG_NAME, "input")
+            print(f"Found {len(inputs)} input elements:")
+            for i, inp in enumerate(inputs):
+                print(f"  {i}: id='{inp.get_attribute('id')}', type='{inp.get_attribute('type')}', name='{inp.get_attribute('name')}'")
+            
+            # Wait for login form - find elements by type instead of ID (since IDs are dynamic)
+            print("Waiting for email input...")
             email_input = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[type='email']")))
-            password_input = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[type='password']")))
+            print("Email input found")
             
-            # Fill form
+            print("Waiting for password input...")
+            password_input = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[type='password']")))
+            print("Password input found")
+            
+            # Fill login form
+            print("Filling login form...")
             email_input.send_keys(FFB_USERNAME)
             password_input.send_keys(FFB_PASSWORD)
             
-            # Submit
-            submit_button = self.driver.find_element(By.XPATH, "//button[contains(text(), 'SE CONNECTER')]")
-            submit_button.click()
-            time.sleep(3)
+            # Submit form
+            print("Looking for submit button...")
+            submit_button = None
+            try:
+                # Try exact match, all caps
+                submit_button = self.driver.find_element(By.XPATH, "//button[translate(normalize-space(text()), 'abcdefghijklmnopqrstuvwxyzéèêëàâäîïôöùûüç', 'ABCDEFGHIJKLMNOPQRSTUVWXYZÉÈÊËÀÂÄÎÏÔÖÙÛÜÇ') = 'SE CONNECTER']")
+                print("Submit button found (all caps), clicking...")
+            except Exception as e:
+                print(f"Submit button not found with all-caps selector: {e}")
+                # Try contains (case-insensitive)
+                try:
+                    submit_button = self.driver.find_element(By.XPATH, "//button[contains(translate(normalize-space(text()), 'abcdefghijklmnopqrstuvwxyzéèêëàâäîïôöùûüç', 'ABCDEFGHIJKLMNOPQRSTUVWXYZÉÈÊËÀÂÄÎÏÔÖÙÛÜÇ'), 'SE CONNECTER')]")
+                    print("Submit button found (contains, case-insensitive), clicking...")
+                except Exception as e2:
+                    print(f"Submit button not found with contains selector: {e2}")
+                    # Print all button texts and HTML for debugging
+                    buttons = self.driver.find_elements(By.TAG_NAME, "button")
+                    print("All button texts and HTML on page:")
+                    for i, btn in enumerate(buttons):
+                        outer_html = btn.get_attribute('outerHTML')
+                        if outer_html is None:
+                            outer_html = 'None'
+                        else:
+                            outer_html = outer_html[:200]
+                        print(f"  {i}: text='{btn.text}' type='{btn.get_attribute('type')}' class='{btn.get_attribute('class')}' html='{outer_html}'")
+                    # Fallback: click the first submit-type button
+                    for btn in buttons:
+                        if btn.get_attribute('type') == 'submit':
+                            submit_button = btn
+                            print("Fallback: clicking first submit-type button.")
+                            break
+            if submit_button:
+                try:
+                    submit_button.click()
+                    print("Clicked the submit button successfully.")
+                except Exception as click_exc:
+                    print(f"ERROR: Exception occurred while clicking submit button: {click_exc}")
+                    return
+            else:
+                print("ERROR: Could not find a submit button to click! Aborting login.")
+                return
             
-            # Navigate to Métier
+            # Wait a moment and check what happened
+            print("Waiting a moment after submit...")
+            time.sleep(3)
+            print(f"Current URL after submit: {self.driver.current_url}")
+            print(f"Page title after submit: {self.driver.title}")
+            
+            # Wait for redirect to dashboard
+            print("Waiting for redirect to dashboard...")
+            self.wait.until(EC.url_contains("ffbridge.fr/user/dashboard"))
+            print("Successfully logged in!")
+            
+            # Now click the correct 'ACCÉDER' button to access the Métier environment
+            print("Looking for 'ACCÉDER' button to access Métier environment...")
+            time.sleep(3)
             acceder_buttons = self.driver.find_elements(By.XPATH, "//button[contains(text(), 'Accéder')]")
-            for button in acceder_buttons:
+            print(f"Found {len(acceder_buttons)} 'Accéder' buttons")
+            target_button = None
+            for i, button in enumerate(acceder_buttons):
                 try:
                     parent = button.find_element(By.XPATH, "./..")
-                    if "espace métier" in parent.text.lower():
-                        button.click()
+                    parent_text = parent.text.lower()
+                    print(f"Button {i+1} parent text: {parent_text[:100]}...")
+                    if "mon espace métier" in parent_text or "espace métier" in parent_text:
+                        target_button = button
+                        print("Found 'Accéder' button under 'Mon espace métier'")
                         break
-                except:
+                except Exception as e:
+                    print(f"Error checking button {i+1}: {e}")
                     continue
-            
+            if target_button:
+                print("Clicking the correct 'Accéder' button...")
+                target_button.click()
+            else:
+                print("Could not find 'Accéder' button under 'Mon espace métier', clicking the first one if available...")
+                if acceder_buttons:
+                    acceder_buttons[0].click()
+                else:
+                    print("No 'Accéder' buttons found! Aborting login.")
+                    return
+            # Wait for the new tab to open
+            print("Waiting for new tab to open...")
             time.sleep(3)
+            print(f"Window handles: {self.driver.window_handles}")
             if len(self.driver.window_handles) > 1:
+                print("Switching to new tab (Métier environment)...")
                 self.driver.switch_to.window(self.driver.window_handles[-1])
-            
-            print("✓ Login successful")
-            
+            else:
+                print("Only one window handle, staying on current tab.")
+            # Wait for the metier page to load
+            print("Waiting for metier page to load...")
+            time.sleep(5)
+            print(f"Current URL in new tab: {self.driver.current_url}")
+            print(f"Page title in new tab: {self.driver.title}")
+            # Fail early if not in the Métier environment
+            if not ("metier.ffbridge.fr" in self.driver.current_url):
+                print("ERROR: Not in Métier environment after login and navigation! Aborting.")
+                return []
         except Exception as e:
-            print(f"✗ Login failed: {e}")
-            raise
+            print(f"EXCEPTION in _perform_login: {e}")
+            import traceback
+            traceback.print_exc()
+            return
     
     def analyze_entity_structure(self, entity_id: int, entity_type: str):
         """Analyze the structure of a specific entity"""
         print(f"\n--- Analyzing {entity_type} entity (ID: {entity_id}) ---")
         
         # Navigate to entity
-        self.driver.get(f"https://metier.ffbridge.fr/#/entites/{entity_id}/informations")
-        time.sleep(2)
+        entity_url = f"https://metier.ffbridge.fr/#/entites/{entity_id}/informations"
+        print(f"  Navigating to: {entity_url}")
+        self.driver.get(entity_url)
+        time.sleep(3)
+        
+        print(f"  Current URL after navigation: {self.driver.current_url}")
+        print(f"  Page title: {self.driver.title}")
         
         # Analyze main information tab
         self._analyze_informations_principales(entity_type)
@@ -247,13 +346,12 @@ class DatabaseSchemaGenerator:
         """Analyze the Adresse section"""
         # Jeu address
         jeu_fields = [
-            ('adresse_jeu_1', 'VARCHAR(255)', 'Adresse jeu 1'),
-            ('adresse_jeu_2', 'VARCHAR(255)', 'Adresse jeu 2'),
-            ('adresse_jeu_3', 'VARCHAR(255)', 'Adresse jeu 3'),
-            ('adresse_jeu_4', 'VARCHAR(255)', 'Adresse jeu 4'),
-            ('adresse_jeu_5', 'VARCHAR(255)', 'Adresse jeu 5'),
-            ('adresse_jeu_6', 'VARCHAR(255)', 'Adresse jeu 6'),
-            ('google_map_link', 'VARCHAR(500)', 'Google map link')
+            ('address_line_1', 'VARCHAR(255)', 'Address Line 1'),
+            ('address_line_2', 'VARCHAR(255)', 'Address Line 2'),
+            ('address_line_3', 'VARCHAR(255)', 'Address Line 3'),
+            ('zipcode', 'VARCHAR(50)', 'Zipcode'),
+            ('city', 'VARCHAR(255)', 'City'),
+            ('country', 'VARCHAR(255)', 'Country')
         ]
         
         # Courrier address
@@ -264,7 +362,8 @@ class DatabaseSchemaGenerator:
             ('courrier_3', 'VARCHAR(255)', 'Courrier 3'),
             ('courrier_4', 'VARCHAR(255)', 'Courrier 4'),
             ('courrier_5', 'VARCHAR(255)', 'Courrier 5'),
-            ('courrier_6', 'VARCHAR(255)', 'Courrier 6')
+            ('courrier_6', 'VARCHAR(255)', 'Courrier 6'),
+            ('country', 'VARCHAR(255)', 'Country')
         ]
         
         # Facturation address
@@ -275,7 +374,8 @@ class DatabaseSchemaGenerator:
             ('facturation_3', 'VARCHAR(255)', 'Facturation 3'),
             ('facturation_4', 'VARCHAR(255)', 'Facturation 4'),
             ('facturation_5', 'VARCHAR(255)', 'Facturation 5'),
-            ('facturation_6', 'VARCHAR(255)', 'Facturation 6')
+            ('facturation_6', 'VARCHAR(255)', 'Facturation 6'),
+            ('country', 'VARCHAR(255)', 'Country')
         ]
         
         self._add_fields_to_table('entity_addresses_jeu', jeu_fields)
@@ -310,14 +410,30 @@ class DatabaseSchemaGenerator:
     def _analyze_acteurs_tab(self):
         """Analyze the Acteurs tab"""
         print("  Analyzing 'Acteurs' tab...")
+        print(f"    Current URL: {self.driver.current_url}")
+        print(f"    Page title: {self.driver.title}")
+        
+        # Debug: List all links on the page
+        all_links = self.driver.find_elements(By.TAG_NAME, "a")
+        print(f"    Found {len(all_links)} links on page:")
+        for i, link in enumerate(all_links[:15]):  # Show first 15 links
+            link_text = link.text.strip()
+            link_href = link.get_attribute('href')
+            link_class = link.get_attribute('class')
+            print(f"      {i}: text='{link_text}' href='{link_href}' class='{link_class}'")
         
         # Try to click on Acteurs tab
         try:
-            acteurs_tab = self.driver.find_element(By.XPATH, "//a[contains(text(), 'Acteurs')]")
+            acteurs_xpath = "//a[.//tab-heading[contains(normalize-space(text()), 'Acteurs')]]"
+            print(f"    Looking for Acteurs tab with XPath: {acteurs_xpath}")
+            acteurs_tab = self.driver.find_element(By.XPATH, acteurs_xpath)
+            print(f"    Found Acteurs tab: {acteurs_tab.text}")
             acteurs_tab.click()
             time.sleep(2)
-        except:
-            print("    Acteurs tab not found")
+            print(f"    Current URL after clicking Acteurs: {self.driver.current_url}")
+        except Exception as e:
+            print(f"    Acteurs tab not found - Error: {e}")
+            print(f"    Current URL when error occurred: {self.driver.current_url}")
             return
         
         # Analyze Actifs sub-tab
@@ -354,13 +470,20 @@ class DatabaseSchemaGenerator:
     def _analyze_roles_tab(self):
         """Analyze the Rôles tab"""
         print("  Analyzing 'Rôles' tab...")
+        print(f"    Current URL: {self.driver.current_url}")
+        print(f"    Page title: {self.driver.title}")
         
         try:
-            roles_tab = self.driver.find_element(By.XPATH, "//a[contains(text(), 'Rôles')]")
+            roles_xpath = "//a[.//tab-heading[contains(normalize-space(text()), 'Rôles')]]"
+            print(f"    Looking for Rôles tab with XPath: {roles_xpath}")
+            roles_tab = self.driver.find_element(By.XPATH, roles_xpath)
+            print(f"    Found Rôles tab: {roles_tab.text}")
             roles_tab.click()
             time.sleep(2)
-        except:
-            print("    Rôles tab not found")
+            print(f"    Current URL after clicking Rôles: {self.driver.current_url}")
+        except Exception as e:
+            print(f"    Rôles tab not found - Error: {e}")
+            print(f"    Current URL when error occurred: {self.driver.current_url}")
             return
         
         # Generic roles table structure
@@ -373,13 +496,20 @@ class DatabaseSchemaGenerator:
     def _analyze_tournois_tab(self):
         """Analyze the Tournois tab"""
         print("  Analyzing 'Tournois' tab...")
+        print(f"    Current URL: {self.driver.current_url}")
+        print(f"    Page title: {self.driver.title}")
         
         try:
-            tournois_tab = self.driver.find_element(By.XPATH, "//a[contains(text(), 'Tournois')]")
+            tournois_xpath = "//a[.//tab-heading[contains(normalize-space(text()), 'Tournois')]]"
+            print(f"    Looking for Tournois tab with XPath: {tournois_xpath}")
+            tournois_tab = self.driver.find_element(By.XPATH, tournois_xpath)
+            print(f"    Found Tournois tab: {tournois_tab.text}")
             tournois_tab.click()
             time.sleep(2)
-        except:
-            print("    Tournois tab not found")
+            print(f"    Current URL after clicking Tournois: {self.driver.current_url}")
+        except Exception as e:
+            print(f"    Tournois tab not found - Error: {e}")
+            print(f"    Current URL when error occurred: {self.driver.current_url}")
             return
         
         # Analyze Calendrier if available
@@ -401,13 +531,20 @@ class DatabaseSchemaGenerator:
     def _analyze_facturation_tab(self):
         """Analyze the Facturation tab"""
         print("  Analyzing 'Facturation' tab...")
+        print(f"    Current URL: {self.driver.current_url}")
+        print(f"    Page title: {self.driver.title}")
         
         try:
-            facturation_tab = self.driver.find_element(By.XPATH, "//a[contains(text(), 'Facturation')]")
+            facturation_xpath = "//a[.//tab-heading[contains(normalize-space(text()), 'Facturation')]]"
+            print(f"    Looking for Facturation tab with XPath: {facturation_xpath}")
+            facturation_tab = self.driver.find_element(By.XPATH, facturation_xpath)
+            print(f"    Found Facturation tab: {facturation_tab.text}")
             facturation_tab.click()
             time.sleep(2)
-        except:
-            print("    Facturation tab not found")
+            print(f"    Current URL after clicking Facturation: {self.driver.current_url}")
+        except Exception as e:
+            print(f"    Facturation tab not found - Error: {e}")
+            print(f"    Current URL when error occurred: {self.driver.current_url}")
             return
         
         # Barèmes section
@@ -545,7 +682,15 @@ class DatabaseSchemaGenerator:
                 'indexes': []
             }
         
+        # Get existing field names to avoid duplicates
+        existing_fields = {field['name'] for field in self.schema['tables'][table_name]['fields']}
+        
         for field_name, field_type, description in fields:
+            # Skip if field already exists
+            if field_name in existing_fields:
+                print(f"    Skipping duplicate field '{field_name}' in table '{table_name}'")
+                continue
+                
             field = {
                 'name': field_name,
                 'type': field_type,
@@ -558,7 +703,7 @@ class DatabaseSchemaGenerator:
             if table_name == 'entities' and field_name == 'entity_code':
                 field['primary_key'] = True
                 field['nullable'] = False
-            elif table_name == 'members' and field_name == 'license_number':
+            elif table_name == 'members' and field_name == 'member_license':
                 field['primary_key'] = True
                 field['nullable'] = False
             
@@ -566,8 +711,9 @@ class DatabaseSchemaGenerator:
             if table_name not in ['entity_regroupements', 'entity_relationships']:
                 if field_name not in ['created_at', 'updated_at', 'created_by', 'updated_by', 'soft_deleted']:
                     self.schema['tables'][table_name]['fields'].append(field)
+                    existing_fields.add(field_name)  # Update the set
         
-        # Add standard fields
+        # Add standard fields (only if not already present)
         self._add_standard_fields(table_name)
     
     def _add_junction_table(self, table_name: str, fields: List[tuple]):
@@ -579,8 +725,19 @@ class DatabaseSchemaGenerator:
                 'foreign_keys': [],
                 'indexes': []
             }
+        else:
+            print(f"    Junction table '{table_name}' already exists, skipping...")
+            return
+        
+        # Get existing field names to avoid duplicates
+        existing_fields = {field['name'] for field in self.schema['tables'][table_name]['fields']}
         
         for field_name, field_type, description in fields:
+            # Skip if field already exists
+            if field_name in existing_fields:
+                print(f"    Skipping duplicate field '{field_name}' in junction table '{table_name}'")
+                continue
+                
             field = {
                 'name': field_name,
                 'type': field_type,
@@ -588,6 +745,7 @@ class DatabaseSchemaGenerator:
                 'nullable': False
             }
             self.schema['tables'][table_name]['fields'].append(field)
+            existing_fields.add(field_name)  # Update the set
     
     def _add_standard_fields(self, table_name: str):
         """Add standard fields to a table"""
@@ -599,7 +757,15 @@ class DatabaseSchemaGenerator:
             ('soft_deleted', 'BOOLEAN', 'Supprimé logiquement', 'FALSE')
         ]
         
+        # Get existing field names to avoid duplicates
+        existing_fields = {field['name'] for field in self.schema['tables'][table_name]['fields']}
+        
         for field_name, field_type, description, default in standard_fields:
+            # Skip if field already exists
+            if field_name in existing_fields:
+                print(f"    Skipping duplicate standard field '{field_name}' in table '{table_name}'")
+                continue
+                
             field = {
                 'name': field_name,
                 'type': field_type,
@@ -608,10 +774,30 @@ class DatabaseSchemaGenerator:
                 'default': default
             }
             self.schema['tables'][table_name]['fields'].append(field)
+            existing_fields.add(field_name)  # Update the set
     
+    def _clean_schema_duplicates(self):
+        """Remove duplicate fields from all tables"""
+        print("  Cleaning duplicate fields...")
+        for table_name, table_info in self.schema['tables'].items():
+            seen_fields = set()
+            unique_fields = []
+            
+            for field in table_info['fields']:
+                if field['name'] not in seen_fields:
+                    unique_fields.append(field)
+                    seen_fields.add(field['name'])
+                else:
+                    print(f"    Removed duplicate field '{field['name']}' from table '{table_name}'")
+            
+            table_info['fields'] = unique_fields
+
     def generate_sql_schema(self):
         """Generate the complete SQL schema"""
         print("\n=== Generating SQL Schema ===")
+        
+        # Clean duplicates before generating SQL
+        self._clean_schema_duplicates()
         
         sql_lines = []
         
@@ -713,9 +899,9 @@ class DatabaseSchemaGenerator:
         indexes.append("CREATE INDEX idx_entity_actors_statut ON entity_actors(statut);")
         
         # Address indexes
-        indexes.append("CREATE INDEX idx_entity_addresses_entity_id ON entity_addresses_jeu(entity_id);")
-        indexes.append("CREATE INDEX idx_entity_addresses_entity_id ON entity_addresses_courrier(entity_id);")
-        indexes.append("CREATE INDEX idx_entity_addresses_entity_id ON entity_addresses_facturation(entity_id);")
+        indexes.append("CREATE INDEX idx_entity_addresses_jeu_entity_id ON entity_addresses_jeu(entity_id);")
+        indexes.append("CREATE INDEX idx_entity_addresses_courrier_entity_id ON entity_addresses_courrier(entity_id);")
+        indexes.append("CREATE INDEX idx_entity_addresses_facturation_entity_id ON entity_addresses_facturation(entity_id);")
         
         indexes.append("")
         return indexes
