@@ -1,0 +1,1 @@
+<button _ngcontent-lancelot-frontend-c3331722861="" tuiappearance="" tuiicons="" tuibutton="" type="button" appearance="flat" size="m" class="tui-island__footer-button" data-appearance="flat" data-size="m"> Accéder </button>

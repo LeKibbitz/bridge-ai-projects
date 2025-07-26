@@ -1,0 +1,69 @@
+erDiagram
+    Entities ||--o{ Players : "has"
+    Players ||--o{ PlayerRoles : "has"
+    Roles ||--o{ PlayerRoles : "is"
+    Players ||--o{ PlayerAgrements : "has"
+    Agrements ||--o{ PlayerAgrements : "is"
+    Players ||--o{ PlayerFonctions : "has"
+    Fonctions ||--o{ PlayerFonctions : "is"
+
+    Entities {
+      int id PK
+      string name
+      string code
+      string address
+      string city
+      string postal_code
+      string region
+      string email
+      string phone
+      string status
+    }
+    Players {
+      int id PK
+      string license_number
+      string first_name
+      string last_name
+      date birthdate
+      string email
+      string phone
+      int club_id FK
+      string status
+    }
+    Roles {
+      int id PK
+      string name
+      string description
+    }
+    PlayerRoles {
+      int id PK
+      int player_id FK
+      int role_id FK
+      int club_id FK
+      date start_date
+      date end_date
+    }
+    Agrements {
+      int id PK
+      string name
+      string description
+    }
+    PlayerAgrements {
+      int id PK
+      int player_id FK
+      int agrement_id FK
+      date start_date
+      date end_date
+    }
+    Fonctions {
+      int id PK
+      string name
+      string description
+    }
+    PlayerFonctions {
+      int id PK
+      int player_id FK
+      int fonction_id FK
+      date start_date
+      date end_date
+    }

@@ -1,0 +1,3 @@
+# === Scraping of licencees Using "Gestion des Membres"
+
+After, login and entering "l'espace métier"
