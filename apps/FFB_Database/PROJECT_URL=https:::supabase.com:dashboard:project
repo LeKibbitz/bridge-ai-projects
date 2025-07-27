@@ -1,0 +1,56 @@
+PROJECT_URL=https://supabase.com/dashboard/project/dzcnmebryowcxwfvrgrr
+PROJECT_API_KEY=ljhfbmsjdvmjsdfvjbfv=jbdfv
+
+SUPABASE_URL=https://aqokcjsmajnpfkladubp.supabase.co
+#OR (I DON'T KNOW)
+SUPABASE_URL=https://wfctinichbyfuwmxkebl.supabase.co 
+SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxb2tjanNtYWpucGZrbGFkdWJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEzOTg4OTUsImV4cCI6MjA2Njk3NDg5NX0.f2Z4aRkTlUExrpir4fqIpn0TkzpS5B0WPuAHAb26YFM
+#I can't find the sipmle SUPABASE_KEY (other than the anon)
+
+
+#GITHUB REPOSITORY URL: 
+https://github.com/LeKibbitz/FFB-Data.git 
+
+#GitHub Pwd: 
+fyWzuj-6qijji-qejwen
+#OR
+7SaX=0324 #(I don't know)
+
+#My Fédération Française de Bridge (FFB) Credentials:
+Login=3144342
+Pwd=7SaX=0324
+
+FFB_LOGIN=3144342
+FFB_PWD=7SaX=0324
+
+#Direct connection
+postgresql://postgres:[YOUR-PASSWORD]@db.dzcnmebryowcxwfvrgrr.supabase.co:5432/postgres
+
+#Params
+host: db.dzcnmebryowcxwfvrgrr.supabase.co
+port: 5432
+database: postgres
+user: postgres
+
+#Transaction pooler
+postgres://postgres:[YOUR-PASSWORD]@db.dzcnmebryowcxwfvrgrr.supabase.co:6543/postgres
+
+#paarams
+host: db.dzcnmebryowcxwfvrgrr.supabase.co
+port: 6543
+database: postgres
+user: postgres
+pool_mode: transaction
+
+#Session pooler
+#Shared Pooler
+
+#Only recommended as an alternative to Direct Connection, when connecting via an IPv4 network.
+postgresql://postgres.dzcnmebryowcxwfvrgrr:[YOUR-PASSWORD]@aws-0-eu-west-3.pooler.supabase.com:5432/postgres
+
+#Connection String
+
+#Type
+URI
+#Source Primary Database
+

@@ -1,0 +1,22 @@
+FFB_Database Scraping - Details on what, where the data are.
+
+For all of these, the BreadCrumb is a source of information but not to be scraped
+
+FFB (ID: 1)
+	•	Tabs/Sections to Scrape:
+	•	Tab INFORMATIONS PRINCIPALES
+	•	Informations principales: list of fields…
+	•	
+	•	Special Elements:
+	•	Ignore: green buttons
+	•	notes
+Zone (ID: 2)
+	•	Tabs/Sections to Scrape:
+	•	Informations principales: fields
+	•	…
+	•	Special elements:
+	•	Ignore: green buttons
+Ligue (ID: 18)
+	•	Tabs/sections…
+Comité (ID: 38)
+Club (ID: 850)

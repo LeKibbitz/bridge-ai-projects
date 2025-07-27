@@ -38,7 +38,7 @@ def fetch_entity_acteurs(entity_id: int):
     url = f"{BASE_URL}/{entity_id}/acteurs/actifs"
     try:
         response = requests.get(url, timeout=10)
-        if response.status_code == 200 and response.text.strip():YES
+        if response.status_code == 200 and response.text.strip():
             return response.text, url
         else:
             return None, url
