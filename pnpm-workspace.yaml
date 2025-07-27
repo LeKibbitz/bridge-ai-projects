@@ -1,2 +1,7 @@
 packages:
-  - 'ffb-backend'
+  - ffb-backend
+
+onlyBuiltDependencies:
+  - '@prisma/client'
+  - '@prisma/engines'
+  - prisma
