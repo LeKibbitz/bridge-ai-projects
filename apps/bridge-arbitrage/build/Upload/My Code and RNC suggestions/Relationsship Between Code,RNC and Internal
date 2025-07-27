@@ -1,0 +1,291 @@
+Relationships RNC to Code
+
+Special case: Title:
+
+TITRE I du TITRE II (bold, center aligned bold)
+Blank line, Same record 
+Next line: Dispositions générales applicables à toutes les compétitions homologuées par la FFB (center aligned bold)
+2 Blank lines, Same record 
+Next line : Préambule (center aligned bold)
+
+Article 1 is a link.
+Arttcle 5.8 is a link.
+Article 11.3 is a link.
+Article 16.6 is a link.
+Article 16.7 is a link.
+Article 16.8 is a link.
+Article 16.9 is a link.
+Article 16.10: Article 5.2, Article 21 are links.
+Article 17.1 is a link.
+Article 19/ Article 167, Article 174, Article 180, Article 187,  Article 190 are links.
+Article 21 is a link.
+Article 22 is a link.
+Article 23.1: Article 176, Article 189 are links.
+Article 24.1: Article 171, Article 184 are links. "Articles 176 et 189": 176 is a link to Article 176 and 189 is a link to Article 189
+Article 30.7 is a link.
+Article 30.8 is a link.
+Article 30.9 is a link.
+Article 30.10: Article 5.2, Article 34.3 are links.
+Article 30.11: Article 41 is a link.
+Article 30.12: Articles 46 is a link.
+Article 30.15: Articles 54 is a link.
+Article 31.1 is a link.
+Article 30.7 is a link.
+Arttcle 33 is a link.
+Arttcle 82.3 (Loi 91 & Loi 74) is a link.
+Arttcle 83 is a link.
+Arttcle 84.5 (Link to ANNEXE I.3) is a link.
+Arttcle 86.2 is a link.
+Arttcle 88.1 is a link.
+Arttcle 90.1 is a link.
+Arttcle 90.2 is a link.
+Arttcle 90.3 is a link.
+Arttcle 91 is a link.
+Arttcle 92 is a link.
+Arttcle 93.i) is a link.
+Arttcle 93.ii) is a link.
+Arttcle 93.iv) is a link.
+Arttcle 94 is a link.
+Arttcle 96 Is a link.
+
+Not consider as a link
+ THE FIRST REF WHIW IS THE ARTICLE IN WHICH ONE OR MORE REFERENCES ARE GIVEN) INTERNAL, I EXPLICITLY NAMED THEN ALL (EXCEPT FOR Article 106.3 because in the books its written laws 59 to 80 and I didn't want to write so many times Article, Article,…))
+WHEN THERE IS REFERENCES BOTH INTERNAL (WITHIN THE RNC AND EXTERNAL TO THE CODE), I FLAGGED THEM SEPERATLY AND DIFERENTLY : AS PER SAY I QUALIFY INTERNAL REF AS LINKS AND REF TO THE CODE AS NOT LINKS (EVEN IF THEY BECOME A LINK ANOTHER WAY LATER ON; CODE TO CODE OR CODE TO RNC).
+I think it could help you parse the PDFs and make Hypertext links dynamically  despite a weird hierarchy, some steps in the reference name can be useless and the reference skip a level or more. 
+Sometimes there is only a title and a content, even only a content.
+
+
+Articles 84.5 : 101, 102, 103,  
+90.4 (Link to laws Lois 25 to 32 et Lois 35 to 39 (here it but link to article 90.4.1, 90.4.2), 
+
+Special cases:
+
+Article 90: “iApplication particulière des Lois” s not a link but Article 90.1 is not a link
+Article 90.2 is not a link
+Article 90.3 “Loi 20” is not a link to the code but to “Article 88” of the RNC is a link
+90.4; Article 90.4.1, Article 90.4.2 are links
+Article 90.4.1 (Le chariot n’a pas été transféré) : Loi 72C is a link to the code. “Est requise par la loi.” Is not a link.
+Article 90.4.2 (Le chariot n’a pas été transféré) : “”il applique la loi adéquate” is not a link. Loi 35, Loi25B, Loi 72C are links to the Code.
+Article 91 Loi 25 is not a link. 
+Article 90.4.2 is not a link.
+Article 93 is not a link.
+Article 94: Loi 73 D is not a link. Article 87.2 is a link.
+Article 96 is not a link
+Article 98: Article 102.1 is a link. Loi 16 D is not a link.
+Article 99: loi 40 is not a link. Article 142.4, article 145.4 are links.
+Article 100: Loi 25, loi 47 are not links.
+Article 101: Loi 40 is not a link. Article 84.6 is a lin.
+Article 102.2 is a link.
+Article 103: Loi 40, Loi 75 are not links.
+Chapitre 5.Droit d’appel: Loi 92, Loi 93 are not links. Article 10 is a link. Article 10 is a link.
+Article 105 is not a link
+Article 106.3: Articles 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72 73, 74, 75, 76, 77, 78, 79, 80 are links
+Article 107.1: Loi 81 is not a link. Loi 84 E, Loi 85, Loi 92 B are not links
+Article 107.2.2 is not a link.
+Article 107.3 is a link.
+Article: 108.1; Article 106.é, Article 107.2.1 are links.
+Article 111.1 : Link to Article 111.2, Article 111.3 (special case to be written like that)
+Article 1Article 113 is a link
+Article 114.3 is not a link
+Article 120: Article 10 is a link
+Article 123.A: Article 125.2 is link.
+Article 125.2: Article 123.&.c is a link.
+Article 1261 is not a link.
+Article 126.3: TITRE VIII.
+Article 128.2: Loi 86 C, Loi 86 D are not links. Article 124, Article 125, Article 126 are links.
+Article 129: TITRE VIII, Article 210 are links.
+Article 133: Loi 8§ mis not a link. Article 133.3 is a link.
+Article 133.3 is not a link.
+Article 134.5: Article 134.1, Article 134.2, Article 134.3 are links.
+Titre VII Systèmes et Conventions (Two lines).Section 1 : is not a link.
+Article 139 is not a link
+Article 141.1,a).2: 
+Article 143.2.1 is link (in the title).
+Article 143.2.2 is link (in the title).
+Article 143.3.a) is link.
+Article 143.3.b) is link.
+Article 143.3.c) is link.
+Article 146.1 is link.
+Article 146.2 is link.
+Article 146.4: “(Voir art. 139)”.
+Article 147 is link.
+Article 148: is a link.
+Article 148.1: ArticleS 138, 141.2.b, Article 142.2 are links.
+Article 148. 2: Articles 142.2, 143.3 are links
+Article 148.3: Articles 143.3, 143.2, 143.3 are links.
+Article 148.4: Articles 143.2, Article 143.2.2, Article 130, Article 146.4 are links
+TITRE VIII.Section 1.Article 151.2 is a link.
+Article 156.3 is a link
+Section 2.Article 157.1 is a link.
+Article 157.2 is a link.
+Article 157.3 is a link.
+Article 158.1:Article 130, Article 157.1 are links
+Article 158.2.a is a link
+Article A58.B; Article 130, Article 158 are links.
+Article 160.3 is a link.
+Article 160.4.b is a link.
+Article 161: Article 132, Article A33bare links.
+Article 163.2.a) is link.
+Article 163.2.b) Articles 157.1, Article 157.2 are links.
+
+Special case: Title:
+
+ANNEXE I du TITRE II (bold, center aligned bold)
+(Blank line, Same record), 
+Next line bold: Règlement particulier aux Divisions Nationales 1, 2 et Division de Ligue de l’Open par paires (center aligned bold)
+(Blank line, Same record) 
+Next line : Section 1 : Divisions 1, 2 Open (DN1 et DN2) par paires (center aligned bold)
+
+Article 165 is a link
+Article 168.2 is a link.
+Article 168.4 is a link.
+Article 168.5; Articles 168.4, Article are links.
+Aeticle 169.1: Annexe 5.Titre II is a link.
+
+Section 2 : Division de ligue Open (DLO) par paires (Center aligned bold)
+
+172.1 is a link
+Article 172.7 is a link.
+Article 173.2: Article 168, Article 175 are links.
+Article 175.1 is a link.
+Article 175.2: Articles 168.1, Article 168.6 are links. 
+Article 175.4 is a link.
+Article 175.5: Article 175.4, Article 13 are links
+
+Spécial case: Title
+
+ANNEXE 2 du TITRE II (bold, center aligned)
+(Blank line, Same record)
+Next line: Règlement particulier à la Division Nationale et Division Ligue du mixte par paires (bold, center aligned
+(Blank lines, Same record) 
+
+Section 1 : DivisionNationale Mixte (DLM) par paires (bold)
+Article 178 is a link.
+Article 181.2 is a link.
+Article 181.4 is a link.
+Article 181.5: Article 181.4, Article 13 are links.
+Blank line
+
+Section 2 : Division de Ligue Mixte (DLM) par paire (bold)
+Article 185.5 is a link
+Article 185.7 is a link
+Article 186.2: Article 181, Article 188 are links
+Article 188.2: Article 199.1, Article 181.3
+Article 188.3 is a link.
+Article 188.4 is a link.
+Article 188.4 is a link.
+Article 188.5: Article 188.4, Article 13.
+
+Spécial case: Title
+
+ANNEXE 3 du TITRE II (bold, center aligned, bold)
+Blank line
+Next line, same record : Top 16, Division Nationale, Divisions de Ligue, Division Nationale 1 et 2 Dames (Center aligne, bold)
+Blank line. 
+Section 1 - Règles communes (Center aligned, bold)
+Blank line
+
+191.2 is a link.
+Spécial case: Title
+ANNEXE 3 du TITRE II (bold, center aligned)
+Blank line
+Next line, same record : 
+Article 191.3 is a link.
+Article 192 is a link.
+Article : Not an article, link to Section 7
+
+Special case (Title)
+Content is Section 2 : Top 16 (Center aligned, bold
+Blank line
+Article 194: Article 215, Article 191.1.
+Article 194.2 is a link.
+Article 194.3.4 is a link.
+Article 194.3.6 is a link. 
+Article 8 is a link.
+
+Special case (Title)
+Section 3 : Division National (DN/4) (Center aligned, bold)
+Blank line
+Article 196 : Article 215, Article 191.1.
+Article 196.3 is a link.
+
+Article 196.4.3 is a link.
+Article 196.5 is a link.
+Article 196.8: Article 191.1, Article 102.4.
+
+Special case (Title)
+Section 4 : Division de LiguebOpen/4 (DLO/4) (Center aligned bold)
+Blank line
+
+Article 200.1.1 is a link.
+Article 200.1.2 is a link.
+Article 200.1.4 is a link.
+Article 200.2.5 is a link.
+Article 200.9 is a link
+
+Special Case
+Add a line saying: “Pour pouvoir être candidate dans une ligue, une équipe doit respecter les conditions de l’Article 32)” Link
+
+Special case (Title)
+Section 5 : Divisia de Ligue Mixte/4(DLM4) (Center aligned, bold)
+Blank line
+
+Article 204.3.2 is a link.
+Article 204.3.6 is a link.
+Special case: Add a line saying: “Pour pouvoir être candidate dans une ligue, une équipe doit respecter les conditions de l’Article 32)” Link
+
+Special case (Title)
+Section 6 : Division 1 dames (DND1) (center aligned, bold)
+Blank line
+
+Article 206; Article 215, Article 191.1.
+Article 206.2. is a link.
+Article 206.5 is a link.
+Article 206.7 is a link.
+
+Special case, add a paragraph saying: 
+“En cas d’égalité voir Article 191.1.” Hypertexte link.
+
+Special case (Title)
+Section 7 : Division Dame (DND2 I(Center aligned, bold
+Article 208 Is a link
+Article 2à!.3 is a link
+Article 2à!.5 is a link.
+Article 2à!.è is a link.
+Blank line 
+
+Special case, add a paragraph saying: 
+“En cas d’égalité voir Article 192.4” Hypertexte link.
+
+Special case (Title)
+Section 8 : Phase Finale du Top 16 (center aligned, bold)
+Blank line
+
+Special case (Title)
+Section 9 : Phase Finale du Top 16 (center aligned, bold)
+Blank line
+
+Article 211.6
+
+
+
+
+
+
+
+Next line bold : Section 1 : Division Nationale Mixte (DNM) par paires
+Section.1 : Règles communes (center aligned bold)
+Blank line
+Article 178 is a link.
+Article 181.2 is a link.
+Article 181.4 is a link.
+Article 181.5: Article 181.4, Article 13 are links.
+Article 185.7 is link.
+Article 186.2: Article 191, Article 199 are links.Article 188.2: Article 188.1, Article 188.( are links.
+Article 188.3 is a link.
+Article 188.4 is a link.
+Article 188.5: Article 188.4, Article 13 are links.
+
+
+
+215, Article 191.1 are links.

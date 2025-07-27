@@ -1,0 +1,52 @@
+Article 1.1
+
+1. First numbered alinea
+a) First letter with parenthesis
+b) Second letter with parenthesis
+
+2. Second numbered alinea
+a) First letter with parenthesis
+b) Second letter with parenthesis
+
+Article 1.2
+
+a First letter without parenthesis
+b Second letter without parenthesis
+
+A First uppercase letter without parenthesis
+B Second uppercase letter without parenthesis
+
+(i) First roman numeral with parenthesis
+(ii) Second roman numeral with parenthesis
+
+Article 1.3
+
+a) First letter with parenthesis
+b) Second letter with parenthesis
+
+a) First letter with parenthesis
+b) Second letter with parenthesis
+
+Article 1.4
+
+a) First letter with parenthesis
+(i) First roman numeral with parenthesis
+(ii) Second roman numeral with parenthesis
+
+Article 1.5
+
+a) First letter with parenthesis
+b) Second letter with parenthesis
+
+(i) First roman numeral with parenthesis
+(ii) Second roman numeral with parenthesis
+
+Article 1.6
+
+1. First numbered alinea
+a) First letter with parenthesis
+b) Second letter with parenthesis
+
+2. Second numbered alinea
+a) First letter with parenthesis
+b) Second letter with parenthesis

@@ -1,0 +1,319 @@
+.App {
+  text-align: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.App-header {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  padding: 30px 20px;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.App-header h1 {
+  margin: 0 0 20px 0;
+  font-size: 2.2rem;
+  font-weight: 300;
+  letter-spacing: 1px;
+}
+
+.title-block {
+  color: #2c3e50;
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.App-header nav ul {
+  margin: 0;
+  padding: 0;
+}
+
+.App-header nav button:hover {
+  background-color: rgba(255,255,255,0.1);
+  transform: translateY(-2px);
+}
+
+main {
+  background: white;
+  margin: 0;
+  min-height: calc(100vh - 200px);
+  border-radius: 0;
+}
+
+/* Styles pour les composants */
+.law-item {
+  background: white;
+  border: 1px solid #e1e8ed;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.law-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  border-color: #61dafb;
+}
+
+.law-title {
+  color: #2c3e50;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.law-meta {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+}
+
+.law-content {
+  color: #555;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.search-input {
+  width: 100%;
+  max-width: 500px;
+  padding: 12px 16px;
+  border: 2px solid #e1e8ed;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #61dafb;
+  box-shadow: 0 0 0 3px rgba(97, 218, 251, 0.1);
+}
+
+.keyword-tag {
+  display: inline-block;
+  background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+  color: #1976d2;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  margin: 2px 4px 2px 0;
+  font-weight: 500;
+}
+
+.back-button {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.back-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.loading-spinner {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+.section-title {
+  color: #2c3e50;
+  font-size: 1.8rem;
+  font-weight: 300;
+  margin-bottom: 8px;
+}
+
+.section-description {
+  color: #666;
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+/* Styles spécifiques pour les articles RNC */
+.rnc-article {
+  background: #fffbf0;
+  border-color: #ffeaa7;
+}
+
+.rnc-article .law-title {
+  color: #856404;
+}
+
+.rnc-article .law-meta {
+  color: #856404;
+}
+
+.rnc-keyword-tag {
+  background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+  color: #856404;
+}
+
+/* Styles pour les catégories d'enchères */
+.category-card {
+  margin-bottom: 25px;
+  padding: 25px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.category-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.category-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.category-badge {
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+}
+
+.category-description {
+  margin: 0 0 18px 0;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.category-details {
+  margin: 0 0 18px 0;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.category-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.category-button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.category-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.category-button-outline {
+  background: transparent;
+  border: 2px solid;
+}
+
+.category-button-outline:hover {
+  color: white !important;
+}
+
+/* Couleurs spécifiques par catégorie */
+.category-1 {
+  background-color: #ffebee;
+  border: 2px solid #f44336;
+}
+
+.category-1 .category-title,
+.category-1 .category-description,
+.category-1 .category-details {
+  color: #c62828;
+}
+
+.category-1 .category-badge {
+  background-color: #f44336;
+}
+
+.category-2 {
+  background-color: #fff3e0;
+  border: 2px solid #ff9800;
+}
+
+.category-2 .category-title,
+.category-2 .category-description,
+.category-2 .category-details {
+  color: #e65100;
+}
+
+.category-2 .category-badge {
+  background-color: #ff9800;
+}
+
+.category-3 {
+  background-color: #fff8e1;
+  border: 2px solid #ffc107;
+}
+
+.category-3 .category-title,
+.category-3 .category-description,
+.category-3 .category-details {
+  color: #f57f17;
+}
+
+.category-3 .category-badge {
+  background-color: #ffc107;
+}
+
+.category-4 {
+  background-color: #e8f5e8;
+  border: 2px solid #4caf50;
+}
+
+.category-4 .category-title,
+.category-4 .category-description,
+.category-4 .category-details {
+  color: #2e7d32;
+}
+
+.category-4 .category-badge {
+  background-color: #4caf50;
+}
+
+.category-5 {
+  background-color: #e3f2fd;
+  border: 2px solid #2196f3;
+}
+
+.category-5 .category-title,
+.category-5 .category-description,
+.category-5 .category-details {
+  color: #1565c0;
+}
+
+.category-5 .category-badge {
+  background-color: #2196f3;
+}

@@ -1,0 +1,29 @@
+.article-link {
+  color: #0066cc;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.article-link:hover {
+  color: #003399;
+  text-decoration: none;
+}
+
+.article-link:active {
+  color: #001a4d;
+}
+
+.article-content {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  line-height: 1.6;
+  font-size: 16px;
+  color: #333;
+  hyphens: auto;
+}
+
+.article-content a {
+  word-break: break-word;
+  hyphens: auto;
+}

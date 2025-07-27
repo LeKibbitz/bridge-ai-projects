@@ -1,0 +1,743 @@
+const fs = require('fs');
+const path = require('path');
+const pdfParse = require('pdf-parse');
+const { createClient } = require('@supabase/supabase-js');
+
+// Initialize Supabase client with updated configuration
+const supabaseUrl = 'https://aqokcjsmajnpfkladubp.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxb2tjanNtYWpucGZrbGFkdWJwIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MTM5ODg5NSwiZXhwIjoyMDY2OTc0ODk1fQ.lzWw_o-HtNRCIHAVlq3ucBkHh0ZSRsrHYvE4VwYjafw';
+
+// Configure Supabase client to avoid punycode
+const supabase = createClient(supabaseUrl, supabaseKey, {
+    auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false
+    },
+    global: {
+        headers: {
+            'Accept': 'application/json, text/plain, */*'
+        },
+        fetch: async (url, options) => {
+            // Use native URL API
+            const urlObj = new URL(url);
+            // Use direct string concatenation to avoid punycode
+            const urlStr = `${urlObj.protocol}//${urlObj.hostname}${urlObj.pathname}${urlObj.search}`;
+            return fetch(urlStr, options);
+        }
+    }
+});
+
+// Helper function to insert articles into Supabase
+async function insertArticlesToSupabase(articles, isRNC) {
+    try {
+        const tableName = isRNC ? 'rnc_articles' : 'code_laws';
+        
+        // Create a new Supabase client with service role
+        const serviceRoleSupabase = createClient(supabaseUrl, supabaseKey, {
+            auth: {
+                persistSession: false,
+                autoRefreshToken: false
+            }
+        });
+
+        // Prepare insert data
+        const insertData = articles.map(article => ({
+            title_number: article.title_number || null,
+            title_name: article.title_name || null,
+            chapter_number: article.chapter_number || null,
+            chapter_name: article.chapter_name || null,
+            section_number: article.section_number || null,
+            section_name: article.section_name || null,
+            article_number: article.article_number,
+            article_name: article.article_name || null,
+            alinea: article.alinea || null,
+            sub_alinea: article.sub_alinea || null,
+            sub_sub_alinea: article.sub_sub_alinea || null,
+            content: article.content || null,
+            hypertexte_link: article.hypertexte_link || null,
+            created_by: 'system',
+            updated_by: 'system'
+        }));
+
+        // Insert articles with upsert (ON CONFLICT DO NOTHING)
+        const { data, error } = await serviceRoleSupabase
+            .from(tableName)
+            .upsert(insertData, {
+                onConflict: ['title_number', 'chapter_number', 'section_number', 'article_number', 'alinea'],
+                ignoreDuplicates: true
+            });
+
+        if (error) throw error;
+        console.log(`Successfully inserted ${data.length} articles into ${tableName}`);
+        return data;
+    } catch (error) {
+        console.error('Error in insertArticlesToSupabase:', error);
+        throw error;
+    }
+}
+
+// Suppress all deprecation warnings
+process.noDeprecation = true;
+
+// Status monitoring
+const status = {
+    totalFiles: 0,
+    processedFiles: 0,
+    totalArticles: 0,
+    processedArticles: 0,
+    errors: [],
+    startTime: new Date(),
+    lastUpdate: new Date()
+};
+
+// Update status and log progress
+function updateStatus(message) {
+    status.lastUpdate = new Date();
+    console.log(`\n${new Date().toISOString()} - ${message}`);
+    console.log(`Progress: ${status.processedFiles}/${status.totalFiles} files, ${status.processedArticles}/${status.totalArticles} articles`);
+    console.log(`Errors: ${status.errors.length}`);
+}
+
+// Constants for parsing
+const DOCUMENT_TYPES = {
+    RNC: 'rnc',
+    CODE_LAWS: 'code_laws'
+};
+
+// DocumentParser class
+class DocumentParser {
+    constructor(documentType) {
+        this.documentType = documentType;
+        this.currentContext = {
+            title: { number: '', name: '' },
+            chapter: { number: '', name: '' },
+            section: { number: '', name: '' },
+            article: { number: '', name: '' },
+            alinea: { number: '', content: '' },
+            subAlinea: { number: '', content: '' },
+            subSubAlinea: { number: '', content: '' }
+        };
+        this.progress = {
+            status: 'pending',
+            percentage: 0
+        };
+    }
+
+    updateProgress(status, percentage) {
+        this.progress.status = status;
+        this.progress.percentage = percentage;
+        console.log(`Progress: ${status} (${percentage}%)`);
+    }
+
+    generateHypertexteLink() {
+        if (this.documentType === DOCUMENT_TYPES.RNC) {
+            return `Art ${this.currentContext.article.number}${this.currentContext.alinea.number ? '.' + this.currentContext.alinea.number : ''}`;
+        } else {
+            return `/code-laws/article-${this.currentContext.article.number}${this.currentContext.alinea.number ? '.' + this.currentContext.alinea.number : ''}`;
+        }
+    }
+
+    async parsePDF(filePath) {
+        try {
+            console.log(`Starting to parse PDF: ${filePath}`);
+            console.log('Attempting to read file...');
+            const fileData = fs.readFileSync(filePath);
+            console.log('File read successfully, size:', fileData.length, 'bytes');
+            
+            console.log('Attempting to parse PDF...');
+            const data = await pdfParse(fileData);
+            console.log('PDF parsed successfully');
+            console.log('Total text length:', data.text.length);
+            
+            const lines = data.text.split('\n');
+            console.log(`Total lines in PDF: ${lines.length}`);
+            console.log('First 5 lines:', lines.slice(0, 5));
+            
+            // Initialize variables
+            const articles = [];
+            let currentArticle = null;
+            let articleContent = '';
+            let currentProgress = 0;
+            const totalLines = lines.length;
+            
+            // Skip initial pages - start from page 4 for RNC, page 3 for Thode
+            let i = 0;
+            let currentPage = 1;
+            let currentLine = '';
+            let inMainContent = false;
+            let targetPage = this.documentType === DOCUMENT_TYPES.RNC ? 4 : 3;
+            
+            // Find target page
+            while (i < lines.length) {
+                currentLine = lines[i].trim();
+                
+                // Skip empty lines
+                if (!currentLine) {
+                    i++;
+                    continue;
+                }
+                
+                // Look for page markers
+                if (currentLine.startsWith('Page ')) {
+                    const pageMatch = currentLine.match(/^Page\s+(\d+)/);
+                    if (pageMatch) {
+                        const pageNumber = parseInt(pageMatch[1]);
+                        if (pageNumber >= targetPage) {
+                            console.log(`Starting parsing from page ${pageNumber}`);
+                            inMainContent = true;
+                            break;
+                        }
+                    }
+                }
+                
+                // Skip until we find target page
+                if (!inMainContent) {
+                    i++;
+                    continue;
+                }
+                break;
+            }
+
+            // Debug: Log first few lines of content
+            console.log('First few lines of content:', lines.slice(0, 10).join('\n'));
+
+            // Parse lines
+            for (; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+
+                // Update progress
+                const progress = Math.floor((i / totalLines) * 100);
+                if (progress > currentProgress) {
+                    currentProgress = progress;
+                    console.log(`Progress: ${currentProgress}%`);
+                }
+
+                // Debug: Log current line
+                console.log(`Processing line: ${line}`);
+
+                // Handle titles
+                if (line.startsWith('TITRE') || line.startsWith('PARTIE')) {
+                    const titleMatch = line.match(/^(TITRE|PARTIE)\s+(\d+)(.*)/);
+                    if (titleMatch) {
+                        this.currentContext.title.number = titleMatch[2];
+                        this.currentContext.title.name = titleMatch[3].trim();
+                        this.currentContext.chapter.number = '';
+                        this.currentContext.chapter.name = '';
+                        this.currentContext.section.number = '';
+                        this.currentContext.section.name = '';
+                        console.log(`Parsed title: ${titleMatch[1]} ${titleMatch[2]} - ${titleMatch[3].trim()}`);
+                    } else {
+                        console.error(`Error parsing title: ${line}`);
+                        throw new Error(`Error parsing title: ${line}`);
+                    }
+                }
+                // Handle chapters
+                else if (line.startsWith('CHAPITRE')) {
+                    const chapterMatch = line.match(/^CHAPITRE\s+(\d+)(.*)/);
+                    if (chapterMatch) {
+                        this.currentContext.chapter.number = chapterMatch[1];
+                        this.currentContext.chapter.name = chapterMatch[2].trim();
+                        this.currentContext.section.number = '';
+                        this.currentContext.section.name = '';
+                        console.log(`Parsed chapter: ${chapterMatch[1]} - ${chapterMatch[2].trim()}`);
+                    } else {
+                        console.error(`Error parsing chapter: ${line}`);
+                        throw new Error(`Error parsing chapter: ${line}`);
+                    }
+                }
+                // Handle sections
+                else if (line.startsWith('SECTION')) {
+                    const sectionMatch = line.match(/^SECTION\s+(\d+)(.*)/);
+                    if (sectionMatch) {
+                        this.currentContext.section.number = sectionMatch[1];
+                        this.currentContext.section.name = sectionMatch[2].trim();
+                        console.log(`Parsed section: ${sectionMatch[1]} - ${sectionMatch[2].trim()}`);
+                    } else {
+                        console.error(`Error parsing section: ${line}`);
+                        throw new Error(`Error parsing section: ${line}`);
+                    }
+                }
+                // Handle articles and alineas
+                else if (line.match(/^Article\s+\d+\s*[-–]/) || line.match(/^\d+\.\s+/)) {
+                    console.log('Found article or alinea line:', line);
+                    
+                    // Process previous article/alinea if exists
+                    if (currentArticle) {
+                        // Only create article record if we have content
+                        if (articleContent.trim()) {
+                            console.log('Processing article/alinea content:', articleContent);
+                            const articleRecord = {
+                                title_number: this.currentContext.title.number,
+                                title_name: this.currentContext.title.name,
+                                chapter_number: this.currentContext.chapter.number,
+                                chapter_name: this.currentContext.chapter.name,
+                                section_number: this.currentContext.section.number,
+                                section_name: this.currentContext.section.name,
+                                article_number: this.currentContext.article.number,
+                                article_name: this.currentContext.article.name,
+                                alinea: this.currentContext.alinea.number || null,
+                                sub_alinea: this.currentContext.subAlinea.number || null,
+                                sub_sub_alinea: this.currentContext.subSubAlinea.number || null,
+                                content: articleContent.trim(),
+                                hypertexte_link: this.generateHypertexteLink()
+                            };
+                            articles.push(articleRecord);
+                            console.log(`Parsed article ${this.currentContext.article.number}${this.currentContext.alinea.number ? '.' + this.currentContext.alinea.number : ''}`);
+                            console.log('Article record:', articleRecord);
+                        }
+                    }
+                    
+                    // Start new article or alinea
+                    const articleMatch = line.match(/^Article\s+(\d+)\s*[-–]\s*(.*)/);
+                    const alineaMatch = line.match(/^\d+\.\s+(.*)/);
+                    
+                    if (articleMatch) {
+                        // Reset alinea context
+                        this.currentContext.alinea.number = '';
+                        this.currentContext.alinea.content = '';
+                        this.currentContext.subAlinea.number = '';
+                        this.currentContext.subAlinea.content = '';
+                        this.currentContext.subSubAlinea.number = '';
+                        this.currentContext.subSubAlinea.content = '';
+                        
+                        this.currentArticle = {
+                            title_number: this.currentContext.title.number,
+                            title_name: this.currentContext.title.name,
+                            chapter_number: this.currentContext.chapter.number,
+                            chapter_name: this.currentContext.chapter.name,
+                            article_number: articleMatch[1],
+                            article_name: articleMatch[2].trim()
+                        };
+                        articleContent = '';
+                        console.log(`Starting new article ${articleMatch[1]} - ${articleMatch[2].trim()}`);
+                    } else if (alineaMatch) {
+                        // Start new alinea
+                        this.currentContext.alinea.number = alineaMatch[0].match(/\d+/)[0];
+                        this.currentContext.alinea.content = alineaMatch[1].trim();
+                        articleContent = alineaMatch[1].trim();
+                        console.log(`Starting new alinea ${this.currentContext.alinea.number}`);
+                    }
+                } else {
+                    // Add to current content
+                    if (articleContent) {
+                        const cleanedLine = line.trim();
+                        if (cleanedLine) {
+                            articleContent += ' ' + cleanedLine;
+                            console.log('Adding content to article:', cleanedLine);
+                        }
+                    } else {
+                        console.error(`Error parsing content: ${line}`);
+                        throw new Error(`Error parsing content: ${line}`);
+                    }
+                }
+            }
+            
+            // Process last article/alinea if exists
+            if (currentArticle && articleContent.trim()) {
+                console.log('Processing final article/alinea content:', articleContent);
+                const articleRecord = {
+                    title_number: this.currentContext.title.number,
+                    title_name: this.currentContext.title.name,
+                    chapter_number: this.currentContext.chapter.number,
+                    chapter_name: this.currentContext.chapter.name,
+                    section_number: this.currentContext.section.number,
+                    section_name: this.currentContext.section.name,
+                    article_number: this.currentContext.article.number,
+                    article_name: this.currentContext.article.name,
+                    alinea: this.currentContext.alinea.number || null,
+                    sub_alinea: this.currentContext.subAlinea.number || null,
+                    sub_sub_alinea: this.currentContext.subSubAlinea.number || null,
+                    content: articleContent.trim(),
+                    hypertexte_link: this.generateHypertexteLink(),
+                    created_by: 'system',
+                    updated_by: 'system'
+                };
+
+                await insertArticlesToSupabase([articleRecord], this.documentType === DOCUMENT_TYPES.RNC);
+                console.log('Final article/alinea processed successfully');
+            }
+
+            this.updateProgress('completed', 100);
+            console.log('PDF parsing completed successfully');
+            return articles;
+        } catch (error) {
+            console.error('Error parsing PDF:', error);
+            throw error;
+        // Split content into sub-sub-alineas using patterns
+        const subSubAlineaPatterns = [
+            /^[a-z]$/,      // Lowercase letter sub-sub-alineas (a, b, c)
+            /^[A-Z]$/,      // Uppercase letter sub-sub-alineas (A, B, C)
+            /^[a-z]\)/,     // Lowercase letter with parenthesis (a), b), etc.)
+            /^[A-Z]\)/,     // Uppercase letter with parenthesis (A), B), etc.)
+            /^[a-z]\)$/g,    // Lowercase letter with closing parenthesis (a), b), etc.)
+            /^[A-Z]\)$/g,    // Uppercase letter with closing parenthesis (A), B), etc.)
+            /^\([IiVvXx]+\)/  // Roman numerals with parenthesis (i), ii), etc.)
+        ];
+        
+        const extractedSubSubAlineas = [];
+        let currentContent = content;
+        const subSubAlineaPattern = new RegExp(subSubAlineaPatterns.join('|'), 'g');
+        let match;
+
+        // Process each sub-sub-alinea
+        while ((match = subSubAlineaPattern.exec(currentContent)) !== null) {
+            const subSubAlinea = {
+                number: match[0].match(/^[IiVvXx]+/)[0],
+                content: match[1].trim()
+            };
+            extractedSubSubAlineas.push(subSubAlinea);
+            currentContent = currentContent.replace(match[0], '');
+        }
+
+        return extractedSubSubAlineas;
+    } catch (error) {
+        console.error('Error extracting sub-sub-alineas:', error);
+        throw error;
+    }
+}
+
+async insertTitle(number, name) {
+    try {
+        const titleRecord = {
+            title_number: number,
+            title_name: name,
+            created_by: 'system',
+            updated_by: 'system'
+        };
+
+        const { data: titleData, error: titleError } = await supabase
+            .from('rnc_titles')
+            .upsert(titleRecord, {
+                onConflict: ['title_number']
+            });
+
+        if (titleError) throw titleError;
+        return titleData[0];
+    } catch (error) {
+        console.error('Error inserting title:', error);
+        throw error;
+    }
+}
+
+async insertChapter(number, name) {
+    try {
+        const chapterRecord = {
+            title_number: this.currentContext.title.number,
+            chapter_number: number,
+            chapter_name: name,
+            created_by: 'system',
+            updated_by: 'system'
+        };
+
+        const { data: chapterData, error: chapterError } = await supabase
+            .from('rnc_chapters')
+            .upsert(chapterRecord, {
+                onConflict: ['title_number', 'chapter_number']
+            });
+
+        if (chapterError) throw chapterError;
+        return chapterData[0];
+    } catch (error) {
+        console.error('Error inserting chapter:', error);
+        throw error;
+    }
+}
+
+async insertAlinea(articleData, alinea) {
+    try {
+        const alineaRecord = {
+            article_id: articleData.id,
+            alinea_number: alinea.number,
+            content: alinea.content,
+            created_by: 'system',
+            updated_by: 'system'
+        };
+
+        const { data: alineaData, error: alineaError } = await supabase
+            .from('rnc_alineas')
+            .upsert(alineaRecord, {
+                onConflict: ['article_id', 'alinea_number']
+            });
+
+        if (alineaError) throw alineaError;
+        return alineaData[0];
+    } catch (error) {
+        console.error('Error inserting alinea:', error);
+        throw error;
+    }
+}
+}
+
+async parseCodeLawSection(section) {
+    try {
+        // Extract article (e.g., "Article 1 – Les compétitions")
+        const articleMatch = section.match(/Article\s+(\d+)\s*–\s*(.+)$/);
+        if (articleMatch) {
+            this.currentContext.article.number = articleMatch[1].trim();
+            this.currentContext.article.name = articleMatch[2].trim();
+            const articleContent = section.replace(/Article\s+\d+\s*–\s*.+\s*/, '');
+
+            // Construct hypertexte link
+            const hypertexteLink = `/code-laws/article-${this.currentContext.article.number}`;
+
+            // Insert article with hypertexte link
+            const { data: articleData, error: articleError } = await supabase
+                .from('code_laws')
+                .upsert(
+                    {
+                        article_number: this.currentContext.article.number,
+                        article_name: this.currentContext.article.name,
+                        content: articleContent,
+                        hypertexte_link: hypertexteLink,
+                        created_by: 'system',
+                        updated_by: 'system'
+                    },
+                    {
+                        onConflict: ['article_number']
+                    }
+                );
+
+            if (articleError) throw articleError;
+            return articleData[0];
+        }
+
+        // Extract section (e.g., "Section 1 : Dispositions générales")
+        const sectionMatch = section.match(/^Section\s+(\d+)\s*:\s*(.+)$/);
+        if (sectionMatch) {
+            this.currentContext.section.number = sectionMatch[1].trim();
+            this.currentContext.section.name = sectionMatch[2].trim();
+            await this.insertSection(this.currentContext.section.number, this.currentContext.section.name);
+            return;
+        }
+
+        // Extract article (e.g., "Article 6 – Stade, phase, séance")
+        const articleMatch = section.match(/Article\s+(\d+)\s*–\s*(.+)$/);
+        if (articleMatch) {
+            this.currentContext.article.number = articleMatch[1].trim();
+            this.currentContext.article.name = articleMatch[2].trim();
+            const articleContent = section.replace(/Article\s+\d+\s*–\s*.+\s*/, '');
+            
+            // Construct hypertexte link with section if available
+            const sectionPart = this.currentContext.section.number ? `/section-${this.currentContext.section.number}` : '';
+            const hypertexteLink = `/rnc/titre-${this.currentContext.title.number}/chapitre-${this.currentContext.chapter.number}${sectionPart}/article-${this.currentContext.article.number}`;
+
+            // Insert article with title and chapter context (no section for hyperlinks)
+            const articleRecord = {
+                title_number: this.currentContext.title.number,
+                title_name: this.currentContext.title.name,
+                chapter_number: this.currentContext.chapter.number,
+                chapter_name: this.currentContext.chapter.name,
+                section_number: this.currentContext.section.number,
+                section_name: this.currentContext.section.name,
+                article_number: this.currentContext.article.number,
+                article_name: this.currentContext.article.name,
+                content: articleContent,
+                hypertexte_link: hypertexteLink,
+                created_by: 'system',
+                updated_by: 'system'
+            };
+            
+            // Insert article with hypertexte link
+            const { data: articleData, error: articleError } = await supabase
+                .from('rnc_articles')
+                .upsert(articleRecord, {
+                    onConflict: ['article_number']
+                });
+            
+            if (articleError) throw articleError;
+            
+            // Extract alineas
+            const alineas = this.extractAlineas(articleContent);
+            
+            // Process each alinea
+            for (const alinea of alineas) {
+                this.currentContext.alinea.number = alinea.number;
+                this.currentContext.alinea.content = alinea.content;
+                await this.insertAlinea(articleData[0], alinea);
+            }
+        }
+    } catch (error) {
+        console.error('Error parsing code law section:', error);
+        throw error;
+    }
+}
+
+async insertSection(sectionNumber, sectionName) {
+    try {
+        const sectionRecord = {
+            title_number: this.currentContext.title.number,
+            title_name: this.currentContext.title.name,
+            chapter_number: this.currentContext.chapter.number,
+            chapter_name: this.currentContext.chapter.name,
+            section_number: sectionNumber,
+            section_name: sectionName,
+            created_by: 'system',
+            updated_by: 'system'
+        };
+
+        const { data: sectionData, error: sectionError } = await supabase
+            .from('rnc_sections')
+            .upsert(sectionRecord, {
+                onConflict: ['title_number', 'chapter_number', 'section_number']
+            });
+
+        if (sectionError) throw sectionError;
+        return sectionData[0];
+    } catch (error) {
+        console.error('Error inserting section:', error);
+        throw error;
+    }
+
+    async parseCodeLawSection(section) {
+    try {
+        // Extract article (e.g., "Article 1 – Les compétitions")
+        const articleMatch = section.match(/Article\s+(\d+)\s*–\s*(.+)$/);
+        if (articleMatch) {
+            this.currentContext.article.number = articleMatch[1].trim();
+            this.currentContext.article.name = articleMatch[2].trim();
+            const articleContent = section.replace(/Article\s+\d+\s*–\s*.+\s*/, '');
+
+            // Construct hypertexte link
+            const hypertexteLink = `/code-laws/article-${this.currentContext.article.number}`;
+
+            // Insert article with hypertexte link
+            const { data: articleData, error: articleError } = await supabase
+                .from('code_laws')
+                .upsert(
+                    {
+                        article_number: this.currentContext.article.number,
+                        article_name: this.currentContext.article.name,
+                        content: articleContent,
+                        hypertexte_link: hypertexteLink,
+                        created_by: 'system',
+                        updated_by: 'system'
+                    },
+                    {
+                        onConflict: ['article_number']
+                    }
+                );
+
+            if (articleError) throw articleError;
+            return articleData[0];
+        }
+
+        // Extract section (e.g., "Section 1 : Dispositions générales")
+        const sectionMatch = section.match(/^Section\s+(\d+)\s*:\s*(.+)$/);
+        if (sectionMatch) {
+            this.currentContext.section.number = sectionMatch[1].trim();
+            this.currentContext.section.name = sectionMatch[2].trim();
+            await this.insertSection(this.currentContext.section.number, this.currentContext.section.name);
+            return;
+        }
+
+        // Extract article (e.g., "Article 6 – Stade, phase, séance")
+        const articleMatch = section.match(/Article\s+(\d+)\s*–\s*(.+)$/);
+        if (articleMatch) {
+            this.currentContext.article.number = articleMatch[1].trim();
+            this.currentContext.article.name = articleMatch[2].trim();
+            const articleContent = section.replace(/Article\s+\d+\s*–\s*.+\s*/, '');
+            
+            // Construct hypertexte link with section if available
+            const sectionPart = this.currentContext.section.number ? `/section-${this.currentContext.section.number}` : '';
+            const hypertexteLink = `/rnc/titre-${this.currentContext.title.number}/chapitre-${this.currentContext.chapter.number}${sectionPart}/article-${this.currentContext.article.number}`;
+
+            // Insert article with title and chapter context (no section for hyperlinks)
+            const articleRecord = {
+                title_number: this.currentContext.title.number,
+                title_name: this.currentContext.title.name,
+                chapter_number: this.currentContext.chapter.number,
+                chapter_name: this.currentContext.chapter.name,
+                section_number: this.currentContext.section.number,
+                section_name: this.currentContext.section.name,
+                article_number: this.currentContext.article.number,
+                article_name: this.currentContext.article.name,
+                content: articleContent,
+                hypertexte_link: hypertexteLink,
+                created_by: 'system',
+                updated_by: 'system'
+            };
+            
+            // Insert article with hypertexte link
+            const { data: articleData, error: articleError } = await supabase
+                .from('rnc_articles')
+                .upsert(articleRecord, {
+                    onConflict: ['article_number']
+                });
+            
+            if (articleError) throw articleError;
+            
+            // Extract alineas
+            const alineas = this.extractAlineas(articleContent);
+            
+            // Process each alinea
+            for (const alinea of alineas) {
+                this.currentContext.alinea.number = alinea.number;
+                this.currentContext.alinea.content = alinea.content;
+                await this.insertAlinea(articleData[0], alinea);
+            }
+        }
+    } catch (error) {
+        console.error('Error parsing code law section:', error);
+        throw error;
+    }
+}
+
+// Export functions to start parsing
+module.exports = {
+    DocumentParser,
+    DOCUMENT_TYPES,
+    parseRNC: async (filePath) => {
+        const parser = new DocumentParser(DOCUMENT_TYPES.RNC);
+        await parser.parsePDF(filePath);
+    },
+    parseCodeLaws: async (filePath) => {
+        const parser = new DocumentParser(DOCUMENT_TYPES.CODE_LAWS);
+        await parser.parsePDF(filePath);
+    }
+};
+
+if (require.main === module) {
+    try {
+        const filePath = process.argv[2];
+        if (!filePath) {
+            console.error('Usage: node parse_documents.js <PDF_FILE_PATH>');
+            process.exit(1);
+        }
+
+        const fs = require('fs');
+        if (!fs.existsSync(filePath)) {
+            console.error(`File not found: ${filePath}`);
+            process.exit(1);
+        }
+
+        console.log('Starting script execution');
+        console.log('File path:', filePath);
+        console.log('File exists:', fs.existsSync(filePath));
+        console.log('File size:', fs.statSync(filePath).size, 'bytes');
+
+        console.log('Creating DocumentParser instance');
+        const parser = new DocumentParser(DOCUMENT_TYPES.RNC);
+        console.log('Parser instance created');
+        
+        // Add error handler for uncaught exceptions
+        process.on('uncaughtException', (error) => {
+            console.error('Uncaught Exception:', error);
+            process.exit(1);
+        });
+
+        // Add error handler for unhandled promise rejections
+        process.on('unhandledRejection', (reason, promise) => {
+            console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+            process.exit(1);
+        });
+
+        await parser.parsePDF(filePath);
+        console.log('Script completed successfully');
+    } catch (error) {
+        console.error('Error running script:', error);
+        console.error('Stack trace:', error.stack);
+        process.exit(1);
+    }
+}

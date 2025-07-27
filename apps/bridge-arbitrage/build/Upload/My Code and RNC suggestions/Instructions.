@@ -1,0 +1,14 @@
+Instructions.
+Here how I see the structure of both  ode_law and rnc_articles.
+All files are int this foldef:
+'/Users/lekibbitz/Projets/bridge-arbitrage/public/Upload/My Code and RNC stable structure suggestion.'
+
+I have added a field called hypertexte_link. I think when parsing the document, a good ideaa is tahat the parser identify the final name of the link and it will be easier/faster to retrieve all law and/or articles mentionned into an article to :
+-if there only one ref, display the modal
+-if there is more than one oresent the cards into the main oage
+
+The parser needs obviously to be changed.
+
+The sezrch bar will probalby suffer from these changes.
+One question, in the search bar can we, for example, make multiple recherche at once like 25, carte exposée, renonce ?
+Please let me know what you think.

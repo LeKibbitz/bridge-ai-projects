@@ -1,0 +1,72 @@
+Draft Structure of table code_laws
+
+Order of the columns.
+I let decide the appropriate data type
+All fields are NULLABLE except the section_name filed
+ID (PRIMARY KEY)
+section_name (PRÉFACE à l'édition française du Code, PRÉFACE AUX LOIS DE 2017, INTRODUCTION AUX LOIS DE 2017, TABLE DES MATIÈRES, Définitions, Lois, INDEX Code 2017, ANNEXE I)
+law_number
+law_name
+chapter_letter
+chapter_name
+alinea_number 
+sub_alinea_letter   (a lowercase letter in parenthesis) <---This is new but it does exist, example Loi 20 OR Chapter F Alinea 5 Sub Alinea (b)   (sub alineas seem to always one letter between parenthesis)
+sub_sub_alinea_reference ((i), (ii),(iii),...)    <---This new but it does exist, example Loi 40B2(a)(iii)
+content
+hypertexte_link
+pdf_path   (I do not know what it will be used for)
+created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+
+This is simple but seems sufficient to me and allow us to get rid of some tables among (not all of them of course I am sure there some mandatory for the search bars (By keywords, laws or articles number,...): 
+- rnc_article_relationships
+- rnc_article_references
+- article_law_relationships
+- article_law_relationships
+- rnc_article_metadata (not sure what it does, you'll tell me)
+- WE WILL CLARIFY THAT WHEN AGREED ON THE FINAL STRUCTURE BECAUSE IT WILLL IMPLY TO BIND COMPONENTS WITH NEW FIELDS AND EWRITE THE PARSER WHICH SHOULD BE FASTER
+
+
+Few words about the code and a full transcript of the RNC to RNC Hyperlink catalog (I certainly missed some but noot much).
+
+Structure of PRÉFACE à l'édition française du Code (On two lines) 
+
+SECTION (PRÉFACE à l'édition française du Code (On two lines) 
+CONTENT
+
+Structure of PRÉFACE AUX LOIS DE 2017
+
+SECTION (PRÉFACE AUX LOIS DE 2017)
+CONTENT
+
+Structure of TABLES DES MATIÈRES
+
+Special case:
+SECTION: TABLE DES MATIÈRES
+Then the 3 lines PRÉFACES AUX LOIS DE 2017, INTRODUCTIONS AUX LOI DE 2017, Définitions are only content data field and should be Hypertexte Links to the section_name field
+Then the structure is as follow:
+law_number, dash, law_title (LOI in capital letters, law title, only the first letter of first word is capital letter. EVerything BOLD)
+Then, chapter letter, dot chapter title. not bold)
+
+Structure of Définitions
+
+The structure of INDEX CODE 2017 is a bit tricky to deal with because the hierarchy is handle with the indentation of the text. 
+I have no clue on how you can deal with that.
+The law_name is in bold characters and left aligned.
+The content is on the right hand side (This should be hypertexte links to law references, they can be multiples seperated by a comma). 
+One approach could be to mesure the position of the starts of a chapter name, section name, content It is always the same.
+
+Special cases:
+- When the content is Définitions, its a link to the section Définitions, not to a law.
+Below the law name are the chapter names with always the same indentation
+- When there is no content there there should be and the very next line starts where chapters starts, this is the content (the very next line), no hypertexte link needed.
+
+The structure of ANNEXE I is as follow:
+
+TITLE (ANNEXE I - UTILSATION DES BOÎTES À ANNONCES)
+Introduction
+
+Chapter number (1,2,3,4)
+alinea number (1,2,...)
+
+The parser must ignore the footer line with "Code International du Bridge 2017" and "-","Page number", "-" when necessary

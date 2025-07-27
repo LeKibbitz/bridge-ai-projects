@@ -1,0 +1,42 @@
+.bidding-category-1 {
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: normal;
+  color: #000;
+  background-color: transparent;
+}
+
+/* Style for the entire SHA card */
+.sha-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Style for the header of the SHA card */
+.sha-card-header {
+  font-weight: bold;
+  color: #000;
+  margin-bottom: 0.5rem;
+}
+
+/* Style for the content of the SHA card */
+.sha-card-content {
+  font-family: Arial, sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+/* Style for category 1 text */
+.sha-category-1 {
+  color: #28a745; /* Green color */
+  font-weight: normal;
+  font-family: inherit;
+}
+
+/* Style for the line breaks */
+.sha-card br {
+  margin: 0.5rem 0;
+}

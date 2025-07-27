@@ -1,0 +1,25 @@
+module.exports = {
+  database: {
+    user: 'postgres',
+    host: 'localhost',
+    database: 'bridge_arbitrage',
+    password: process.env.POSTGRES_PASSWORD,
+  },
+  test: {
+    title_number: '1',
+    title_name: 'Title 1',
+    chapter_number: '1',
+    chapter_name: 'Chapter 1',
+    section_number: '1',
+    section_name: 'Section 1',
+    article_number: '1',
+    article_name: 'Article 1',
+    alinea: 'a',
+    sub_alinea: '1',
+    sub_sub_alinea: '1',
+    content: 'Test content',
+    hypertexte_link: 'Art 1',
+    created_by: 'test',
+    updated_by: 'test',
+  },
+};

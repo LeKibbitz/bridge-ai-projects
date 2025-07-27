@@ -1,0 +1,25 @@
+
+-- Create main articles table
+CREATE TABLE rnc_articles (
+    id BIGSERIAL PRIMARY KEY,
+    title_number INTEGER NOT NULL,
+    title_name TEXT NOT NULL,          -- Full title name (e.g., "Titre I - Des règles générales")
+    chapter_number INTEGER NOT NULL,
+    chapter_name TEXT NOT NULL,        -- Full chapter name
+    article_number VARCHAR(10) NOT NULL,
+    section_number VARCHAR(10),        -- For sections within articles
+    section_title TEXT,                -- Title of the section
+    alinea_number VARCHAR(5),          -- Can be number, letter, or roman numeral
+    sub_alinea TEXT,                   -- Can be number, letter, or roman numeral with parentheses
+    content TEXT NOT NULL,
+    pdf_path TEXT,                     -- Path to PDF document if available
+    hypertexte_link TEXT,              -- Link to related articles/content
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_by VARCHAR(50),
+    updated_by VARCHAR(50),
+    version INTEGER DEFAULT 1,
+    UNIQUE(article_number),
+    CHECK (title_number > 0),
+    CHECK (chapter_number > 0)
+);
