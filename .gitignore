@@ -1,53 +1,28 @@
-# Node modules
-node_modules/
-.pnpm-store/
-
-# pnpm lockfile
-pnpm-lock.yaml
-
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# Coverage directory
-coverage/
-
-# TypeScript cache files
-*.tsbuildinfo
-
-# Prisma generated files
-prisma/generated/
-
-# Environment variables files
-.env
-.env.local
-.env.*.local
-
-# VSCode settings folder
-.vscode/
-
-# macOS system files
+# macOS
 .DS_Store
 
-# Build output folders
-dist/
-build/
+# Node
+node_modules/
+pnpm-lock.yaml
+npm-debug.log*
 
-# Temporary files
-tmp/
-temp/
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
 
-# IDE files
-.idea/
-*.iml
-*.sublime-workspace
-*.sublime-project
+# VSCode
+.vscode/
+.history/
+
+# Supabase / temporaire
+*.log
+.supabase/
+.supabase/config.toml
+.temp/
+
+# Others
+legacy/
+*.sqlite3
+*.db
