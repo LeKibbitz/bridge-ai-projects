@@ -1,0 +1,56 @@
+.
+├── .DS_Store
+├── .cursorignore
+├── .env
+├── .git
+│   ├── .DS_Store
+│   ├── COMMIT_EDITMSG
+│   ├── FETCH_HEAD
+│   ├── HEAD
+│   ├── ORIG_HEAD
+│   ├── config
+│   ├── description
+│   ├── hooks
+│   ├── index
+│   ├── info
+│   ├── logs
+│   ├── objects
+│   ├── packed-refs
+│   └── refs
+├── .gitignore
+├── .vscode
+│   └── settings.json
+├── PROJECT_URL=https:::supabase.com:dashboard:project
+├── README.md
+├── apps
+│   ├── .DS_Store
+│   ├── FFB_Database
+│   └── bridge-referee-app
+├── docs
+│   ├── DB_Schema_Builder_by_Web_Navigation.txt
+│   ├── FFB_data_schema.md
+│   └── parse_Licencees_With_Managment.txt
+├── error_845.png
+├── legacy
+│   ├── .DS_Store
+│   ├── Cours
+│   ├── FFB_Data
+│   ├── FFB_Database_Project_Draft
+│   ├── PROJECT_OVERVIEW.md
+│   ├── Scrapping_Detailled.txt
+│   ├── Supabase
+│   ├── arbitrage
+│   ├── cursor_checking_if_you_re_there.md
+│   ├── ffb-backend
+│   └── mon-projet-supabase
+├── legacy_tree_summary.txt
+├── package-lock.json
+├── package.json
+├── pnpm-lock.yaml
+├── pnpm-workspace.yaml
+└── scripts
+    ├── .DS_Store
+    ├── organise_repo_structure.py
+    └── reorganise_bridge_ai_projects.py
+
+20 directories, 34 files
